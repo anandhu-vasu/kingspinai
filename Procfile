@@ -1,1 +1,1 @@
-web: gunicorn kingspin.wsgi --log-file -
+web: gunicorn kingspinai.wsgi --log-file -
