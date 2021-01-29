@@ -1,1 +1,1 @@
-web: gunicorn chatbot.wsgi --log-file -
+web: gunicorn kingspin.wsgi --log-file -

@@ -1,4 +1,4 @@
-# chatbot
+# kingspin
 
 Hosted on, 
-https://chatbot-dj.herokuapp.com/
+https://kingspin-dj.herokuapp.com/
