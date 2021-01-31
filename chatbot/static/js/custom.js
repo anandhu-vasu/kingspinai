@@ -28,6 +28,18 @@ $(document).ready(function () {
             { offset: "100%"}
         );
     }
+
+/*     $('main > *').waypoint({
+        offset: '50%',
+		handler: function() {
+			$('main>*').each( function(index) {
+				jQuery( this ).delay( index*200 ).queue(function(next){
+					jQuery( this ).addClass('animated fadeIn');
+					next();
+				});
+			});
+		}
+    }) */
     
     counterAnimation('ach-counter');
     counterAnimation('jou-counter');
