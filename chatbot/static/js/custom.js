@@ -1,47 +1,34 @@
 $(document).ready(function () {
-    $("#ach-counter").waypoint(
-        function (_ide) {
-            $(this).find(".counter-ls-value").each(function () {
-                $(this)
-                    .prop("Counter", 0)
-                    .animate(
-                        {
-                            Counter: $(this).text(),
-                        },
-                        {
-                            duration: 3500,
-                            easing: "swing",
-                            step: function (now) {
-                                $(this).text(Math.ceil(now));
-                            },
-                        }
-                    );
-            });
-            this.destroy();
-        },
-        { offset: "100%",continuous: false}
-    );
 
-    $("#count").waypoint(
-        function (_ide) {
-            $(this).find(".counter-ls-value").each(function () {
-                $(this)
-                    .prop("Counter", 0)
-                    .animate(
-                        {
-                            Counter: $(this).text(),
-                        },
-                        {
-                            duration: 3500,
-                            easing: "swing",
-                            step: function (now) {
-                                $(this).text(Math.ceil(now));
+    function counterAnimation(id){
+        $("#"+id).waypoint(
+            function () {
+                if(this.completed==undefined)
+                    this.completed = true
+                else if(this.completed && this.hasOwnProperty('destroy')){
+                    this.destroy()
+                }else return
+                $(this).find(".counter-ls-value").each(function () {
+                    $(this)
+                        .prop("Counter", 0)
+                        .animate(
+                            {
+                                Counter: $(this).text(),
                             },
-                        }
-                    );
-            });
-            this.destroy();
-        },
-        { offset: "100%",continuous: false}
-    );
+                            {
+                                duration: 3500,
+                                easing: "swing",
+                                step: function (now) {
+                                    $(this).text(Math.ceil(now));
+                                },
+                            }
+                        );
+                });
+            },
+            { offset: "100%"}
+        );
+    }
+    
+    counterAnimation('ach-counter');
+    counterAnimation('jou-counter');
 });
