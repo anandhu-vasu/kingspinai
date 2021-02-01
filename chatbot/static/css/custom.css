@@ -166,3 +166,17 @@
 .ms-b{
   margin-bottom: 70px;
 }
+@media screen and (max-width: 990px) {
+  .whyimage1 {
+    width: 70%;
+  }
+  .whyimage2{
+    width: 6%;
+  }
+  .whyimage3{
+    width: 100%;
+  }
+  .whyimage4{
+    width: 85%;
+  }
+}
