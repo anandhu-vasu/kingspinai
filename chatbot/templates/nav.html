@@ -1,6 +1,11 @@
 <nav>
     <ul id="navigation">                                                                                          
-        <li class="active" ><a href="{% url 'whykingspinai' %}">Why Kingspinai?</a></li>
+        <li class="active" ><a href="{% url 'why-kingspinai' %}">Why Kingspinai?</a></li>
+        <li><a href="#">Platform</a>
+            <ul class="submenu">
+                <li><a href="{% url 'platform.conversation-studio' %}">Conversation Studio</a></li>
+            </ul>
+        </li>
         <li><a href="features.html">Features</a></li>
         <li><a href="about.html">About</a></li>
         <li><a href="faq.html">FAQ</a></li>
