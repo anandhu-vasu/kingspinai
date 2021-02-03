@@ -1,163 +1,138 @@
 {% load static %}
 <!doctype html>
-<html class="no-js" lang="zxx">
+<html class="no-js" lang="en">
+
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    
+    <!--====== Title ======-->
     <title>
         {% block title %}
-            Kingspin AI
+          Home
         {% endblock title %}
     </title>
+    
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="manifest" href="site.webmanifest">
-    <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
 
-    <!-- CSS here -->
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/slicknav.css' %}">
-    <link rel="stylesheet" href="{% static 'css/flaticon.css' %}">
-    <link rel="stylesheet" href="{% static 'css/progressbar_barfiller.css' %}">
-    <link rel="stylesheet" href="{% static 'css/gijgo.css' %}">
-    <link rel="stylesheet" href="{% static 'css/animate.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/animated-headline.css' %}">
+    <!--====== Favicon Icon ======-->
+    <link rel="shortcut icon" href="{% static 'images/favicon.png' %}" type="image/png">
+        
+    <!--====== Animate CSS ======-->
+    <link rel="stylesheet" href="{% static 'css/animate.css' %}">
+        
+    <!--====== Magnific Popup CSS ======-->
     <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}">
-    <link rel="stylesheet" href="{% static 'css/fontawesome-all.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/themify-icons.css' %}">
+        
+    <!--====== Slick CSS ======-->
     <link rel="stylesheet" href="{% static 'css/slick.css' %}">
-    <link rel="stylesheet" href="{% static 'css/nice-select.css' %}">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+        
+    <!--====== Line Icons CSS ======-->
+    <link rel="stylesheet" href="{% static 'css/LineIcons.css' %}">
+        
+    <!--====== Font Awesome CSS ======-->
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+        
+    <!--====== Bootstrap CSS ======-->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     
-    {% block head %}
-      
-    {% endblock head %}
+    <!--====== Default CSS ======-->
+    <link rel="stylesheet" href="{% static 'css/default.css' %}">
+    
+    <!--====== Style CSS ======-->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
 </head>
+
 <body>
-    <!-- ? Preloader Start -->
-    <div id="preloader-active">
-        <div class="preloader d-flex align-items-center justify-content-center">
-            <div class="preloader-inner position-relative">
-                <div class="preloader-circle"></div>
-                <div class="preloader-img pere-text">
-                    <img src="{% static 'img/logo/loder.png' %}" alt="">
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Preloader Start -->
-    <header>
-        <!-- Header Start -->
-        <div class="header-area header-transparent">
-            <div id="top-bar" class="carousel slide shadow-sm" data-ride="carousel">
-                <div class="carousel-inner text-white">
-                  <div class="carousel-item active">
-                    <div class="mx-5 my-2 text-center">
-                        Introducing WhatsApp Accelerate Scheme 2021  
-                        <button  class="genric-btn primary circle small">Get Started</button>
-                    </div>
-                  </div>
-                  <div class="carousel-item">
-                    <div class="mx-5 my-2 text-center">
-                        [New Product] Enhance CX with Conversational IVR 
-                        <button class="genric-btn primary circle small">Get Started</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            <div class="main-header">
-                <div class="header-bottom  header-sticky">
-                    <div class="container-fluid">
-                        <div class="row align-items-center">
-                            <!-- Logo -->
-                            <div class="col-xl-2 col-lg-2">
-                                <div class="logo">
-                                    <a href="index.html"><h1 class="text-white font-weight-bold">Kingspin AI</h1><!-- <img src="{% static 'img/logo/logo.png' %}" alt=""> --></a>
-                                </div>
-                            </div>
-                            <div class="col-xl-10 col-lg-10">
-                                <div class="menu-wrapper  d-flex align-items-center justify-content-end">
-                                    <!-- Main-menu -->
-                                    <div class="main-menu d-none d-lg-block">
-                                        {% include "nav.html" %}
-                                    </div>
-                                    <!-- Header-btn -->
-                                    <div class="header-right-btn d-none d-lg-block ml-65">
-                                        <a href="login.html" class="border-btn">Log in</a>
-                                    </div>
-                                </div>
-                            </div> 
-                            <!-- Mobile Menu -->
-                            <div class="col-12">
-                                <div class="mobile_menu d-block d-lg-none"></div>
-                            </div>
+    <!--[if IE]>
+    <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+  <![endif]-->    
+   
+   
+    <!--====== PRELOADER PART START ======-->
+
+    <div class="preloader">
+        <div class="loader">
+            <div class="ytp-spinner">
+                <div class="ytp-spinner-container">
+                    <div class="ytp-spinner-rotator">
+                        <div class="ytp-spinner-left">
+                            <div class="ytp-spinner-circle"></div>
+                        </div>
+                        <div class="ytp-spinner-right">
+                            <div class="ytp-spinner-circle"></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- Header End -->
-    </header>
-    <!-- header end -->
-    <main>
-        {% block content %}
-          
-        {% endblock content %}
-    </main>
+    </div>
 
-    {% include "footer.html" %}
+    <!--====== PRELOADER PART ENDS ======-->
+    {% block content %}
+      
+    {% endblock content %}
+    <!--====== BACK TOP TOP PART START ======-->
 
-  <!-- Scroll Up -->
-    <div id="back-top" >
-    <a title="Go to Top" href="#"> <i class="fas fa-level-up-alt"></i></a>
-</div>
+    <a href="#" class="back-to-top"><i class="lni-chevron-up"></i></a>
 
-<!-- JS here -->
-<script src="{% static 'js/vendor/modernizr-3.5.0.min.js' %}"></script>
-<!-- Jquery, Popper, Bootstrap -->
-<script src="{% static 'js/vendor/jquery-1.12.4.min.js' %}"></script>
-<script src="{% static 'js/popper.min.js' %}"></script>
-<script src="{% static 'js/bootstrap.min.js' %}"></script>
-<!-- Jquery Mobile Menu -->
-<script src="{% static 'js/jquery.slicknav.min.js' %}"></script>
+    <!--====== BACK TOP TOP PART ENDS ======-->   
+    
+    <!--====== PART START ======-->
+    
+<!--
+    <section class="">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-"></div>
+            </div>
+        </div>
+    </section>
+-->
+    
+    <!--====== PART ENDS ======-->
 
-<!-- Jquery Slick , Owl-Carousel Plugins -->
-<script src="{% static 'js/owl.carousel.min.js' %}"></script>
-<script src="{% static 'js/slick.min.js' %}"></script>
-<!-- One Page, Animated-HeadLin -->
-<script src="{% static 'js/wow.min.js' %}"></script>
-<script src="{% static 'js/animated.headline.js' %}"></script>
-<script src="{% static 'js/jquery.magnific-popup.js' %}"></script>
 
-<!-- Date Picker -->
-<script src="{% static 'js/gijgo.min.js' %}"></script>
-<!-- Nice-select, sticky -->
-<script src="{% static 'js/jquery.nice-select.min.js' %}"></script>
-<script src="{% static 'js/jquery.sticky.js' %}"></script>
-<!-- Progress -->
-<script src="{% static 'js/jquery.barfiller.js' %}"></script>
 
-<!-- counter , waypoint,Hover Direction -->
-<script src="{% static 'js/jquery.counterup.min.js' %}"></script>
-<script src="{% static 'js/waypoints.min.js' %}"></script>
-<script src="{% static 'js/jquery.countdown.min.js' %}"></script>
-<script src="{% static 'js/hover-direction-snake.min.js' %}"></script>
 
-<!-- contact js -->
-<script src="{% static 'js/contact.js' %}"></script>
-<script src="{% static 'js/jquery.form.js' %}"></script>
-<script src="{% static 'js/jquery.validate.min.js' %}"></script>
-<script src="{% static 'js/mail-script.js' %}"></script>
-<script src="{% static 'js/jquery.ajaxchimp.min.js' %}"></script>
-
-<!-- Jquery Plugins, main Jquery -->	
-<script src="{% static 'js/plugins.js' %}"></script>
-<script src="{% static 'js/main.js' %}"></script>
-<script src="{% static 'js/custom.js' %}"></script>
-{% block script %}
-  
-{% endblock script %}
+    <!--====== Jquery js ======-->
+    <script src="{% static 'js/vendor/jquery-1.12.4.min.js' %}"></script>
+    <script src="{% static 'js/vendor/modernizr-3.7.1.min.js' %}"></script>
+    
+    <!--====== Bootstrap js ======-->
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    
+    <!--====== Plugins js ======-->
+    <script src="{% static 'js/plugins.js' %}"></script>
+    
+    <!--====== Slick js ======-->
+    <script src="{% static 'js/slick.min.js' %}"></script>
+    
+    <!--====== Ajax Contact js ======-->
+    <script src="{% static 'js/ajax-contact.js' %}"></script>
+    
+    <!--====== Counter Up js ======-->
+    <script src="{% static 'js/waypoints.min.js' %}"></script>
+    <script src="{% static 'js/jquery.counterup.min.js' %}"></script>
+    
+    <!--====== Magnific Popup js ======-->
+    <script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
+    
+    <!--====== Scrolling Nav js ======-->
+    <script src="{% static 'js/jquery.easing.min.js' %}"></script>
+    <script src="{% static 'js/scrolling-nav.js' %}"></script>
+    
+    <!--====== wow js ======-->
+    <script src="{% static 'js/wow.min.js' %}"></script>
+    
+    <!--====== Particles js ======-->
+    <script src="{% static 'js/particles.min.js' %}"></script>
+    
+    <!--====== Main js ======-->
+    <script src="{% static 'js/main.js' %}"></script>
+    
 </body>
+
 </html>
