@@ -1,4 +1,4 @@
 # kingspinai
 
 Hosted on, 
-https://kingspinai-dj.herokuapp.com/
+https://kingspin-ai.herokuapp.com/
