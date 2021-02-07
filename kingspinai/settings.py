@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
+import os
 
 from pathlib import Path
 #import django_heroku
@@ -58,7 +59,7 @@ ROOT_URLCONF = 'kingspinai.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR,'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -80,7 +81,7 @@ WSGI_APPLICATION = 'kingspinai.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
@@ -129,3 +130,12 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 #WHITENOISE_USE_FINDERS = True
 #STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 #django_heroku.settings(locals())
+
+#SMTP Configuration
+
+EMAIL_BACKEND='django.core.mail.backends.smpt.EmailBackend'
+EMAIL_HOST='smpt.gmail.com'
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
+EMAIL_HOST_USER='amalsankar29@gmail.com'
+EMAIL_HOST_PASSWORD='amal2329'

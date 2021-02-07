@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>index</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+    />
+    <style>
+      nav {
+        position: fixed;
+      }
+      .title {
+        font-weight: bold;
+        font-size: 25px;
+      }
+
+      .itm li:hover {
+        background-color: red;
+        border-radius: 6px;
+      }
+
+      nav ul li {
+        font-weight: bold;
+      }
+
+      .form-container {
+        position: absolute;
+        top: 13vh;
+        background: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px 0px #000;
+      }
+      .clr {
+        color: #fff;
+      }
+      body {
+        height: 100%;
+      }
+
+      .otp {
+        font-weight: bold;
+        padding-left: 17%;
+      }
+
+      .col-1 {
+        width: 50px;
+        height: 30px;
+        background-color: blue;
+        border: 2px solid rgba(0, 0, 255, 0.377);
+        border-radius: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <section id="form-register">
+      <section class="container-fluid bg">
+        <section class="row justify-content-center">
+          <section class="col-12 col-sm-6 col-md-3">
+            <form class="form-container" method="POST">
+              {%csrf_token%}
+              <div class="form-group">
+                <label for="exampleInputEmail1">Name</label><br />
+                <input type="name" name="name" class="form-control" id="name" />
+              </div>
+
+              <div class="form-group">
+                <label for="exampleInputPassword1">Password</label><br />
+                <input
+                  type="password"
+                  name="password"
+                  class="form-control"
+                  id="password"
+                />
+              </div>
+
+              <button type="submit" class="btn btn-primary btn btn-block">
+                Login
+              </button>
+              <div style="font-size: 12px; margin-top: 4%">
+                Don't have an account?
+                <a style="text-decoration: none" href="{% url 'register' %}"
+                  >Sign Up</a
+                >
+                <div style="margin-left: 44%; margin-top: 6%">
+                  <a
+                    style="text-decoration: none"
+                    href="{% url 'reset_password' %}"
+                    class="ml-2"
+                    >Forget password</a
+                  >
+                </div>
+              </div>
+              {%for message in messages%}
+              <p id="message" style="color: red">{{message}}</p>
+              {%endfor%}
+              <br />
+            </form>
+          </section>
+        </section>
+      </section>
+    </section>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+  </body>
+</html>
