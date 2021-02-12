@@ -66,3 +66,6 @@ def Show(request):
 
 def index(request):
     return render(request,"index.html",{})
+
+def user(request):
+    return render(request,"user/index.html",{})
