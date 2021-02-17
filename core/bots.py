@@ -17,6 +17,6 @@ KingspinAI = ChatBot(
         },],                 
     storage_adapter = "chatterbot.storage.SQLStorageAdapter",
     tagger_language=SpaCy_en_md,
-    database_uri='sqlite:///database.sqlite3',
+    database_uri='sqlite:///db.sqlite3',
     #statement_comparison_function=LevenshteinDistance
 )
