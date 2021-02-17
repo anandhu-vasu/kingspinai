@@ -1,3 +1,4 @@
+{% load unicorn %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -26,12 +27,15 @@
 <link rel="stylesheet" href="{% static 'user/css/custom.css' %}">
 <link rel="stylesheet" href="{% static 'user/css/components.min.css' %}">
 
+{% unicorn_scripts %}
+
 {% block head %}
   
 {% endblock head %}
 
 </head>
 <body class="layout-4">
+    {% csrf_token %}
 <!-- Page Loader -->
 <div class="page-loader-wrapper">
     <span class="loader"><span class="loader-inner"></span></span>
