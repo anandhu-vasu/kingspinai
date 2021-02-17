@@ -1,1 +1,2 @@
-web: python core/tel_bot.py
+web: gunicorn kingspinai.wsgi --log-file -
+worker: python core/tel_bot.py
