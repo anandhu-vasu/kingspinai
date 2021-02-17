@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 PORT = int(os.environ.get('PORT', '8443'))
 TOKEN = "1591577456:AAFoSp4IrLO0u293iRqyIQW0iOcd9Ml3OW0"
-TEURL = "https://kingspin-ai.herokuapp.com/tehook/"
+TEURL = "https://kingspin-ai.herokuapp.com/"
 
 
 def start(update: Update, context: CallbackContext) -> None:
