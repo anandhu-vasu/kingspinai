@@ -1,4 +1,4 @@
-from core.bots import KingspinAI
+from bots import KingspinAI
 from chatterbot.trainers import ChatterBotCorpusTrainer
 
 class ChatBot:

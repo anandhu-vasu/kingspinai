@@ -2,7 +2,7 @@ import logging
 import os
 from telegram import Update
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
-from core.bots import KingspinAI
+from bots import KingspinAI
 
 # Enable logging
 logging.basicConfig(
