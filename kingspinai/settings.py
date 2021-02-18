@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'chatterbot.ext.django_chatterbot',
-    'django_telegrambot',
+    # 'django_telegrambot',
     'django_unicorn',
     'unicorn',
     'core',
@@ -150,9 +150,9 @@ DJANGO_TELEGRAMBOT = {
     'WEBHOOK_PREFIX' : '/telebot', # (Optional[str]) # If this value is specified,
                                   # a prefix is added to webhook url
     'BOTS' : [
-        # {
-        #    'TOKEN': '1591577456:AAFoSp4IrLO0u293iRqyIQW0iOcd9Ml3OW0', #Your bot token.
-        # },
+        {
+           'TOKEN': '1591577456:AAFoSp4IrLO0u293iRqyIQW0iOcd9Ml3OW0', #Your bot token.
+        },
         #Other bots here with same structure.
     ],
 
