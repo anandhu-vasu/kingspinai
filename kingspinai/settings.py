@@ -156,5 +156,5 @@ DJANGO_TELEGRAMBOT = {
         },
         #Other bots here with same structure.
     ],
-c
+
 }
