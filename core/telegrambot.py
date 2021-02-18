@@ -41,20 +41,14 @@ def error(bot, update, error):
     logger.warn('Update "%s" caused error "%s"' % (update, error))
 
 def main():
+    logger.info("Loading handlers for telegram bot")
 
     dispatcher = DjangoTelegramBot.dispatcher
-
 
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(CommandHandler("help", help))
     dispatcher.add_handler(MessageHandler(Filters.text, reply))
     dispatcher.add_error_handler(error)
-    # updater.start_polling()
-
-    # updater.start_webhook(listen="0.0.0.0",
-    #                       port=PORT,
-    #                       url_path=TOKEN)
-    # updater.bot.set_webhook(url=settings.WEBHOOK_URL)
-    # updater.bot.set_webhook(TEURL + TOKEN)
-    # updater.start_polling()
-    # updater.idle()
+    
+if __name__ == '__main__':
+    main()
