@@ -3,6 +3,7 @@ import os
 from telegram import Update
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 from bots import KingspinAI
+from django_telegrambot.apps import DjangoTelegramBot
 
 # Enable logging
 logging.basicConfig(
@@ -17,43 +18,40 @@ TOKEN = "1591577456:AAFoSp4IrLO0u293iRqyIQW0iOcd9Ml3OW0"
 TEURL = "https://kingspin-ai.herokuapp.com/"
 
 
-def start(update: Update, context: CallbackContext) -> None:
+def start(bot,update):
     """Send a message when the command /start is issued."""
-    update.message.reply_text("I'm a bot, created by kingspinai")
-    update.message.reply_text("how may i help you ?")
+    bot.sendMessage(update.message.chat_id, text='Hi!')
+    bot.sendMessage(update.message.chat_id, text="I'm a bot, created by kingspinai")
+    bot.sendMessage(update.message.chat_id, text="How may I help you?")
 
 
-def help_command(update: Update, context: CallbackContext) -> None:
+def help(bot, update):
     """Send a message when the command /help is issued."""
-    update.message.reply_text('Help!')
+    bot.sendMessage(update.message.chat_id, text='Help!')
 
-
-
-def reply(update: Update, context: CallbackContext) -> None:
+def reply(bot, update):
     """send message"""
     message = update.message.text
 
-    if message == 'Bye':
-        update.message.reply_text("bye")
+    if message.lower() == 'bye':
+        bot.sendMessage(update.message.chat_id, text="Bye")
 
     else:
         response = KingspinAI.get_response(message)
         if response.confidence == 0:
-            update.message.reply_text("i don't understand")
+            bot.sendMessage(update.message.chat_id, text="Sorry, I don't understand.")
         else:
-            update.message.reply_text(text=str(response))
+            bot.sendMessage(update.message.chat_id, text=str(response))
 
 
 
 def main():
 
-    updater = Updater(TOKEN)
-
-    dispatcher = updater.dispatcher
+    dispatcher = DjangoTelegramBot.dispatcher
 
 
     dispatcher.add_handler(CommandHandler("start", start))
-    dispatcher.add_handler(CommandHandler("help", help_command))
+    dispatcher.add_handler(CommandHandler("help", help))
     reply_handler = MessageHandler(Filters.text, reply)
     dispatcher.add_handler(reply_handler)
     # updater.start_polling()
@@ -63,9 +61,5 @@ def main():
     #                       url_path=TOKEN)
     # updater.bot.set_webhook(url=settings.WEBHOOK_URL)
     # updater.bot.set_webhook(TEURL + TOKEN)
-    updater.start_polling()
-    updater.idle()
-
-
-if __name__ == '__main__':
-    main()
+    # updater.start_polling()
+    # updater.idle()

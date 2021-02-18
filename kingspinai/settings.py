@@ -33,7 +33,6 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    #'whitenoise.runserver_nostatic',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,10 +40,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'chatterbot.ext.django_chatterbot',
+    'django_telegrambot',
     'django_unicorn',
     'unicorn',
     'core',
-    'chatbot'
+    'chatbot',
 ]
 
 MIDDLEWARE = [
@@ -128,12 +128,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-# STATICFILES_DIRS = (
-#     BASE_DIR / "chatbot/static",
-# )
-#WHITENOISE_USE_FINDERS = True
-#STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-#django_heroku.settings(locals())
+
 
 #SMTP Configuration
 
@@ -143,3 +138,23 @@ EMAIL_PORT=587
 EMAIL_USE_TLS=True
 EMAIL_HOST_USER='amalsankar29@gmail.com'
 EMAIL_HOST_PASSWORD='amal2329'
+
+DJANGO_TELEGRAMBOT = {
+
+    'MODE' : 'WEBHOOK', #(Optional [str]) # The default value is WEBHOOK,
+                        # otherwise you may use 'POLLING'
+                        # NB: if use polling you must provide to run
+                        # a management command that starts a worker
+
+    'WEBHOOK_SITE' : 'https://kingspin-ai.herokuapp.com/',
+    'WEBHOOK_PREFIX' : '/telebot', # (Optional[str]) # If this value is specified,
+                                  # a prefix is added to webhook url                 #certificate.(More info at https://core.telegram.org/bots/self-signed )
+
+    'BOTS' : [
+        {
+           'TOKEN': '1591577456:AAFoSp4IrLO0u293iRqyIQW0iOcd9Ml3OW0', #Your bot token.
+        },
+        #Other bots here with same structure.
+    ],
+
+}
