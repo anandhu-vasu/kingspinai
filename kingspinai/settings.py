@@ -148,12 +148,13 @@ DJANGO_TELEGRAMBOT = {
 
     'WEBHOOK_SITE' : 'https://kingspin-ai.herokuapp.com',
     'WEBHOOK_PREFIX' : '/telebot', # (Optional[str]) # If this value is specified,
-                                  # a prefix is added to webhook url
+                                  # a prefix is added to webhook url                 #certificate.(More info at https://core.telegram.org/bots/self-signed )
+
     'BOTS' : [
         {
            'TOKEN': '1591577456:AAFoSp4IrLO0u293iRqyIQW0iOcd9Ml3OW0', #Your bot token.
         },
         #Other bots here with same structure.
     ],
-
+c
 }
