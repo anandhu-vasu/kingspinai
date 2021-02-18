@@ -146,9 +146,9 @@ DJANGO_TELEGRAMBOT = {
                         # NB: if use polling you must provide to run
                         # a management command that starts a worker
 
-    'WEBHOOK_SITE' : 'https://kingspin-ai.herokuapp.com/',
+    'WEBHOOK_SITE' : 'https://kingspin-ai.herokuapp.com',
     'WEBHOOK_PREFIX' : '/telebot', # (Optional[str]) # If this value is specified,
-                                  # a prefix is added to webhook url                 #certificate.(More info at https://core.telegram.org/bots/self-signed )
+                                  # a prefix is added to webhook url
     'STRICT_INIT': True,
     'BOTS' : [
         {
