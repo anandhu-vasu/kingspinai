@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'chatterbot.ext.django_chatterbot',
-    # 'django_telegrambot',
+    'django_telegrambot',
     'django_unicorn',
     'unicorn',
     'core',
@@ -141,7 +141,7 @@ EMAIL_HOST_PASSWORD='amal2329'
 
 DJANGO_TELEGRAMBOT = {
 
-    'MODE' : 'WEBHOOK', #(Optional [str]) # The default value is WEBHOOK,
+    'MODE' : 'POLLING', #(Optional [str]) # The default value is WEBHOOK,
                         # otherwise you may use 'POLLING'
                         # NB: if use polling you must provide to run
                         # a management command that starts a worker
