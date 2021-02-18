@@ -1,7 +1,5 @@
 import logging
-import os
-from telegram import Update
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
+from telegram.ext import CommandHandler, MessageHandler, Filters
 from bots import KingspinAI
 from django_telegrambot.apps import DjangoTelegramBot
 
@@ -12,10 +10,6 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-
-PORT = int(os.environ.get('PORT', '8443'))
-TOKEN = "1591577456:AAFoSp4IrLO0u293iRqyIQW0iOcd9Ml3OW0"
-TEURL = "https://kingspin-ai.herokuapp.com/"
 
 
 def start(bot,update):
@@ -43,7 +37,8 @@ def reply(bot, update):
         else:
             bot.sendMessage(update.message.chat_id, text=str(response))
 
-
+def error(bot, update, error):
+    logger.warn('Update "%s" caused error "%s"' % (update, error))
 
 def main():
 
@@ -52,8 +47,8 @@ def main():
 
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(CommandHandler("help", help))
-    reply_handler = MessageHandler(Filters.text, reply)
-    dispatcher.add_handler(reply_handler)
+    dispatcher.add_handler(MessageHandler(Filters.text, reply))
+    dispatcher.add_error_handler(error)
     # updater.start_polling()
 
     # updater.start_webhook(listen="0.0.0.0",
