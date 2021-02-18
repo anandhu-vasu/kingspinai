@@ -21,5 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('chatbot.urls')),
     path("unicorn/", include("django_unicorn.urls",namespace='django_unicorn')),
-    url(r'^', include('django_telegrambot.urls')),
+    url('', include('django_telegrambot.urls')),
 ]
