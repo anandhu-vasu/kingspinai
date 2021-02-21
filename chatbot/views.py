@@ -8,6 +8,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from.models import *
 
+from django.utils import six
+
 
 
 def Register(request):
@@ -32,7 +34,7 @@ def Register(request):
             return redirect('login')
     context={'form':form}
            
-    return render(request,'registration.html',context)
+    return render(request,'auth/register.html',context)
 
 
 
@@ -51,7 +53,7 @@ def Login(request):
 
         else:
             messages.warning(request,"Username or Password is Incorrect")    
-    return render(request,"login.html")
+    return render(request,"auth/login.html")
 
 
 
