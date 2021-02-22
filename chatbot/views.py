@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from.models import *
 
-from django.utils import six
+#from django.utils import six
 
 
 

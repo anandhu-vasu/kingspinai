@@ -13,7 +13,7 @@ import os
 
 from pathlib import Path
 #import django_heroku
-from django.utils import six
+#from django.utils import six
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -145,7 +145,7 @@ EMAIL_HOST_PASSWORD='amal2329'
 
 DJANGO_TELEGRAMBOT = {
 
-    'MODE' : 'WEBHOOK', #(Optional [str]) # The default value is WEBHOOK,
+    'MODE' : 'POLLING', #(Optional [str]) # The default value is WEBHOOK,
                         # otherwise you may use 'POLLING'
                         # NB: if use polling you must provide to run
                         # a management command that starts a worker
