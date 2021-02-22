@@ -12,28 +12,28 @@
     <!-- General CSS Files -->
     <link
       rel="stylesheet"
-      href="{% static 'assets/modules/bootstrap/css/bootstrap.min.css' %}"
+      href="{% static 'user/modules/bootstrap/css/bootstrap.min.css' %}"
     />
     <link
       rel="stylesheet"
-      href="{% static 'assets/modules/fontawesome/css/all.min.css' %}"
+      href="{% static 'user/modules/fontawesome/css/all.min.css' %}"
     />
 
     <!-- CSS Libraries -->
     <link
     rel="stylesheet"
-    href="{% static 'assets/modules/jquery-selectric/selectric.css'%}"
+    href="{% static 'user/modules/jquery-selectric/selectric.css'%}"
   />
     <!-- Template CSS -->
-    <link rel="stylesheet" href="{% static 'assets/css/style.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'user/css/style.min.css' %}" />
     <link
       rel="stylesheet"
-      href="{% static 'assets/css/components.min.css' %}"
+      href="{% static 'user/css/components.min.css' %}"
     />
 
     <link
       rel="stylesheet"
-      href="{%static 'assets/modules/bootstrap-social/bootstrap-social.css'%}"
+      href="{%static 'user/modules/bootstrap-social/bootstrap-social.css'%}"
     />
     {% block head %} {% endblock head %}
   </head>
@@ -65,23 +65,22 @@
     </div>
 
     <!-- General JS Scripts -->
-    <script src="{% static 'assets/bundles/lib.vendor.bundle.js' %}"></script>
-    <script src="{% static 'assets/js/function.js' %}"></script>
-    <script src="{%static 'assets/KingspinAI.js'%}"></script>
+    <script src="{% static 'user/bundles/lib.vendor.bundle.js' %}"></script>
+    <script src="{% static 'user/js/function.js' %}"></script>
 
     <!-- JS Libraies -->
 
     <!-- Page Specific JS File -->
   <!-- JS Libraies -->
-  <script src="{% static 'assets/modules/jquery-pwstrength/jquery.pwstrength.min.js'%}"></script>
-  <script src="{% static 'assets/modules/jquery-selectric/jquery.selectric.min.js'%}"></script>
+  <script src="{% static 'user/modules/jquery-pwstrength/jquery.pwstrength.min.js'%}"></script>
+  <script src="{% static 'user/modules/jquery-selectric/jquery.selectric.min.js'%}"></script>
 
   <!-- Page Specific JS File -->
-  <script src="{% static 'assets/js/page/auth-register.js'%}"></script>
+  <script src="{% static 'user/js/page/auth-register.js'%}"></script>
 
     <!-- Template JS File -->
-    <script src="{% static 'assets/js/scripts.js' %}"></script>
-    <script src="{% static 'assets/js/custom.js' %}"></script>
+    <script src="{% static 'user/js/scripts.js' %}"></script>
+    <script src="{% static 'user/js/custom.js' %}"></script>
     {% block script %} {% endblock script %}
   </body>
 </html>
