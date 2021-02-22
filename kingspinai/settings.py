@@ -13,6 +13,7 @@ import os
 
 from pathlib import Path
 #import django_heroku
+#from django.utils import six
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -45,6 +46,9 @@ INSTALLED_APPS = [
     'unicorn',
     'core',
     'chatbot',
+    'widget_tweaks',
+
+
 ]
 
 MIDDLEWARE = [
@@ -127,7 +131,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles') 
 
 
 #SMTP Configuration
@@ -148,7 +152,8 @@ DJANGO_TELEGRAMBOT = {
 
     'WEBHOOK_SITE' : 'https://kingspin-ai.herokuapp.com',
     'WEBHOOK_PREFIX' : '/telebot', # (Optional[str]) # If this value is specified,
-                                  # a prefix is added to webhook url
+                                  # a prefix is added to webhook url                 #certificate.(More info at https://core.telegram.org/bots/self-signed )
+
     'BOTS' : [
         {
            'TOKEN': '1591577456:AAFoSp4IrLO0u293iRqyIQW0iOcd9Ml3OW0', #Your bot token.
