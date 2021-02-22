@@ -6,9 +6,52 @@ from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
+from django.http import JsonResponse
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import serializers
+
+from .serializers import *
+
+
 from.models import *
 
-#from django.utils import six
+
+
+
+@api_view(['GET'])
+def home(request):
+    api_urls ={
+     'List':'/show/',
+     'view':'/view/',
+
+
+
+        }
+    return Response(api_urls)
+
+
+
+
+@api_view(['GET'])
+
+def show(request):
+    detail=UserData.objects.all()
+    serializer=detailsSerializer(detail,many=True)
+    return Response(serializer.data)
+
+
+
+
+
+
+@api_view(['POST'])
+def usercreate(request):
+    serializer=detailsSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+    return Response(serializer.data)
+
 
 
 
@@ -67,7 +110,7 @@ def Show(request):
 # Create your views here.
 
 def index(request):
-    return render(request,"index.html",{})
+    return render(request,"user/index.html",{})
 
 def user(request):
     return render(request,"user/index.html",{})

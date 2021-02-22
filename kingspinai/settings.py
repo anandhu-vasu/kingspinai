@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'core',
     'chatbot',
     'widget_tweaks',
+    'rest_framework',
+
 
 
 ]

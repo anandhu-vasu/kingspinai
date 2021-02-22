@@ -1,11 +1,14 @@
-from django.urls import path,include
-from django.contrib.auth import views as auth_views
 
+from django.urls import path
+from django.contrib.auth import views as auth_views
 from . import views
 
 urlpatterns = [
+    path('home',views.home,name="home"),
+    path('show',views.show,name='show'),
+    path('usercreate',views.usercreate,name="usercreate"),
 
-    path('index',views.index,name='index'),
+     path('index',views.index,name='index'),
     path('',views.Login,name="login"),
 
     path('register',views.Register,name='register'),
@@ -25,5 +28,4 @@ urlpatterns = [
 
 
     path('user',views.user,name="user")
-
 ]
