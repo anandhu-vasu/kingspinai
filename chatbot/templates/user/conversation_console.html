@@ -2,7 +2,7 @@
 
 {% load static %}
 {% load unicorn %}
-
+{% csrf_token %}
 {% block title %}
 Dashboard
 {% endblock title %}
@@ -12,11 +12,11 @@ Dashboard
 <div class="main-content">
     <section class="section">
         <div x-data="conversationConsole()" x-init="" class="card card-hero border-0 shadow">
-            <div class="card-header row m-1">
+            <div class="card-header row">
                 <div class="card-icon">
                     <i class="fas fa-terminal"></i>
                 </div>
-                <h6 style="margin-top: -30px;margin-left: -20px;">Conversational Console</h6>
+                <h6 style="margin-top: -30px;margin-left: -20px;">Conversation Console</h6>
                 <div class="row">
                     <div class="col p-0">
                         {% unicorn 'console-actionbar' corpus='[]' %}
@@ -54,7 +54,8 @@ Dashboard
                                             <button x-on:click="addCategory(i)" class="btn py-0 btn-icon btn-sm btn-light rounded-circle" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Add Category"><i class="fas fa-plus"></i></button>
                                         </div>
                                     </div>
-                                    <div class="conversations mt-5">
+                                    <div class="conversations mt-4">
+                                    <div class="text-center mb-2"><b>Conversations</b></div>
                                         <template x-for="(conversation,k) in story.conversations" :key="'#'+i+'*'+k">
                                             <div class="p-2 conversation" x-bind:style="(transmit.from && transmit.from[0]==i && transmit.from[1]==k)?`background-color: lightgreen;`:''">
                                                 <div class="statement shadow position-relative">

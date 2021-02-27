@@ -30,10 +30,7 @@ def reply(update, context):
         context.bot.sendMessage(chat_id=update.message.chat_id, text='Bye')
     else:
         response = KingspinAI.get_response(message)
-        if response.confidence == 0:
-            context.bot.sendMessage(chat_id=update.message.chat_id, text='Sorry, I don\'t understand.')
-        else:
-            context.bot.sendMessage(chat_id=update.message.chat_id, text=str(response))
+        context.bot.sendMessage(chat_id=update.message.chat_id, text=str(response))
 
 
 def main():
