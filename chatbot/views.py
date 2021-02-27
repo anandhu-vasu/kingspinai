@@ -110,14 +110,7 @@ def Show(request):
 # Create your views here.
 
 def index(request):
-<<<<<<< HEAD
-    return render(request,"user/index.html",{})
-
-def user(request):
-    return render(request,"user/index.html",{})
-=======
     return render(request,"index.html",{})
     
->>>>>>> origin/dev
 def console(request):
     return render(request,'user/conversation_console.html',{})
