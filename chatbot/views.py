@@ -68,8 +68,6 @@ def Show(request):
 
 def index(request):
     return render(request,"index.html",{})
-
-def user(request):
-    return render(request,"user/index.html",{})
+    
 def console(request):
     return render(request,'user/conversation_console.html',{})
