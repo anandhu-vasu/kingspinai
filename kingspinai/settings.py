@@ -139,8 +139,8 @@ EMAIL_BACKEND='django.core.mail.backends.smpt.EmailBackend'
 EMAIL_HOST='smpt.gmail.com'
 EMAIL_PORT=587
 EMAIL_USE_TLS=True
-EMAIL_HOST_USER='amalsankar29@gmail.com'
-EMAIL_HOST_PASSWORD='amal2329'
+EMAIL_HOST_USER=''
+EMAIL_HOST_PASSWORD=''
 
 DJANGO_TELEGRAMBOT = {
 

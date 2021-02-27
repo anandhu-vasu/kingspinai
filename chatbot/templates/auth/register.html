@@ -37,6 +37,11 @@ KingspinAI {% endblock title %}
           <label for="password2" class="d-block">Password Confirmation</label>
           {{ form.password2|add_class:"form-control" }}
         </div>
+
+
+        {%for message in messages%}
+        <p id="message" style="color: red">{{message}}</p>
+        {%endfor%}
       </div>
       <div class="form-divider">Your Home</div>
       <div class="row">

@@ -1,6 +1,6 @@
+
 from django.urls import path,include
 from django.contrib.auth import views as auth_views
-
 from . import views
 
 dashboard_urlpatterns = [
@@ -8,6 +8,9 @@ dashboard_urlpatterns = [
 ]
 
 urlpatterns = [
+    path('home',views.home,name="home"),
+    path('show',views.show,name='show'),
+    path('usercreate',views.usercreate,name="usercreate"),
 
     path('',views.index,name='index'),
     path('demo',views.console,name='console'),
