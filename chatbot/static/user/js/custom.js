@@ -6,3 +6,14 @@
  */
 
 "use strict";
+
+$(document).ready(function(){
+    $(window).on('load', function() {
+        setInterval(()=>{
+            $(".stories").niceScroll();
+            $(".story").niceScroll(".scroll-wrapper");
+        },100)
+    });
+    document.documentElement.className += 
+    (("ontouchstart" in document.documentElement) ? ' touch' : ' no-touch');
+});

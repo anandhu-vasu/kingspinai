@@ -12,7 +12,8 @@
       
     {% endblock title %}
 </title>
-
+<script src="https://cdn.jsdelivr.net/gh/alpine-collective/alpine-magic-helpers@1.0.x/dist/index.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.1/dist/alpine.min.js" defer></script>
 <!-- General CSS Files -->
 <link rel="stylesheet" href="{% static 'user/modules/bootstrap/css/bootstrap.min.css' %}">
 <link rel="stylesheet" href="{% static 'user/modules/fontawesome/css/all.min.css' %}">
@@ -21,6 +22,7 @@
 <link rel="stylesheet" href="{% static 'user/modules/jqvmap/dist/jqvmap.min.css' %}">
 <link rel="stylesheet" href="{% static 'user/modules/owlcarousel2/dist/assets/owl.carousel.min.css' %}">
 <link rel="stylesheet" href="{% static 'user/modules/owlcarousel2/dist/assets/owl.theme.default.min.css' %}">
+<link rel="stylesheet" href="{% static 'user/modules/izitoast/css/iziToast.min.css' %}">
 
 <!-- Template CSS -->
 <link rel="stylesheet" href="{% static 'user/css/style.min.css' %}">
@@ -50,15 +52,12 @@
         {% include "user/sidebar.html" %}
 
         <!-- Start app main Content -->
-        <div class="main-content">
-            <section class="section">
+        
                 
-                {% block content %}
+        {% block content %}
+            
+        {% endblock content %}
                     
-                {% endblock content %}
-                    
-            </section>
-        </div>
 
         <!-- Start app Footer part -->
         <footer class="main-footer">
@@ -81,7 +80,8 @@
 
 <script src="{% static 'user/modules/owlcarousel2/dist/owl.carousel.min.js' %}"></script>
 <script src="{% static 'user/modules/chocolat/dist/js/jquery.chocolat.min.js' %}"></script>
-
+<script src="{% static 'user/modules/izitoast/js/iziToast.min.js' %}"></script>
+<script src="{% static 'user/modules/sweetalert/sweetalert.min.js' %}"></script>
 <!-- Page Specific JS File -->
 <!-- <script src="{% static 'user/js/page/index.js' %}"></script> -->
 
