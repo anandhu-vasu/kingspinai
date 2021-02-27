@@ -3,10 +3,14 @@ from django.contrib.auth import views as auth_views
 
 from . import views
 
+dashboard_urlpatterns = [
+    path('conversation-console',views.console,name='user.dashboard.console')
+]
+
 urlpatterns = [
 
-    path('index',views.index,name='index'),
-    path('',views.Login,name="login"),
+    path('',views.index,name='index'),
+    path('demo',views.console,name='console'),
 
     path('register',views.Register,name='register'),
     path('login',views.Login,name="login"),
@@ -24,6 +28,6 @@ urlpatterns = [
     path('reset_password_complete/',auth_views.PasswordResetCompleteView.as_view(template_name="password_reset_done.html"),name="password_reset_complete"),
 
 
-    path('user',views.user,name="user")
-
+    path('user',views.user,name="user"),
+    path('user/dashboard/',include(dashboard_urlpatterns),name="user.dashboard")
 ]

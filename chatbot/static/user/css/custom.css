@@ -1,0 +1,310 @@
+body.layout-4 .main-sidebar .sidebar-menu li.dlink.active>a{color:#3B3D55 !important}
+.bicon{
+    width: 50px !important;
+    height: 50px !important;
+    line-height: 22px !important;
+    font-size: 22px !important;
+    margin: 25px;
+    border-radius: 3px;
+    text-align: center;
+    float: left;
+}
+.bicon>i{
+    font-size: 22px !important;
+    color: #fff;
+}
+
+.btn>i{
+    pointer-events:none;
+}
+
+.stories{
+    overflow-x: auto;
+    overflow-y: hidden;
+    width: 100%;
+}
+.story{
+    overflow-y: auto;
+    overflow-x: hidden ;
+    width: 100%;
+    position: relative;
+}
+
+.statement,.response{
+    position: relative;
+    padding: 15px;
+    background: #563d7c;
+    margin-bottom: 2px;
+    margin-top: 2px;
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+}
+.conversation .response textarea{
+    text-align: right;
+}
+.conversation .statement:after{
+	content: ' ';
+	position: absolute;
+	width: 0;
+	height: 0;
+    left: -14px;
+	right: auto;
+    top: 0px;
+	bottom: auto;
+	border: 15px solid;
+	border-color: #563d7c transparent transparent transparent;
+    z-index: 0;
+}
+
+.conversation .response:after{
+    content: ' ';
+    position: absolute;
+    width: 0;
+    height: 0;
+    left: auto;
+    right: -14px;
+    top: auto;
+    bottom: 0;
+    border: 15px solid;
+    border-color: transparent transparent #563d7c transparent;
+}
+
+.edit-area{
+    resize: none;
+    overflow: hidden;
+    width: 100%;
+    background: #ffffff25;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out,background .5s ease-in-out;
+    outline: none;
+    border: none;
+    color: white;
+    font-weight: bold;
+    padding: 5px 10px;
+}
+.edit-area:focus{
+    
+    color: #495057;
+    background: #ffffffee;
+}
+
+.edit-field{
+    width: 100%;
+    outline: none;
+    border: none;
+    font-weight: bold;
+    color: inherit;
+}
+
+.edit-field-tag{
+    outline: none;
+    border: none;
+    color: mediumseagreen;
+    display: inline;
+    overflow: hidden;
+    min-width: 50px;
+    width:min-content;
+    background: transparent;
+    text-align: center;
+    transition: color 0.5s;
+}
+.edit-field-tag:focus{
+    color: green;
+}
+.story-category{
+    border:2px solid lightgreen;
+    border-radius: 50px;
+}
+.category-delete{
+    background: transparent;
+    color: lightcoral;
+    border: none;
+    outline: none;
+    padding: 5px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.25s ease-in-out;
+}
+.category-delete:hover{
+    color: crimson;    
+    transition: color 0.5s;
+}
+.story-categories{
+    position: relative;
+}
+.story-categories .catadd{
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.25s ease-in-out;
+}
+.story-categories:hover .catadd,.story-categories:hover .category-delete{
+    opacity: 1;
+}
+
+.conversations,.conversation{
+    position: relative;
+}
+.conversation{
+    transition: background-color 0.5s ease-in-out;
+}
+
+.conversations .cadd{
+    position: absolute;
+    z-index: 1;
+    left: 50%;
+    transform: translateX(-50%) scale(0,0);
+    top: -16px;
+    bottom: auto;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out,transform 0.4s ease-in-out;
+}
+.conversation .cdelete{
+    position: absolute;
+    z-index: 1;
+    left: 50%;
+    transform: translate(-50%,-50%) scale(0,0);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease-in-out,transform 0.4s ease-in-out;
+}
+.conversations>.cadd{
+    top:auto;
+    bottom: 5px;
+}
+.conversations:hover .cadd{
+    opacity: 1;
+    transform: translateX(-50%) scale(1,1);
+}
+.story:hover .conversations>.cadd{
+    opacity: 1 !important;
+    transform: translateX(-50%) scale(1,1) !important;
+}
+.conversation:hover .cdelete{
+    transform: translate(-50%,-50%) scale(1,1);
+    visibility: visible;
+    opacity: 1;
+}
+.story-actionbar{
+    position: absolute;
+    top:-20px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.story-delete{
+    position: absolute;
+    top: -25px;
+    right: -25px;
+    z-index: 1;
+    opacity: 0;
+    transition: all 0.1s ease-in-out;
+}
+
+.story:hover .story-delete{
+    top: 0px;
+    right: 0px;
+    opacity: 1;
+}
+.stadd,.readd,.stdelete,.redelete{
+    position: absolute;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out,transform 0.4s ease-in-out;
+    transform: translateY(-50%);
+}
+.stadd{
+    right: -8px;
+    top: 50%;
+    transform: translateY(-50%) scale(0,0);
+}
+.readd{
+    left: -10px;
+    top: 50%;
+    transform: translateY(-50%) scale(0,0);
+}
+.stdelete{
+    left: -20px;
+    top: 50%;
+}
+.redelete{
+    right: -20px;
+    top: 50%;
+}
+textarea:focus+.stdelete,textarea:focus+.redelete{
+    visibility: hidden;
+}
+.statement:hover .stadd,.response:hover .readd{
+    opacity: 1;
+    transform: translateY(-50%) scale(1,1);
+}
+.statement:hover .stdelete,.response:hover .redelete{
+    opacity: 1;
+}
+
+.touch .statement .stadd,.touch .response .readd{
+    opacity: 1;
+    transform: translateY(-50%) scale(1,1);
+}
+.touch .statement .stdelete,.touch .response .redelete{
+    opacity: 1;
+}
+.touch .conversations .cadd,.show-cadd{
+    opacity: 1 !important;
+    transform: translateX(-50%) scale(1,1) !important;
+}
+.touch .conversation .cdelete{
+    transform: translate(-50%,-50%) scale(1,1);
+    visibility: visible;
+    opacity: 1;
+}
+.touch .story .story-delete{
+    top: 0px;
+    right: 0px;
+    opacity: 1;
+}
+.touch .story .story-categories .catadd,.touch .story .story-categories .category-delete{
+    opacity: 1;
+}
+.dirty:after{
+    content: '!';
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    width: 12px;
+    height: 12px;
+    padding: 1px;
+    font-size: 10px;
+    line-height: 10px;
+    background-color: #dc3545;
+    border-radius: 50%;
+    opacity: 1;
+    transition: all 0.5s;
+}
+.dirty{
+    position: relative;
+}
+
+.console-actionbar-loading:before{
+    content: '';
+    position: absolute;
+    left: -5px;
+    top: -5px;
+    width: 100%;
+    height: 100%;
+    border: 5px solid transparent;
+    border-color: #0099e1 #00d166 #fe53bb #f5d300;
+    border-radius: 50%;
+    box-sizing:content-box;
+    animation: lspin 0.5s linear infinite both;
+}
+.console-actionbar-loading{
+    position: relative;
+}
+
+@keyframes lspin{
+    from{transform: rotate(0deg);}
+    to{transform: rotate(360deg);}
+}

@@ -71,3 +71,5 @@ def index(request):
 
 def user(request):
     return render(request,"user/index.html",{})
+def console(request):
+    return render(request,'user/conversation_console.html',{})
