@@ -29,6 +29,7 @@ SECRET_KEY = 'tlq9bz&=m-ze14=35!)lcc27!m@ex$@nd4k)!j()!%ey7&-uya'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+#DEBUG_PROPAGATE_EXCEPTIONS = True
 
 ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1','kingspin-ai.herokuapp.com']
 
@@ -138,7 +139,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'static'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
