@@ -16,12 +16,12 @@ class ConsoleActionbarView(UnicornView):
 
     def train(self):
         ChatBot.train()
-        self.call("refreshConsole")
+        self.call("refreshConsole",self.corpus)
         self.call("swal","Training Completed","Your Bot is ready to go.","success")
 
     def save(self,corpus):
         self.corpus = corpus
         Corpus.save_to_json(self.corpus)
-        self.call("refreshConsole")
+        self.call("refreshConsole",self.corpus)
         self.call("successToast", "Saved!","Training data saved as data.json")
             

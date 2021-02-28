@@ -19,7 +19,6 @@ KingspinAI = ChatBot(
         },],                 
     storage_adapter = "chatterbot.storage.SQLStorageAdapter",
     tagger_language=SpaCy_en_md,
-    database_uri='sqlite:///db.sqlite3',
     preprocessors=[
         'chatterbot.preprocessors.clean_whitespace',
         "core.preprocessors.message_preprocess"

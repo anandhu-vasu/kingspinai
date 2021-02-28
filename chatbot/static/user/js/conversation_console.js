@@ -118,10 +118,7 @@ function successToast(title,message){
         position: 'topRight'
     });
 }
-
-function resetCorpus(corpus){
-    $('#cache').val(corpus.replaceAll('\"','\\\"'));
-}
-function refreshConsole(){
-    document.querySelector('[x-data]').__x.$data.$refresh()
+function refreshConsole(corpus){
+    document.querySelector('[x-data]').__x.$data.cached=corpus;
+    document.querySelector('[x-data]').__x.$data.$refresh();
 }
