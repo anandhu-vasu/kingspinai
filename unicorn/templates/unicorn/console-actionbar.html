@@ -1,8 +1,8 @@
 <div>
-    <button x-on:load.window.once="stories=JSON.parse('{{corpus}}');$track('stories');setInterval(()=>{$('.stories').niceScroll();$('.story').niceScroll('.scroll-wrapper');},500);" unicorn:click="save($event.target.value.trim())" value="" x-bind:value="setCorpus()" unicorn:key="saveKey" unicorn:loading.class="disabled console-actionbar-loading" data-toggle="tooltip" data-placement="bottom" data-trigger="hover" data-original-title="Save Data" x-bind:class="{'dirty':isDirty('{{corpus}}'),'disabled':!isDirty('{{corpus}}')}" class="btn btn-icon btn-primary bicon p-0 m-1">
+    <button x-on:load.window.once="stories=JSON.parse(`{{corpus}}`);cached=`{{corpus}}`;$track('stories');setInterval(()=>{$('.stories').niceScroll();$('.story').niceScroll('.scroll-wrapper');},500);" unicorn:click="save($event.target.value.trim())" id="cache" x-bind:value="setCorpus()" unicorn:key="saveKey" unicorn:target="saveKey"  unicorn:loading.class="disabled console-actionbar-loading" data-toggle="tooltip" data-placement="bottom" data-trigger="hover" data-original-title="Save Data" x-bind:class="{'dirty':isDirty(),'disabled':!isDirty()}" x-bind:disabled="!isDirty()" class="btn btn-icon btn-primary bicon p-0 m-1">
         <i class="fas fa-save"></i>
     </button>
-    <button unicorn:click="train" unicorn:key="trainKey" unicorn:loading.class="disabled console-actionbar-loading" data-toggle="tooltip" data-placement="bottom" data-trigger="hover" data-original-title="Train Chat Bot" class="btn btn-icon btn-primary bicon p-0 m-1 {% if corpus == '[]' %} disabled {% endif %}">
+    <button unicorn:click="train" unicorn:key="trainKey" unicorn:target="trainKey" unicorn:loading.attr="disabled" unicorn:loading.class="disabled console-actionbar-loading" data-toggle="tooltip" data-placement="bottom" data-trigger="hover" data-original-title="Train Chat Bot" class="btn btn-icon btn-primary bicon p-0 m-1 {% if corpus == '[]' %} disabled {% endif %}">
         <i class="fab fa-battle-net"></i>
     </button>
 </div>

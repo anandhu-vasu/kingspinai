@@ -5,8 +5,9 @@ function conversationConsole(){
             from:null,
             lift:false   
         },
-        isDirty(cached){
-            return cached.replaceAll('\"','\\\"') != this.setCorpus();
+        cached:"",
+        isDirty(){
+            return this.cached.replaceAll('\"','\\\"') != this.setCorpus();
         },
         addCategory(i){
             this.stories[i].categories.push("Category");
@@ -118,3 +119,9 @@ function successToast(title,message){
     });
 }
 
+function resetCorpus(corpus){
+    $('#cache').val(corpus.replaceAll('\"','\\\"'));
+}
+function refreshConsole(){
+    document.querySelector('[x-data]').__x.$data.$refresh()
+}
