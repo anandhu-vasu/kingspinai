@@ -1,6 +1,7 @@
 from chatterbot import ChatBot
 from chatterbot.response_selection import get_random_response
 from chatterbot.comparisons import LevenshteinDistance
+from django.conf import settings
 class SpaCy_en_md:
     ISO_639_1 = 'en_core_web_md'
     ISO_639 = 'en_core_web_md'
@@ -18,6 +19,7 @@ KingspinAI = ChatBot(
             'maximum_similarity_threshold': 0.90
         },],                 
     storage_adapter = "chatterbot.storage.SQLStorageAdapter",
+    database_uri=getattr(settings, 'DATABASE_URL', "sqlite:///db.sqlite3"),
     tagger_language=SpaCy_en_md,
     preprocessors=[
         'chatterbot.preprocessors.clean_whitespace',
