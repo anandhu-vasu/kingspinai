@@ -3,8 +3,11 @@ from django.urls import path,include
 from django.contrib.auth import views as auth_views
 from . import views
 
+app_name = 'chatbot'
+
 dashboard_urlpatterns = [
-    path('conversation-console',views.console,name='user.dashboard.console')
+    path('conversation-console',views.console,name='console'),
+    path('',views.console,name='dashboard')
 ]
 
 urlpatterns = [
@@ -30,5 +33,5 @@ urlpatterns = [
     path('reset/<uidb64>/<token>/',auth_views.PasswordResetConfirmView.as_view(template_name="password_reset_form.html"),name="password_reset_confirm"),
     path('reset_password_complete/',auth_views.PasswordResetCompleteView.as_view(template_name="password_reset_done.html"),name="password_reset_complete"),
 
-    path('user/dashboard/',include(dashboard_urlpatterns),name="user.dashboard")
+    path('user/dashboard',include((dashboard_urlpatterns,app_name),namespace="user"))
 ]

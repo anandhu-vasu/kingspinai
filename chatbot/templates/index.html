@@ -58,7 +58,7 @@ Kingspin - AI
                             <div class="navbar-btn d-none d-sm-inline-block">
                                 
                                 {% if user.is_authenticated %}
-                                    <a class="main-btn" data-scroll-nav="0" href="{%url 'user'%}">DASHBOARD</a>
+                                    <a class="main-btn" data-scroll-nav="0" href="{%url 'user:dashboard'%}">DASHBOARD</a>
                                 {% else %}
                                     <a class="main-btn" data-scroll-nav="0" href="{%url 'register'%}">REGISTER</a>
                                 {% endif %}
