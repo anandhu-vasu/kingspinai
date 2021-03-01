@@ -17,8 +17,6 @@ from .serializers import *
 from.models import *
 
 
-
-
 @api_view(['GET'])
 def home(request):
     api_urls ={
