@@ -22,4 +22,5 @@ KingspinAI = ChatBot(
         'chatterbot.preprocessors.clean_whitespace',
         "core.preprocessors.message_preprocess"
     ],
+    storage_adapter='chatterbot.storage.DjangoStorageAdapter',
 )
