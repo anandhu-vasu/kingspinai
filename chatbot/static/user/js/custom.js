@@ -17,3 +17,16 @@ $(document).ready(function(){
     document.documentElement.className += 
     (("ontouchstart" in document.documentElement) ? ' touch' : ' no-touch');
 });
+
+function Toast(title,message="",type="info",position="topRight"){
+    let types=["info","question","success","error","warning"]
+    if(types.includes(type)){
+        iziToast[type]({
+            title: title,
+            message: message,
+            position: position
+        });
+    }else{
+        console.log(`[${title}] ${message}`)
+    }
+}

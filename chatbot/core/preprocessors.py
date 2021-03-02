@@ -46,7 +46,7 @@ def replace_from_dict(x,dic):
 def remove_links(doc):
     return [re.sub(r'^https?:\/\/.*[\r\n]*', '', token, flags=re.MULTILINE) for token in doc]
 
-def message_preprocess(statement):
+def corrector(statement):
     data = tknzr.tokenize(statement.text)
     data = remove_links(data)
     data = correct_spellings(data)

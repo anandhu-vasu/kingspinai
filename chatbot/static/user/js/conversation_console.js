@@ -96,7 +96,7 @@ function conversationConsole(){
             this.notifyNiceScroll(e);
         },
         setCorpus(){
-            return JSON.stringify(this.stories).replaceAll('\"','\\\"');
+            return JSON.stringify(this.stories,null,0).replaceAll('\"','\\\"');
         }
     }
 }
@@ -111,13 +111,6 @@ $(function(){
     });
 });
 
-function successToast(title,message){
-    iziToast.success({
-        title: title,
-        message: message,
-        position: 'topRight'
-    });
-}
 function refreshConsole(corpus){
     document.querySelector('[x-data]').__x.$data.cached=corpus;
     document.querySelector('[x-data]').__x.$data.$refresh();

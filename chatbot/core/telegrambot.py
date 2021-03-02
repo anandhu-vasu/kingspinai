@@ -1,11 +1,10 @@
-from core.bots import KingspinAI
+from chatbot.core.bots import KingspinAI
 
 from telegram.ext import CommandHandler, MessageHandler, Filters
 from django_telegrambot.apps import DjangoTelegramBot
 
 import logging
 logger = logging.getLogger(__name__)
-
 
 # Define a few command handlers. These usually take the two arguments bot and
 # update. Error handlers also receive the raised TelegramError object in error.
@@ -15,12 +14,9 @@ def start(update, context):
     context.bot.sendMessage(chat_id=update.message.chat_id, text='I\'m a bot, created by kingspinai')
     context.bot.sendMessage(chat_id=update.message.chat_id, text='How may I help you?')
 
-
 def help(update, context):
     """send message"""
     context.bot.sendMessage(chat_id=update.message.chat_id, text='Help!')
-
-
 
 def reply(update, context):
     """send message"""
@@ -31,7 +27,6 @@ def reply(update, context):
     else:
         response = KingspinAI.get_response(message)
         context.bot.sendMessage(chat_id=update.message.chat_id, text=str(response))
-
 
 def main():
     logger.info("Loading handlers for telegram bot")

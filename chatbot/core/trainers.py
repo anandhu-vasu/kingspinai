@@ -1,10 +1,17 @@
-from chatterbot import corpus, utils
-from chatterbot.conversation import Statement
+from chatterbot import utils
 from chatterbot.trainers import Trainer
-from core.corpus import Corpus
+from chatbot.core.conversation import Statement
+from chatbot.core.corpus import Corpus
+from chatbot.core.exceptions import EmptyTrainingDataError
 
 class SophisticatedTrainer(Trainer):
     def train(self, *corpus_data):
+        dataset = self.chatbot.storage.dataset
+        corpus_data = list(corpus_data)
+        if dataset:
+            corpus_data.extend(dataset)
+        if not corpus_data:
+            raise EmptyTrainingDataError()
         for corpus,categories,name in Corpus.load_from_dic(*corpus_data):
             statements_to_create = []
 
@@ -26,7 +33,7 @@ class SophisticatedTrainer(Trainer):
                             search_text=response_search_text,
                             in_response_to=stm,
                             search_in_response_to=statement_search_text,
-                            conversation='training'
+                            conversation='training',
                         )
 
                         statement.add_tags(*categories)

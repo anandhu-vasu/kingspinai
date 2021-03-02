@@ -39,10 +39,6 @@ def show(request):
     return Response(serializer.data)
 
 
-
-
-
-
 @api_view(['POST'])
 def usercreate(request):
     serializer=detailsSerializer(data=request.data)
@@ -56,7 +52,6 @@ def usercreate(request):
 def Register(request):
    
     form=CreateUserForm()
-    print(form)
     
     if request.method=='POST':
         pass1=request.POST["password"]
@@ -87,11 +82,9 @@ def Register(request):
 def Login(request):
     if request.method=='POST':
         username=  request.POST.get('name')
-        print('username:',username)
         password= request.POST.get('password')
         if UserData.objects.filter(name=username,password=password) :
             return HttpResponse("<script>alert('Welcome user');window.location.href='index'</script>")
-
         else:
             messages.warning(request,"Username or Password is Incorrect")    
     return render(request,"auth/login.html")
