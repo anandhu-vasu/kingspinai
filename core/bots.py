@@ -1,6 +1,6 @@
 from chatterbot import ChatBot
+from chatterbot.response_selection import get_random_response
 from chatterbot.comparisons import LevenshteinDistance
-
 class SpaCy_en_md:
     ISO_639_1 = 'en_core_web_md'
     ISO_639 = 'en_core_web_md'
@@ -8,15 +8,19 @@ class SpaCy_en_md:
 
 KingspinAI = ChatBot(
     name = 'KingspinAI',
-    read_only = False,                  
-    logic_adapters = ["chatterbot.logic.BestMatch",
+    read_only = True,                  
+    logic_adapters = [
         {   
-            'import_path': 'chatterbot.logic.BestMatch',
-            'default_response': 'i honestly have no idea how to respond to that',
-            'maximum_similarity_threshold': 0.9
-        },],                 
-    storage_adapter = "chatterbot.storage.SQLStorageAdapter",
+            "import_path": "chatterbot.logic.BestMatch",
+            "statement_comparison_function": LevenshteinDistance,
+            "response_selection_method": get_random_response,
+            'default_response': 'I am sorry, but I do not understand.',
+            'maximum_similarity_threshold': 0.90
+        },],
     tagger_language=SpaCy_en_md,
-    database_uri='sqlite:///db.sqlite3',
-    #statement_comparison_function=LevenshteinDistance
+    preprocessors=[
+        'chatterbot.preprocessors.clean_whitespace',
+        "core.preprocessors.message_preprocess"
+    ],
+    storage_adapter='chatterbot.storage.DjangoStorageAdapter',
 )

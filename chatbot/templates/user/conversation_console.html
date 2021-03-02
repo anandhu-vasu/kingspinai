@@ -1,0 +1,122 @@
+{% extends 'user/base.html' %}
+
+{% load static %}
+{% load unicorn %}
+{% csrf_token %}
+{% block title %}
+Dashboard
+{% endblock title %}
+
+{% block content %}
+
+<div class="main-content">
+    <section class="section">
+        <div x-data="conversationConsole()" x-init="" class="card card-hero border-0 shadow">
+            <div class="card-header row">
+                <div class="card-icon">
+                    <i class="fas fa-terminal"></i>
+                </div>
+                <h6 style="margin-top: -30px;margin-left: -20px;">Conversation Console</h6>
+                <div class="row">
+                    <div class="col p-0">
+                        {% unicorn 'console-actionbar' corpus='[]' %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body position-relative" style="height: calc(100vh - 230px)">
+                <div class="d-flex flex-nowrap stories h-100 align-items-stretch w-100 pb-1" x-on:keydown.escape.window="cancelTransmit()">
+                    <template x-for="(story,i) in stories" :key="'#'+i">
+                        <div class="col-sm-12 col-md-6 col-lg-4 position-relative">
+                            <div class="shadow story h-100 p-2">
+                                <div class="scroll-wrapper">
+                                    <div class="position-relative">
+                                        <h4 class="story-title border-bottom">
+                                            <input class="edit-field" x-model.debounce.750="stories[i].name">
+                                        </h4>       
+                                        <div class="story-delete">
+                                            <button x-on:click="removeStory(i)" class="btn py-0 btn-icon btn-sm btn-danger rounded-circle" data-toggle="tooltip" data-trigger="hover" data-placement="left" data-original-title="Remove Story"><i class="fas fa-trash"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="story-categories text-center">
+                                        <div><i>Categories</i></div>
+                                        <template x-for="(category, j) in story.categories" :key="'#'+i+'^'+j">
+                                            <div class="d-inline-block mb-1">
+                                                <div class="input-group story-category w-100">
+                                                    <input class="edit-field-tag px-1 py-0 col" x-model.debounce.750="stories[i].categories[j]">
+                                                    <div class="input-group-append">
+                                                        <button x-on:click="removeCategory(i,j)" class="category-delete" type="button" data-toggle="tooltip" data-trigger="hover" data-placement="left" data-original-title="Remove Category"><i class="fas fa-trash"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <div class="p-1 catadd">
+                                            <button x-on:click="addCategory(i)" class="btn py-0 btn-icon btn-sm btn-light rounded-circle" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Add Category"><i class="fas fa-plus"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="conversations mt-4">
+                                    <div class="text-center mb-2"><b>Conversations</b></div>
+                                        <template x-for="(conversation,k) in story.conversations" :key="'#'+i+'*'+k">
+                                            <div class="p-2 conversation" x-bind:style="(transmit.from && transmit.from[0]==i && transmit.from[1]==k)?`background-color: lightgreen;`:''">
+                                                <div class="statement shadow position-relative">
+                                                    <template x-for="(statement, l) in conversation.statements" :key="'#'+i+'*'+k+'!'+l">
+                                                        <div class="position-relative">
+                                                            <textarea class="edit-area" onkeyup="textareaResize(this)" x-model.debounce.750="stories[i].conversations[k].statements[l]"></textarea>
+                                                            <div class="p-1 stdelete">
+                                                                <button x-on:click="removeStatement($event,i,k,l)" class="btn py-0 btn-icon btn-danger shadow-none btn-sm rounded-circle" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Remove Statement"><i class="fas fa-trash"></i></button>
+                                                            </div>
+                                                        </div>
+                                                    </template>
+                                                    <div class="p-1 stadd">
+                                                        <button x-on:click="addStatement($event,i,k)" class="btn py-0 btn-icon btn-sm btn-primary rounded-circle" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Add Statement"><i class="fas fa-plus"></i></button>
+                                                    </div>
+                                                </div>
+                                                <div class="p-1 cdelete">
+                                                    <button x-on:click="moveConversation(i,k)" class="btn py-0 btn-icon btn-sm btn-info rounded-circle shadow-none" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Move Conversation"><i class="fas fa-arrows-alt"></i></button>
+                                                    <button x-on:click="cloneConversation($event,i,k)" class="btn py-0 btn-icon btn-sm btn-success rounded-circle shadow-none" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Clone Conversation"><i class="fas fa-clone"></i></button>
+                                                    <button x-on:click="removeConversation($event,i,k)" class="btn py-0 btn-icon btn-sm btn-danger rounded-circle shadow-none" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Remove Conversation"><i class="fas fa-trash"></i></button>
+                                                </div>
+                                                <div class="response shadow position-relative">
+                                                    <template x-for="(response, m) in conversation.responses" :key="'#'+i+'*'+k+'@'+m">
+                                                        <div class="position-relative">
+                                                            <textarea class="edit-area" onkeyup="textareaResize(this)" x-model.debounce.750="stories[i].conversations[k].responses[m]"></textarea>
+                                                            <div class="p-1 redelete">
+                                                                <button x-on:click="removeResponse($event,i,k,m)" class="btn py-0 btn-icon btn-danger shadow-none btn-sm rounded-circle" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Remove Response"><i class="fas fa-trash"></i></button>
+                                                            </div>
+                                                        </div>
+                                                    </template>
+                                                    <div class="p-1 readd">
+                                                        <button x-on:click="addResponse($event,i,k)" class="btn py-0 btn-icon btn-sm btn-primary rounded-circle" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Add Response"><i class="fas fa-plus"></i></button>
+                                                    </div>
+                                                </div>
+                                                <div class="p-1 cadd" x-bind:class="{'show-cadd':(transmit.lift == true)}">
+                                                    <button x-show.transition.in.scale.duration.400ms="transmit.lift == true" x-on:click="placeConversation(i,k)" class="btn py-0 btn-icon btn-sm btn-warning rounded-circle shadow-none" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Place Conversation"><i class="fas fa-compress"></i></button>
+                                                    <button x-show.transition.in.scale.duration.400ms="transmit.lift == false" x-on:click="addConversation($event,i,k)" class="btn py-0 btn-icon btn-sm btn-secondary rounded-circle" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Add Conversation"><i class="fas fa-plus"></i></button>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <div class="p-1 cadd" x-bind:class="{'show-cadd':(transmit.lift == true)}">
+                                            <button x-show.transition.in.scale.duration.400ms="transmit.lift == true" x-on:click="placeConversation(i)" class="btn py-0 btn-icon btn-sm btn-warning rounded-circle shadow-none" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Place Conversation"><i class="fas fa-compress"></i></button>
+                                            <button x-show.transition.in.scale.duration.400ms="transmit.lift == false" x-on:click="addConversation($event,i)" class="btn py-0 btn-icon btn-sm btn-secondary rounded-circle" data-toggle="tooltip" data-trigger="hover" data-placement="bottom" data-original-title="Add Conversation"><i class="fas fa-plus"></i></button>
+                                        </div>
+                                        <br/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                <div class="row story-actionbar">
+                    <button x-on:click="addStory()" class="btn btn-icon btn-secondary rounded-circle" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Add Story"><i class="fas fa-plus"></i></button>
+                    <button x-on:click="$undo();notifyNiceScroll(null,true);" x-bind:disabled="$history.length==0" class="btn btn-icon btn-dark rounded-circle position-relative ml-1" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Undo"><i class="fas fa-undo"></i> <span class="badge badge-transparent position-absolute" style="right: 1px;" x-text="$history.length"></span></button>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+{% endblock content %}
+
+{% block script %}
+    <script src="{% static 'user/js/conversation_console.js' %}"></script>
+{% endblock script %}
