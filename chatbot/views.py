@@ -1,73 +1,59 @@
 from django.shortcuts import render,redirect
-import datetime 
-from django.contrib.auth.forms import UserCreationForm
-from .forms import CreateUserForm
-from django.contrib import messages
+from . forms import UserRegistrationForm,UserLoginForm
 from django.contrib.auth import authenticate,login,logout
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
-from.models import *
 
-#from django.utils import six
+from django.contrib.auth.decorators import login_required
+
+@login_required(login_url='login')
+def home(request):
+    return render(request,'auth/dash.html')
+
 
 
 
 def Register(request):
-   
-    form=CreateUserForm()
-    print(form)
-    
-    if request.method=='POST':
-        pass1=request.POST["password"]
-        pass2=request.POST["password2"]
-        name=request.POST["name"]
-        if UserData.objects.filter(name=name,password=pass1) :
-            return HttpResponse("<script>alert('User is Existing');window.location.href=''</script>")
-        if pass1 != pass2:
-            messages.warning(request,'Password is Incorrect')
-        else:
-            form=CreateUserForm(request.POST)
-            if form.is_valid():
-                 form.save()
-            # user=form.cleaned_data.get('username')
-            # messages.success(request,'Account was created for ' +  user)
+    context={}
+    if request.POST:
+        form=UserRegistrationForm(request.POST)
+        if form.is_valid():
+            form.save()
             return redirect('login')
-    context={'form':form}
-           
-    return render(request,'auth/register.html',context)
+        context['register_form']=form 
+    else:
+        form=UserRegistrationForm()
+        context['register_form']=form 
+
+
+    return render(request,"auth/register.html",context)
 
 
 
+def login_view(request):
+    context={}
+    if request.POST:
+        form=UserLoginForm(request.POST)
+        if form.is_valid():
+            email=request.POST['email']
+            password=request.POST['password']
+            user=authenticate(request,email=email,password=password)
 
-
-
-
-
-def Login(request):
-    if request.method=='POST':
-        username=  request.POST.get('name')
-        print('username:',username)
-        password= request.POST.get('password')
-        if UserData.objects.filter(name=username,password=password) :
-            return HttpResponse("<script>alert('Welcome user');window.location.href='index'</script>")
+            if user is not None:
+                login(request,user)
+                return redirect("dashboard")
 
         else:
-            messages.warning(request,"Username or Password is Incorrect")    
-    return render(request,"auth/login.html")
+            context['login_form']=form
+
+        
+    else:
+        form=UserLoginForm()
+        context['login_form']=form
+
+    return render(request,'auth/login.html',context)  
 
 
 
- 
-def Logout(request):
-    logout(request)
-    return redirect('login')
-   
-def Show(request):
-    return render(request,'dashboard.html')  
-# Create your views here.
 
-def index(request):
-    return render(request,"index.html",{})
-
-def user(request):
-    return render(request,"user/index.html",{})
+def logout_view(request):
+     logout(request)
+     return redirect("login")   

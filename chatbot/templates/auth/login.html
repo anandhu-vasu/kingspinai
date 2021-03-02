@@ -1,4 +1,6 @@
 {% extends "auth/base.html" %}
+{% load widget_tweaks %}
+
 {% block title %}login &mdash; KingspinAI {% endblock title %}
 
 {% block content %}
@@ -19,46 +21,35 @@
                   {%csrf_token%}
 
                     <div class="form-group">
-                      <label for="name">Name</label>
-                      <input
-                        id="email"
-                        type="text"
-                        class="form-control"
-                        name="name"
-                        tabindex="1"
-                        required
-                        autofocus
-                      />
-                      <div class="invalid-feedback">
-                        Please fill in your email
-                      </div>
+                 
+
+                      {{login_form.email.label}}
+
+                      {{login_form.email|add_class:"form-control"}}
+                
                     </div>
                     <div class="form-group">
                       <div class="d-block">
-                        <label for="password" class="control-label"
-                          >Password</label
-                        >
+                      
+
+                        {{login_form.password.label}}
+
                         <div class="float-right">
                           <a
-                          href="{% url 'reset_password' %}"
+                          href="#"
                           class="text-small"
                           >
                             Forgot Password?
                           </a>
                         </div>
 
-                        {%for message in messages%}
+                        <!-- {%for message in messages%}
                         <p id="message" style="color: red">{{message}}</p>
-                        {%endfor%}
+                        {%endfor%} -->
                       </div>
-                      <input
-                        id="password"
-                        type="password"
-                        class="form-control"
-                        name="password"
-                        tabindex="2"
-                        required
-                      />
+
+                      {{login_form.password|add_class:"form-control"}}
+                  
                       <div class="invalid-feedback">
                         please fill in your password
                       </div>
@@ -77,6 +68,13 @@
                         >
                       </div>
                     </div>
+
+
+                    {% if login_form.non_field_errors %}
+
+                    <p style="color: red">{{login_form.non_field_errors}}</p>
+              
+                    {%endif%}
                     <div class="form-group">
                       <button
                         type="submit"
