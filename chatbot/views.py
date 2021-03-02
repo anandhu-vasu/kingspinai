@@ -4,11 +4,18 @@ from django.contrib.auth import authenticate,login,logout
 
 from django.contrib.auth.decorators import login_required
 
+
+
+def index(request):
+    return render(request,"index.html",{})
+    
+def console(request):
+    return render(request,'user/conversation_console.html',{})
+
+
 @login_required(login_url='login')
 def home(request):
     return render(request,'auth/dash.html')
-
-
 
 
 def Register(request):
@@ -57,3 +64,4 @@ def login_view(request):
 def logout_view(request):
      logout(request)
      return redirect("login")   
+
