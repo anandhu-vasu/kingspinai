@@ -41,11 +41,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'chatbot',
+    'chatbot.core',
     'django_telegrambot',
     'django_unicorn',
     'unicorn',
-    'chatbot',
-    'chatbot.core.apps.CoreConfig',
     'widget_tweaks',
     'rest_framework'
 ]
