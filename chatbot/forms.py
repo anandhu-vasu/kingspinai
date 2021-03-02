@@ -1,22 +1,30 @@
-from django.forms import ModelForm
-from django import forms
-from.models import *
 
+from django import forms 
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import authenticate
 
-class CreateUserForm(ModelForm):
-    
+from .models import * 
+  
+class UserRegistrationForm(UserCreationForm): 
+    class Meta: 
+        model = MyUser 
+        fields = ('email','username','company_name','phone','password1','password2')
+     
+
+class UserLoginForm(forms.ModelForm):
+    password=forms.CharField(label="password", widget=forms.PasswordInput)
+
     class Meta:
-        model=UserData
-        fields = '__all__'
-        widgets = {
-            'password': forms.PasswordInput(),
-            'password2': forms.PasswordInput(),
-             'name'   :forms.TextInput(attrs={'class':'form-control'}) ,
-             'lastname'   :forms.TextInput(attrs={'class':'form-control'}),
-             'email'   :forms.TextInput(attrs={'class':'form-control'}),
-             'city'   :forms.TextInput(attrs={'class':'form-control'}),
-             'postalcode'   :forms.TextInput(attrs={'class':'form-control '}),
-             'country'   :forms.Select(attrs={'class':'form-control selectric'}),
-             'company'   :forms.TextInput(attrs={'class':'form-control'}),
+        model=MyUser
+        fields=('email','password')
 
-        }
+
+    def clean(self):
+        if self.is_valid():
+            email=self.cleaned_data['email']
+            password=self.cleaned_data['password']
+            
+            if not authenticate(email=email,password=password):
+                raise forms.ValidationError("Invalid Credential")
+
+        

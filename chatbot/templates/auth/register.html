@@ -13,21 +13,22 @@ KingspinAI {% endblock title %}
     <form method="POST">
       {%csrf_token%}
 
-      <div class="row">
-        <div class="form-group col-6">
-          <label for="frist_name">First Name</label>
-          {{form.name}}
+        <div class="form-group ">
+          {{register_form.username.label}}          
+          {{register_form.username|add_class:"form-control"}}          
         </div>
-        <div class="form-group col-6">
-          <label for="last_name">Last Name</label>
-          {{form.lastname}}
-        </div>
-      </div>
+      
       <div class="form-group">
-        <label for="email">Email</label>
-        {{form.email}}
+        {{register_form.email.label}}          
+        {{register_form.email|add_class:"form-control"}}        
         <div class="invalid-feedback"></div>
       </div>
+<<<<<<< HEAD
+       
+      <div class="form-group ">
+        {{register_form.company_name.label}}          
+        {{register_form.company_name|add_class:"form-control"}}        
+=======
       <div class="row">
         <div class="form-group col-5">
           <label for="password" class="d-block">Password</label>
@@ -42,34 +43,34 @@ KingspinAI {% endblock title %}
         {%for message in messages%}
         <p id="message" style="color: red">{{message}}</p>
         {%endfor%}
+>>>>>>> b7abfa44bdeb5a3cdbb05369a5963731d11c1588
       </div>
-      <div class="form-divider">Your Home</div>
-      <div class="row">
-        <div class="form-group col-6">
-          <label>Country</label>
-          {{form.country}}
-        </div>
-        <div class="form-group col-6">
-          <label>Company</label>
-          {{form.company}}
-        </div>
+      <div class="form-group ">
+        {{register_form.phone.label}}          
+        {{register_form.phone|add_class:"form-control"}}        
       </div>
-      <div class="row">
-        <div class="form-group col-6">
-          <label>City</label>
-          {{form.city}}
-        </div>
-        <div class="form-group col-6">
-          <label>Postal Code</label>
-          {{form.postalcode}}
-        </div>
+
+      <div class="form-group ">
+        {{register_form.password1.label}}          
+        {{register_form.password1|add_class:"form-control"}}        
       </div>
+   
+
+        <div class="form-group ">
+          {{register_form.password2.label}}          
+          {{register_form.password2|add_class:"form-control"}}        
+        </div>
+     
       
           <label class="custom-control-label" for="agree"
             >I agree with the terms and conditions</label
           >
         </div>
       </div>
+
+      {% for error in register_form.errors %}
+      <p style="color: red">{{error}}</p>
+      {%endfor%}
       <div class="form-group">
         <button type="submit" class="btn btn-primary btn-lg btn-block">
           Register
