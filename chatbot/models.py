@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser,BaseUserManager
 
 
-class MyUserManager(BaseUserManager):
+class UserManager(BaseUserManager):
     def create_user(self,email,company_name,phone,username,password=None):
         if not email:
             raise ValueError("email is required")
@@ -43,7 +43,7 @@ class MyUserManager(BaseUserManager):
 
 
 
-class MyUser(AbstractBaseUser):
+class User(AbstractBaseUser):
     username=models.CharField(verbose_name='user name',max_length=60)
     email=models.EmailField(verbose_name="email address", max_length=60,unique=True)
     company_name=models.CharField(verbose_name="company name",max_length=200)
@@ -57,7 +57,7 @@ class MyUser(AbstractBaseUser):
     
     USERNAME_FIELD="email"
     REQUIRED_FIELDS=["company_name","username","phone"]
-    objects=MyUserManager()
+    objects=UserManager()
     
 
     def __str__(self):
