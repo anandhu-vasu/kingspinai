@@ -2,8 +2,35 @@ from django.shortcuts import render,redirect
 from . forms import UserRegistrationForm,UserLoginForm
 from django.contrib.auth import authenticate,login,logout
 from django.contrib import messages
-
 from django.contrib.auth.decorators import login_required
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .serializers import detailsSerializer
+from rest_framework import serializers
+
+from .models import *
+
+
+@api_view(['GET'])
+def home(request):
+    api_urls ={
+     'List':'/show/',
+     'view':'/view/',
+
+
+
+        }
+    return Response(api_urls)
+
+
+@api_view(['GET'])
+
+def show(request):
+    detail=User.objects.all()
+    serializer=detailsSerializer(detail,many=True)
+    return Response(serializer.data)
+
 
 
 @login_required(login_url='login')
