@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect
 from . forms import UserRegistrationForm,UserLoginForm
 from django.contrib.auth import authenticate,login,logout
+from django.contrib import messages
 
 from django.contrib.auth.decorators import login_required
 
@@ -40,6 +41,7 @@ def login_view(request):
             if user is not None:
                 login(request,user)
                 return redirect("dashboard")
+                
 
         else:
             context['login_form']=form
