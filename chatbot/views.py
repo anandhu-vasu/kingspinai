@@ -15,8 +15,8 @@ from .models import *
 @api_view(['GET'])
 def home(request):
     api_urls ={
-     'List':'/show/',
-     'view':'/view/',
+    #  'List':'/show/',
+     'show':'/show/',
 
 
 
