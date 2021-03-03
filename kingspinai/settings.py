@@ -147,26 +147,6 @@ EMAIL_USE_TLS=True
 EMAIL_HOST_USER=''
 EMAIL_HOST_PASSWORD=''
 
-DJANGO_TELEGRAMBOT = {
-
-    'MODE' : 'WEBHOOK', #(Optional [str]) # The default value is WEBHOOK,
-                        # otherwise you may use 'POLLING'
-                        # NB: if use polling you must provide to run
-                        # a management command that starts a worker
-
-    'WEBHOOK_SITE' : 'https://kingspin-ai.herokuapp.com',
-    'WEBHOOK_PREFIX' : '/telebot', # (Optional[str]) # If this value is specified,
-                                  # a prefix is added to webhook url                 #certificate.(More info at https://core.telegram.org/bots/self-signed )
-
-    'BOTS' : [
-        {
-           'TOKEN': '1591577456:AAFoSp4IrLO0u293iRqyIQW0iOcd9Ml3OW0', #Your bot token.
-        },
-        #Other bots here with same structure.
-    ],
-
-}
-
 try:
   from local_settings import *
 except Exception as e:
@@ -175,3 +155,5 @@ except Exception as e:
 django_heroku.settings(locals())
 options = DATABASES['default'].get('OPTIONS', {})
 options.pop('sslmode', None)
+
+from chatbot.core.settings import *

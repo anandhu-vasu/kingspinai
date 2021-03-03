@@ -1,6 +1,8 @@
 from telegram.ext import CommandHandler, MessageHandler, Filters
 from django_telegrambot.apps import DjangoTelegramBot
 import logging
+from django.conf import settings
+
 logger = logging.getLogger(__name__)
 
 try:
@@ -34,12 +36,15 @@ else:
         logger.info("Loading handlers for telegram bot")
 
         # Default dispatcher (this is related to the first bot in settings.DJANGO_TELEGRAMBOT['BOTS'])
-        dp = DjangoTelegramBot.dispatcher
+        #dp = DjangoTelegramBot.dispatcher
         # To get Dispatcher related to a specific bot
         # dp = DjangoTelegramBot.getDispatcher('BOT_n_token')     #get by bot token
         # dp = DjangoTelegramBot.getDispatcher('BOT_n_username')  #get by bot username
+        for bot in settings.DJANGO_TELEGRAMBOT['BOTS']:
 
-        dp.add_handler(CommandHandler("start", start))
-        dp.add_handler(CommandHandler("help", help))
+            dp = DjangoTelegramBot.getDispatcher(bot["TOKEN"])     #get by bot token
 
-        dp.add_handler(MessageHandler(Filters.text, reply))
+            dp.add_handler(CommandHandler("start", start))
+            dp.add_handler(CommandHandler("help", help))
+
+            dp.add_handler(MessageHandler(Filters.text, reply))
