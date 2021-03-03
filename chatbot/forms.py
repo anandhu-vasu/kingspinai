@@ -3,11 +3,11 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate
 
-from .models import * 
+from chatbot.models import User
   
 class UserRegistrationForm(UserCreationForm): 
     class Meta: 
-        model = MyUser 
+        model = User 
         fields = ('email','username','company_name','phone','password1','password2')
      
 
@@ -15,7 +15,7 @@ class UserLoginForm(forms.ModelForm):
     password=forms.CharField(label="password", widget=forms.PasswordInput)
 
     class Meta:
-        model=MyUser
+        model=User
         fields=('email','password')
 
 

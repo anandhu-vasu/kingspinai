@@ -1,0 +1,1 @@
+from chatterbot.ext.django_chatterbot import settings

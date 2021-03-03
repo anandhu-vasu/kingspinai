@@ -5,11 +5,14 @@ from django.contrib import messages
 
 from django.contrib.auth.decorators import login_required
 
+
 @login_required(login_url='login')
-def home(request):
-    return render(request,'auth/dash.html')
 
-
+def index(request):
+    return render(request,"index.html",{})
+    
+def console(request):
+    return render(request,'user/conversation_console.html',{})
 
 
 def Register(request):
@@ -59,3 +62,4 @@ def login_view(request):
 def logout_view(request):
      logout(request)
      return redirect("login")   
+
