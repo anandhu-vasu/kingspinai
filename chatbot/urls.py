@@ -5,7 +5,7 @@ appname = 'chatbot'
 
 dashboard_urlpatterns = [
     path('conversation-console',views.console,name='console'),
-    path('',views.console,name='dashboard')
+    path('',views.dashboard,name='dashboard')
 ]
 
 urlpatterns = [

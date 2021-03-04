@@ -33,12 +33,16 @@ def show(request):
 
 
 
-@login_required(login_url='login')
 
 def index(request):
     return render(request,"index.html",{})
     
 def console(request):
+    return render(request,'user/conversation_console.html',{})
+
+
+@login_required(login_url='login')
+def dashboard(request):
     return render(request,'user/conversation_console.html',{})
 
 
@@ -70,9 +74,7 @@ def login_view(request):
 
             if user is not None:
                 login(request,user)
-                return redirect("index")
-                
-
+                return redirect("user:dashboard")
         else:
             context['login_form']=form
 
