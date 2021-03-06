@@ -1,3 +1,4 @@
+from chatbot.core.chatbot import ChatBot
 from telegram.ext import CommandHandler, MessageHandler, Filters
 from django_telegrambot.apps import DjangoTelegramBot
 import logging
@@ -5,46 +6,42 @@ from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
-try:
-    from chatbot.core.bots import KingspinAI
-except:
-    pass
-else:
-    # Define a few command handlers. These usually take the two arguments bot and
-    # update. Error handlers also receive the raised TelegramError object in error.
-    def start(update, context):
-        """Send a message when the command /start is issued."""
-        context.bot.sendMessage(chat_id=update.message.chat_id, text='Hi!')
-        context.bot.sendMessage(chat_id=update.message.chat_id, text='I\'m a bot, created by kingspinai')
-        context.bot.sendMessage(chat_id=update.message.chat_id, text='How may I help you?')
 
-    def help(update, context):
-        """send message"""
-        context.bot.sendMessage(chat_id=update.message.chat_id, text='Help!')
+# Define a few command handlers. These usually take the two arguments bot and
+# update. Error handlers also receive the raised TelegramError object in error.
+def start(update, context):
+    """Send a message when the command /start is issued."""
+    context.bot.sendMessage(chat_id=update.message.chat_id, text='Hi!')
+    context.bot.sendMessage(chat_id=update.message.chat_id, text='I\'m a bot, created using kingspinai')
+    context.bot.sendMessage(chat_id=update.message.chat_id, text='How may I help you?')
 
-    def reply(update, context):
-        """send message"""
-        message = update.message.text
+def help(update, context):
+    """send message"""
+    context.bot.sendMessage(chat_id=update.message.chat_id, text='Help!')
 
-        if message.lower() == 'bye':
-            context.bot.sendMessage(chat_id=update.message.chat_id, text='Bye')
-        else:
-            response = KingspinAI.get_response(message)
-            context.bot.sendMessage(chat_id=update.message.chat_id, text=str(response))
+def reply(update, context):
+    """send message"""
+    message = update.message.text
 
-    def main():
-        logger.info("Loading handlers for telegram bot")
+    if message.lower() == 'bye':
+        context.bot.sendMessage(chat_id=update.message.chat_id, text='Bye')
+    else:
+        response = ChatBot(context.bot.token,telegram=True).reply(message)
+        context.bot.sendMessage(chat_id=update.message.chat_id, text=str(response))
 
-        # Default dispatcher (this is related to the first bot in settings.DJANGO_TELEGRAMBOT['BOTS'])
-        #dp = DjangoTelegramBot.dispatcher
-        # To get Dispatcher related to a specific bot
-        # dp = DjangoTelegramBot.getDispatcher('BOT_n_token')     #get by bot token
-        # dp = DjangoTelegramBot.getDispatcher('BOT_n_username')  #get by bot name
-        for bot in settings.DJANGO_TELEGRAMBOT['BOTS']:
+def main():
+    logger.info("Loading handlers for telegram bot")
 
-            dp = DjangoTelegramBot.getDispatcher(bot["TOKEN"])     #get by bot token
+    # Default dispatcher (this is related to the first bot in settings.DJANGO_TELEGRAMBOT['BOTS'])
+    #dp = DjangoTelegramBot.dispatcher
+    # To get Dispatcher related to a specific bot
+    # dp = DjangoTelegramBot.getDispatcher('BOT_n_token')     #get by bot token
+    # dp = DjangoTelegramBot.getDispatcher('BOT_n_username')  #get by bot name
+    for bot in settings.DJANGO_TELEGRAMBOT['BOTS']:
 
-            dp.add_handler(CommandHandler("start", start))
-            dp.add_handler(CommandHandler("help", help))
+        dp = DjangoTelegramBot.getDispatcher(bot["TOKEN"])     #get by bot token
 
-            dp.add_handler(MessageHandler(Filters.text, reply))
+        dp.add_handler(CommandHandler("start", start))
+        dp.add_handler(CommandHandler("help", help))
+
+        dp.add_handler(MessageHandler(Filters.text, reply))

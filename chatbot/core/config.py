@@ -1,4 +1,3 @@
-from chatterbot import ChatBot
 from chatbot.core.corpus import TaggerLang
 from chatterbot.response_selection import get_random_response
 
