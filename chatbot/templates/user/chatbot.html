@@ -1,0 +1,22 @@
+{% extends 'user/base.html' %}
+
+{% load static %}
+{% load unicorn %}
+{% csrf_token %}
+{% block title %}
+Dashboard
+{% endblock title %}
+
+{% block content %}
+
+<div class="main-content">
+    <section class="section">
+        {% unicorn 'chatbot' %}
+    </section>
+</div>
+
+{% endblock content %}
+
+{% block script %}
+    <script src="{% static 'user/js/chatbot.js' %}"></script>
+{% endblock script %}

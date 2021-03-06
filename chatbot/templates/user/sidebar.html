@@ -9,7 +9,10 @@
         </div>
         <ul class="sidebar-menu">
             <li class="menu-header">Dashboard</li>
-            <li class="dlink active"><a class="nav-link" href="{% url 'user:console' %}"><i class="fas fa-terminal"></i> <span>Conversation Console</span></a></li>
+            <li class=""><a class="nav-link" href="{% url 'user:chatbot' %}"><i class="fas fa-robot"></i> <span>Chat Bots</span></a></li>
+            {% comment %}
+              <li class="li-active"><a class="nav-link" href="{% url 'user:console' %}"><i class="fas fa-terminal"></i> <span>Conversation Console</span></a></li>
+            {% endcomment %}
             <!-- <li class="dropdown">
                 <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>Dashboard</span></a>
                 <ul class="dropdown-menu">

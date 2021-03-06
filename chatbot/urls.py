@@ -4,14 +4,15 @@ from . import views
 appname = 'chatbot'
 
 dashboard_urlpatterns = [
-    path('conversation-console',views.console,name='console'),
-    path('',views.dashboard,name='dashboard')
+    path('',views.dashboard,name='dashboard'),
+    path('chatbots',views.chatbot,name='chatbot'),
+    path('chatbot/<slug:name>/conversation-console',views.console,name='console'),
 ]
 
 urlpatterns = [
 
     path('',views.index,name='index'),
-    path('demo',views.console,name='console'),
+    path('demo',views.demo,name='console'),
 
     path('home',views.home,name="home"),
     path('show',views.show,name='show'),
@@ -20,5 +21,5 @@ urlpatterns = [
     path('login',views.login_view,name="login"),
     path('logout',views.logout_view,name="logout"),
 
-    path('user/dashboard',include((dashboard_urlpatterns,appname),namespace="user"))
+    path('user/dashboard/',include((dashboard_urlpatterns,appname),namespace="user"))
 ]

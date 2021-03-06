@@ -19,11 +19,3 @@ CHATBOT_OPTIONS={
     ],
     "storage_adapter":'chatbot.core.storage.DjangoStorageAdapter',
 }
-
-CHATBOT_NAME= "Spinkingai"
-
-KingspinAI = ChatBot(
-    name = CHATBOT_NAME,
-    botkey = CHATBOT_NAME,
-    **CHATBOT_OPTIONS
-)

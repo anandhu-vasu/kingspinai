@@ -39,7 +39,7 @@ else:
         #dp = DjangoTelegramBot.dispatcher
         # To get Dispatcher related to a specific bot
         # dp = DjangoTelegramBot.getDispatcher('BOT_n_token')     #get by bot token
-        # dp = DjangoTelegramBot.getDispatcher('BOT_n_username')  #get by bot username
+        # dp = DjangoTelegramBot.getDispatcher('BOT_n_username')  #get by bot name
         for bot in settings.DJANGO_TELEGRAMBOT['BOTS']:
 
             dp = DjangoTelegramBot.getDispatcher(bot["TOKEN"])     #get by bot token

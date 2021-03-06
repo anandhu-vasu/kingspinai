@@ -1,4 +1,19 @@
-body.layout-4 .main-sidebar .sidebar-menu li.dlink.active>a{color:#3B3D55 !important}
+body:not(.sidebar-mini) .main-sidebar .sidebar-menu > li.li-active > a::before {
+
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 25px;
+    width: 4px;
+    background-color: white;
+}
+body.sidebar-mini .main-sidebar .sidebar-menu > li.li-active > a {
+    box-shadow: 0 4px 8px #7a58ad;
+    background-color: #563d7c;
+    color: #fff;
+}
 .bicon{
     width: 50px !important;
     height: 50px !important;
@@ -307,4 +322,213 @@ textarea:focus+.stdelete,textarea:focus+.redelete{
 @keyframes lspin{
     from{transform: rotate(0deg);}
     to{transform: rotate(360deg);}
+}
+.card.chatbot{
+    border-radius: 5px !important;
+    overflow: hidden;
+    min-height: 145px;
+}
+.chatbot-btns,.chatbot-new-btn{
+    position: absolute;
+    z-index: 1;
+    left: 50%;
+    transform:translateX(-50%) scale(1,1);
+    top: -20px;
+    bottom: auto;
+    transition: opacity 0.25s ease-in-out,transform 0.25s ease-in-out;
+}
+.chatbot-new-btn{
+    top: 50%;
+    transform:translate(-50%,-50%) scale(1,1);
+}
+.chatbot-btns .btn{
+    height: 40px;
+    width: 40px;
+    box-shadow: 0 0.1rem 1rem rgba(0,0,0,.4) !important;
+    text-align: center;
+}
+.chatbot-new-btn .btn{
+    height: 60px;
+    width: 60px;
+    box-shadow: 0 0.1rem 1rem rgba(0,0,0,.4) !important;
+    text-align: center;
+    background: #ffffff55 !important;
+    border: none;
+}
+.chatbot-new-btn .btn:hover{
+    background: #ffffff99 !important;
+}
+.chatbot-btns .btn i{
+    line-height: 35px;
+    font-size: 15px !important;
+}
+.chatbot-new-btn .btn i{
+    line-height: 40px;
+    font-size: 20px !important;
+}
+
+.card.hecon.bg0 .card-header{
+    background-image: linear-gradient(to bottom, #2a0845, #6441A5);
+}
+.card.hecon.bg0 .card-header .card-icon {
+    color: #6441A5;
+}
+.card.hecon.bg0 .card-body.hecon{
+    background: #2a0845;
+}
+
+.card.hecon.bg1 .card-header{
+    background-image: linear-gradient(to bottom, #ff7e5f, #feb47b);
+}
+.card.hecon.bg1 .card-header .card-icon {
+    color: #feb47b;
+}
+.card.hecon.bg1 .card-body.hecon{
+    background: #ff7e5f;
+}
+
+.card.hecon.bg2 .card-header{
+    background-image: linear-gradient(to bottom, #11998e, #85d6a4);
+}
+.card.hecon.bg2 .card-header .card-icon {
+    color: #85d6a4;
+}
+.card.hecon.bg2 .card-body.hecon{
+    background: #11998e;
+}
+
+
+.card.hecon.bg3 .card-header{
+    background-image: linear-gradient(to bottom, #2c3e50, #929496);
+}
+.card.hecon.bg3 .card-header .card-icon {
+    color: #929496;
+}
+.card.hecon.bg3 .card-body.hecon{
+    background: #2c3e50;
+}
+
+.card.hecon.bg4 .card-header{
+    background-image: linear-gradient(to bottom, #94716B, #B79891);
+}
+.card.hecon.bg4 .card-header .card-icon {
+    color: #B79891;
+}
+.card.hecon.bg4 .card-body.hecon{
+    background: #94716B;
+}
+
+.card.hecon.bg5 .card-header{
+    background-image: linear-gradient(to bottom, #f857a6, #ff95d3);
+}
+.card.hecon.bg5 .card-header .card-icon {
+    color: #ff95d3;
+}
+.card.hecon.bg5 .card-body.hecon{
+    background: #f857a6;
+}
+
+.card.hecon.bg9 .card-header{
+    background-image: linear-gradient(to bottom, #CAC531, #eff789);
+}
+.card.hecon.bg9 .card-header .card-icon {
+    color:#eff789 ;
+}
+.card.hecon.bg9 .card-body.hecon{
+    background: #CAC531;
+}
+
+.card.hecon.bg7 .card-header{
+    background-image: linear-gradient(to bottom, #e53935, #e06d6b);
+}
+.card.hecon.bg7 .card-header .card-icon {
+    color: #e06d6b;
+}
+.card.hecon.bg7 .card-body.hecon{
+    background: #e53935;
+} 
+.card.hecon.bg8 .card-header{
+    background-image: linear-gradient(to bottom, #2F80ED, #8bcadf);
+}
+.card.hecon.bg8 .card-header .card-icon {
+    color: #8bcadf;
+}
+.card.hecon.bg8 .card-body.hecon{
+    background: #2F80ED ;
+} 
+
+
+.card.hecon.bg6 .card-header{
+    background-image: linear-gradient(to bottom, #4e54c8, #8f94fb);
+}
+.card.hecon.bg6 .card-header .card-icon {
+    color: #8f94fb;
+}
+.card.hecon.bg6 .card-body.hecon{
+    background: #4e54c8;
+} 
+
+.text-line-o{
+    overflow: hidden;white-space: nowrap;text-overflow: ellipsis;
+}
+
+.chatbot-settings-wrapper{
+    position: absolute;
+    left: 50%;
+    top:0px;
+    transform: translateX(-50%);
+    transition: all 0.5s;
+    z-index: 1000;
+    transition: all 0.3s;
+    width: 100%;
+}
+#chatbot-settings{
+    box-shadow: 0 0.1rem 10rem #00000055;
+}
+
+.unicorn-errors .error{
+    position: relative;
+    margin-bottom: 5px;
+    border-left: 4px solid crimson;
+    border-right: 4px solid crimson;
+}
+input.has-error{
+    border: 1px solid red !important;
+}
+
+@keyframes line-loader-animation {
+  0% {
+    left: -100%;
+  }
+  49.9% {
+    left: 100%;
+  }
+  50% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+.line-loader {
+  height: 5px;
+  width: 100%;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  opacity: 0;
+}
+.line-loader.loading{
+    opacity: 1;
+}
+.line-loader.loading .bar {
+  width: 100%;
+  position: absolute;
+  height: 5px;
+  background-color: dodgerblue;
+  animation-name: line-loader-animation;
+  animation-duration: 4s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
 }

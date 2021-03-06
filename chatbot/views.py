@@ -1,4 +1,5 @@
-from django.shortcuts import render,redirect
+from django.conf.urls import url
+from django.shortcuts import get_object_or_404, render,redirect
 from . forms import UserRegistrationForm,UserLoginForm
 from django.contrib.auth import authenticate,login,logout
 from django.contrib import messages
@@ -32,19 +33,26 @@ def show(request):
     return Response(serializer.data)
 
 
-
-
 def index(request):
     return render(request,"index.html",{})
     
-def console(request):
+def demo(request):
     return render(request,'user/conversation_console.html',{})
 
-
-@login_required(login_url='login')
+@login_required
 def dashboard(request):
-    return render(request,'user/conversation_console.html',{})
+    return redirect("user:chatbot")
 
+@login_required
+def chatbot(request):
+    context = {}
+    return render(request,'user/chatbot.html',context)
+
+@login_required
+def console(request,name):
+    context = {}
+    context['chatbot'] = get_object_or_404(request.user.chatbots,name=name)
+    return render(request,'user/conversation_console.html',context)
 
 def Register(request):
     context={}
@@ -84,9 +92,6 @@ def login_view(request):
         context['login_form']=form
 
     return render(request,'auth/login.html',context)  
-
-
-
 
 def logout_view(request):
      logout(request)

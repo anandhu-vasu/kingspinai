@@ -1,11 +1,16 @@
-from chatbot.core.bots import KingspinAI
+from chatterbot import ChatBot as Bot
+from chatbot.core.bots import CHATBOT_OPTIONS
 from chatbot.core.trainers import SophisticatedTrainer
 
 class ChatBot:
     
-    def __init__(self):
-        self._chatbot = KingspinAI
-        self._name = self._chatbot.name
+    def __init__(self,name):
+        self._name = name
+        self._chatbot = Bot(
+            name = self._name,
+            botkey = self._name,
+            **CHATBOT_OPTIONS
+        )
 
     @property
     def name(self):
@@ -20,6 +25,3 @@ class ChatBot:
 
     def save(self,dataset):
         self._chatbot.storage.dataset = dataset
-
-    def reponse(text):
-        print(KingspinAI.get_response(text))

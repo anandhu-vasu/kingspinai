@@ -11,15 +11,15 @@ Dashboard
 
 <div class="main-content">
     <section class="section">
-        <div x-data="conversationConsole()" x-init="" class="card card-hero border-0 shadow">
-            <div class="card-header row">
+        <div x-data="conversationConsole()" x-init="" class="card card-hero border-0 shadow hecon bg{{ chatbot.id|stringformat:'d'|last}}">
+            <div class="card-header row border-0">
                 <div class="card-icon">
                     <i class="fas fa-terminal"></i>
                 </div>
                 <h6 style="margin-top: -30px;margin-left: -20px;">Conversation Console</h6>
                 <div class="row">
                     <div class="col p-0">
-                        {% unicorn 'console-actionbar' corpus='[]' %}
+                        {% unicorn 'console-actionbar' name=chatbot.name %}
                     </div>
                 </div>
             </div>

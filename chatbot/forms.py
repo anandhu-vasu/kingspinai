@@ -8,7 +8,7 @@ from chatbot.models import User
 class UserRegistrationForm(UserCreationForm): 
     class Meta: 
         model = User 
-        fields = ('email','username','company_name','phone','password1','password2')
+        fields = ('email','name','company_name','phone','password1','password2')
      
 
 class UserLoginForm(forms.ModelForm):
