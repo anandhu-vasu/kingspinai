@@ -34,7 +34,8 @@ class UserManager(BaseUserManager):
             
             phone=phone,
             password=password
-        )    
+        )
+        user.is_staff=True
         user.is_admin=True
         user.is_superuser=True
         user.save(using=self._db)
@@ -52,8 +53,8 @@ class User(AbstractBaseUser):
     last_login=models.DateTimeField(verbose_name="last login",auto_now=True)
     is_admin=models.BooleanField(default=False)
     is_active=models.BooleanField(default=True)
-    is_staff=models.BooleanField(default=True)
-    is_superuser=models.BooleanField(default=True)
+    is_staff=models.BooleanField(default=False)
+    is_superuser=models.BooleanField(default=False)
     
     USERNAME_FIELD="email"
     REQUIRED_FIELDS=["company_name","name","phone"]

@@ -40,6 +40,10 @@ def demo(request):
     return render(request,'user/conversation_console.html',{})
 
 @login_required
+def user(request):
+    return redirect("user:dashboard")
+
+@login_required
 def dashboard(request):
     return redirect("user:chatbot")
 

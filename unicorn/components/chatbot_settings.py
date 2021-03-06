@@ -65,9 +65,10 @@ class ChatbotSettingsForm(forms.ModelForm):
                 pk=self.data["id"]
             if Chatbot.objects.exclude(pk=pk).filter(**{field:val}).exists():
                 raise ValidationError({field:[ValidationError(message=f"Chatbot with this {field.replace('_',' ').title()} already exists.",code="unique")]})
+            return val
         except KeyError:
             pass
-        return val
+        
 
 
 class ChatbotSettingsView(UnicornView):

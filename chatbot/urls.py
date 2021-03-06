@@ -21,5 +21,6 @@ urlpatterns = [
     path('login',views.login_view,name="login"),
     path('logout',views.logout_view,name="logout"),
 
+    path('user',views.user,name="user"),
     path('user/dashboard/',include((dashboard_urlpatterns,appname),namespace="user"))
 ]
