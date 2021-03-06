@@ -3,6 +3,8 @@ from django.db import models
 from django.conf import settings
 
 import string,random
+
+from django.utils import timezone
    
 def id_generator(size=10, chars=string.ascii_letters + string.digits):
         return ''.join(random.choice(chars) for _ in range(size))
@@ -17,6 +19,9 @@ class Chatbot(models.Model):
     telegram_key = models.CharField(max_length=255,null=True,unique=True)
     dataset = models.JSONField(default=list)
     ner_model = models.BinaryField(null=True)
+    created_at = models.DateTimeField(
+        default=timezone.now
+    )
 
     def __str__(self):
         return self.name
