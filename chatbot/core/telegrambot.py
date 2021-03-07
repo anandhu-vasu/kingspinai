@@ -1,8 +1,13 @@
+import importlib
+import os
+
+import telegram
 from chatbot.core.chatbot import ChatBot
-from telegram.ext import CommandHandler, MessageHandler, Filters
+from telegram.ext import CommandHandler, MessageHandler, Filters, Dispatcher, Updater
 from django_telegrambot.apps import DjangoTelegramBot
 import logging
 from django.conf import settings
+
 
 logger = logging.getLogger(__name__)
 
@@ -41,7 +46,10 @@ def main():
     # To get Dispatcher related to a specific bot
     # dp = DjangoTelegramBot.getDispatcher('BOT_n_token')     #get by bot token
     # dp = DjangoTelegramBot.getDispatcher('BOT_n_username')  #get by bot name
-    for bot in settings.DJANGO_TELEGRAMBOT['BOTS']:
+
+    bots = settings.DJANGO_TELEGRAMBOT['BOTS']
+
+    for bot in bots:
 
         dp = DjangoTelegramBot.getDispatcher(bot["TOKEN"])     #get by bot token
 
@@ -49,3 +57,5 @@ def main():
         dp.add_handler(CommandHandler("help", help))
 
         dp.add_handler(MessageHandler(Filters.text, reply))
+
+

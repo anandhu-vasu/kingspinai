@@ -11,7 +11,7 @@ def _BOT_KEYS()->list:
         result = connection.execute(query)
         return [ {'TOKEN':x[0]} for x in result.fetchall()]
     except:
-        return []
+        return [{'TOKEN':'123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11'}]
 
 
 DJANGO_TELEGRAMBOT = {
@@ -25,14 +25,9 @@ DJANGO_TELEGRAMBOT = {
     'WEBHOOK_PREFIX' : '/telegrambot', # (Optional[str]) # If this value is specified,
                                   # a prefix is added to webhook url                 #certificate.(More info at https://core.telegram.org/bots/self-signed )
 
-    'BOTS' : [
-        # {
-        #    'TOKEN': '1591577456:AAFoSp4IrLO0u293iRqyIQW0iOcd9Ml3OW0', #Your bot token.
-        # },
-        {
-            'TOKEN':'123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11'
-        },
-        *_BOT_KEYS()
-    ],
+    'BOTS' : _BOT_KEYS(),
 
 }
+# {
+#    'TOKEN': '1591577456:AAFoSp4IrLO0u293iRqyIQW0iOcd9Ml3OW0', #Your bot token.
+# },

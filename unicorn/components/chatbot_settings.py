@@ -1,9 +1,18 @@
+from chatbot.core.telebot import TeleBot
 from django_unicorn.components import UnicornView
 from django import forms
 from django.forms.models import model_to_dict
 from django.core.exceptions import ValidationError
 import telegram
 from chatbot.core.models import Chatbot
+from django_telegrambot.apps import DjangoTelegramBot,TELEGRAM_BOT_MODULE_NAME
+from django.apps import apps
+
+import logging
+
+logger = logging.getLogger(__name__)
+
+
 
 def validate_chatbot_telegram_key(token):
     try:
@@ -68,8 +77,6 @@ class ChatbotSettingsForm(forms.ModelForm):
         except KeyError:
             pass
         
-
-
 class ChatbotSettingsView(UnicornView):
     form_class = ChatbotSettingsForm
 
@@ -108,11 +115,11 @@ class ChatbotSettingsView(UnicornView):
     def updated_chatbot_telegram_status(self,value):
         if self.is_valid(['telegram_status']):
             self.chatbot.save(update_fields=['telegram_status'])
-            try:
-                from chatbot.core import telegrambot
-                telegrambot.main()
-            except:
-                pass
+            if self.chatbot.telegram_status:
+                TeleBot.setWebhook(self.chatbot.telegram_key)
+            else:
+                TeleBot.deleteWebhook(self.chatbot.telegram_key)
+            
 
     def set_chatbot(self,pk):
         self.reset()
