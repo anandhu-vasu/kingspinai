@@ -16,7 +16,7 @@ def _BOT_KEYS()->list:
 
 DJANGO_TELEGRAMBOT = {
 
-    'MODE' : 'POLLING', #(Optional [str]) # The default value is WEBHOOK,
+    'MODE' : 'WEBHOOK', #(Optional [str]) # The default value is WEBHOOK,
                         # otherwise you may use 'POLLING'
                         # NB: if use polling you must provide to run
                         # a management command that starts a worker
@@ -26,9 +26,9 @@ DJANGO_TELEGRAMBOT = {
                                   # a prefix is added to webhook url                 #certificate.(More info at https://core.telegram.org/bots/self-signed )
 
     'BOTS' : [
-        {
-           'TOKEN': '1591577456:AAFoSp4IrLO0u293iRqyIQW0iOcd9Ml3OW0', #Your bot token.
-        },
+        # {
+        #    'TOKEN': '1591577456:AAFoSp4IrLO0u293iRqyIQW0iOcd9Ml3OW0', #Your bot token.
+        # },
         *_BOT_KEYS()
     ],
 
