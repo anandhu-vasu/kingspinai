@@ -9,9 +9,13 @@ def _BOT_KEYS()->list:
         chatbot = db.Table('core_chatbot', metadata, autoload=True, autoload_with=engine)   
         query = db.select([chatbot.columns.telegram_key]).where(chatbot.columns.telegram_status==1)
         result = connection.execute(query)
-        return [ {'TOKEN':x[0]} for x in result.fetchall()]
+        rows = result.fetchall()
+        if rows:
+            return [ {'TOKEN':x[0]} for x in rows]
+        else:
+            return [{'TOKEN':'1639137992:AAGNJ_-zOm5DwTMnx6zEEaTY9VoZCUFULUM'}]
     except:
-        return [{'TOKEN':'123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11'}]
+        return [{'TOKEN':'1639137992:AAGNJ_-zOm5DwTMnx6zEEaTY9VoZCUFULUM'}]
 
 
 DJANGO_TELEGRAMBOT = {
