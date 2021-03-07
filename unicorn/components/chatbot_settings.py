@@ -1,4 +1,3 @@
-from enum import unique
 from django_unicorn.components import UnicornView
 from django import forms
 from django.forms.models import model_to_dict
@@ -104,10 +103,15 @@ class ChatbotSettingsView(UnicornView):
             self.chatbot.telegram_status = False
             self.chatbot.save(update_fields=["telegram_status"])
             self.telegram_bot = False
+            
 
     def updated_chatbot_telegram_status(self,value):
         if self.is_valid(['telegram_status']):
             self.chatbot.save(update_fields=['telegram_status'])
+            try:
+                from chatbot.core import telegrambot
+            except:
+                pass
 
     def set_chatbot(self,pk):
         self.reset()
