@@ -26,8 +26,12 @@ def reply(update, context):
     if message.lower() == 'bye':
         context.bot.sendMessage(chat_id=update.message.chat_id, text='Bye')
     else:
-        response = ChatBot(context.bot.token,telegram=True).reply(message)
-        context.bot.sendMessage(chat_id=update.message.chat_id, text=str(response))
+        try:
+            response = ChatBot(context.bot.token,telegram=True).reply(message)
+            context.bot.sendMessage(chat_id=update.message.chat_id, text=str(response))
+        except:
+            context.bot.sendMessage(chat_id=update.message.chat_id, text='You are Restricted...!')
+            context.bot.sendMessage(chat_id=update.message.chat_id, text='Sorry for the Inconvenience')
 
 def main():
     logger.info("Loading handlers for telegram bot")

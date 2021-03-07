@@ -29,6 +29,9 @@ DJANGO_TELEGRAMBOT = {
         # {
         #    'TOKEN': '1591577456:AAFoSp4IrLO0u293iRqyIQW0iOcd9Ml3OW0', #Your bot token.
         # },
+        {
+            'TOKEN':'123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11'
+        },
         *_BOT_KEYS()
     ],
 
