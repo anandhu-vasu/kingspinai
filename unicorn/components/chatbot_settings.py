@@ -110,6 +110,7 @@ class ChatbotSettingsView(UnicornView):
             self.chatbot.save(update_fields=['telegram_status'])
             try:
                 from chatbot.core import telegrambot
+                telegrambot.main()
             except:
                 pass
 
