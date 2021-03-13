@@ -7,11 +7,15 @@
 Dashboard
 {% endblock title %}
 
+{% block head %}
+    <script src="{% static 'user/js/chatbox.js' %}" defer></script>
+{% endblock head %}
+    
 {% block content %}
 
 <div class="main-content">
     <section class="section">
-        <div x-data="conversationConsole()" x-init="" class="card card-hero border-0 shadow hecon bg{{ chatbot.id|stringformat:'d'|last}}">
+        <div x-data="conversationConsole()" x-init="init()" class="card card-hero border-0 shadow hecon bg{{ chatbot.id|stringformat:'d'|last}}">
             <div class="card-header row border-0">
                 <div class="card-icon">
                     <i class="fas fa-terminal"></i>
@@ -27,7 +31,7 @@ Dashboard
             <div class="card-body position-relative" style="height: calc(100vh - 230px)">
                 <div class="d-flex flex-nowrap stories h-100 align-items-stretch w-100 pb-1" x-on:keydown.escape.window="cancelTransmit()">
                     <template x-for="(story,i) in stories" :key="'#'+i">
-                        <div class="col-sm-12 col-md-6 col-lg-4 position-relative">
+                        <div class="col-sm-12 col-md-12 col-lg-6 position-relative">
                             <div class="shadow story h-100 p-2">
                                 <div class="scroll-wrapper">
                                     <div class="position-relative">
@@ -58,6 +62,14 @@ Dashboard
                                     <div class="text-center mb-2"><b>Conversations</b></div>
                                         <template x-for="(conversation,k) in story.conversations" :key="'#'+i+'*'+k">
                                             <div class="p-2 conversation" x-bind:style="(transmit.from && transmit.from[0]==i && transmit.from[1]==k)?`background-color: lightgreen;`:''">
+                                                <template x-if="conversation.intent" :key="conversation.intent">
+                                                    <div class="intent text-center">
+                                                        <small class="text-center mb-0 mt-2 p-1 px-2">Intent</small>
+                                                        <div>
+                                                            <input x-model.debounce.750="stories[i].conversations[k].intent" @input.debounce.750="validateUniqueIntent(i,k)" class="form-control border-0 py-0 shadow">
+                                                        </div>
+                                                    </div>
+                                                </template>
                                                 <div class="statement shadow position-relative">
                                                     <template x-for="(statement, l) in conversation.statements" :key="'#'+i+'*'+k+'!'+l">
                                                         <div class="position-relative">
@@ -72,6 +84,7 @@ Dashboard
                                                     </div>
                                                 </div>
                                                 <div class="p-1 cdelete">
+                                                    <button x-on:click="addIntent($event,i,k)" class="btn py-0 btn-icon btn-sm btn-dark rounded-circle shadow-none" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Add Intent"><i class="fas fa-boxes"></i></button>
                                                     <button x-on:click="moveConversation(i,k)" class="btn py-0 btn-icon btn-sm btn-info rounded-circle shadow-none" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Move Conversation"><i class="fas fa-arrows-alt"></i></button>
                                                     <button x-on:click="cloneConversation($event,i,k)" class="btn py-0 btn-icon btn-sm btn-success rounded-circle shadow-none" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Clone Conversation"><i class="fas fa-clone"></i></button>
                                                     <button x-on:click="removeConversation($event,i,k)" class="btn py-0 btn-icon btn-sm btn-danger rounded-circle shadow-none" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Remove Conversation"><i class="fas fa-trash"></i></button>
@@ -108,7 +121,7 @@ Dashboard
                 </div>
                 <div class="row story-actionbar">
                     <button x-on:click="addStory()" class="btn btn-icon btn-secondary rounded-circle" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Add Story"><i class="fas fa-plus"></i></button>
-                    <button x-on:click="$undo();notifyNiceScroll(null,true);" x-bind:disabled="$history.length==0" class="btn btn-icon btn-dark rounded-circle position-relative ml-1" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Undo"><i class="fas fa-undo"></i> <span class="badge badge-transparent position-absolute" style="right: 1px;" x-text="$history.length"></span></button>
+                    <button x-on:click="$undo();notifyUI(null,true);" x-bind:disabled="$history.length==0" class="btn btn-icon btn-dark rounded-circle position-relative ml-1" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Undo"><i class="fas fa-undo"></i> <span class="badge badge-transparent position-absolute" style="right: 1px;" x-text="$history.length"></span></button>
                 </div>
             </div>
         </div>
@@ -119,4 +132,9 @@ Dashboard
 
 {% block script %}
     <script src="{% static 'user/js/conversation_console.js' %}"></script>
+    <script>
+        window.onload=()=>{if(KingSpinAI.$status == "NOT INITIALIZED"){
+            KingSpinAI.Initialize(`{{token}}`.replace(/&quot;/g,'"'),{title:`{{chatbot.name}}`,subtitle:"Testing"})
+        }}
+    </script>
 {% endblock script %}

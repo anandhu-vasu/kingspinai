@@ -1,36 +1,10 @@
-from django.conf.urls import url
 from django.shortcuts import get_object_or_404, render,redirect
 from . forms import UserRegistrationForm,UserLoginForm
 from django.contrib.auth import authenticate,login,logout
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from .serializers import detailsSerializer
-from rest_framework import serializers
-
+from rest_framework_simplejwt.tokens import RefreshToken
+import json
 from .models import *
-
-
-@api_view(['GET'])
-def home(request):
-    api_urls ={
-    #  'List':'/show/',
-     'show':'/show/',
-
-
-
-        }
-    return Response(api_urls)
-
-
-@api_view(['GET'])
-
-def show(request):
-    detail=User.objects.all()
-    serializer=detailsSerializer(detail,many=True)
-    return Response(serializer.data)
 
 
 def index(request):
@@ -56,6 +30,17 @@ def chatbot(request):
 def console(request,name):
     context = {}
     context['chatbot'] = get_object_or_404(request.user.chatbots,name=name)
+    refresh = RefreshToken.for_user(request.user)
+    refresh['chatbot'] = name
+    refresh['uid'] = "TESTING"
+    refresh['uname'] = request.user.name
+
+    context['token'] = {
+        'refresh': str(refresh),
+        'access': str(refresh.access_token),
+        'expiry': str(refresh.access_token["exp"])
+    }
+    context['token'] = json.dumps(context['token'])
     return render(request,'user/conversation_console.html',context)
 
 def Register(request):

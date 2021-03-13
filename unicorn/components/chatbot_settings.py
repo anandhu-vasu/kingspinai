@@ -29,7 +29,7 @@ class ChatbotSettingsForm(forms.ModelForm):
 
     class Meta:
         model = Chatbot
-        fields = ('name', 'telegram_key', 'telegram_status')
+        fields = ('name', 'telegram_key', 'telegram_status','data_url','data_key')
         error_messages = {
             
         }
@@ -92,7 +92,14 @@ class ChatbotSettingsView(UnicornView):
             self.chatbot.save(update_fields=['name'])
             self.cached_name = self.chatbot.name
             self.call("refreshChatbotSettingsComponent")
-            
+
+    def updated_chatbot_data_url(self, value):
+        if self.is_valid(['data_url']):
+            self.chatbot.save(update_fields=['data_url'])
+
+    def updated_chatbot_data_key(self, value):
+        if self.is_valid(['data_key']):
+            self.chatbot.save(update_fields=['data_key'])
 
     def updated_chatbot_telegram_key(self, value):
         if self.is_valid(['telegram_key']):

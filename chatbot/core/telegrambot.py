@@ -33,7 +33,8 @@ def reply(update, context):
     else:
         try:
             response = ChatBot(context.bot.token,telegram=True).reply(message)
-            context.bot.sendMessage(chat_id=update.message.chat_id, text=str(response))
+            for message in response:
+                context.bot.sendMessage(chat_id=update.message.chat_id, text=str(message))
         except:
             context.bot.sendMessage(chat_id=update.message.chat_id, text='You are Restricted...!')
             context.bot.sendMessage(chat_id=update.message.chat_id, text='Sorry for the Inconvenience')
@@ -55,6 +56,6 @@ def main():
 
             dp.add_handler(CommandHandler("start", start))
             dp.add_handler(CommandHandler("help", help))
-            dp.add_handler(MessageHandler([Filters.text], reply))
+            dp.add_handler(MessageHandler(Filters.text, reply))
 
 

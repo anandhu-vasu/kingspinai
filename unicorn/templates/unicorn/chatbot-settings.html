@@ -7,82 +7,124 @@
         .unicorn-errors .error{
             display: none;
         }
-      </style>
+    </style>
     {% if chatbot %}
-            <div class="card border-0">
-                <div class="card-header bg-primary text-light border-0 m-0">
-                    <h3> Chatbot Preferences  <small  style="opacity:0.8;"><i class="fas fa-chevron-right" style="font-size: inherit !important;"></i> <b>{{cached_name}}</b> </small></h3>
-                </div>
-                <div class="">
-                    <div class="line-loader bg-primary" style="opacity: 1;">
-                        <div class="bar shadow-lg rounded-pill" style="background-color: rgb(243, 106, 106);" ></div>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="section-title mt-0">Chatbot</div>
-                    
-                    {% if unicorn.errors.name %}
-                        <div class="unicorn-errors">
-                            <div class="mb-2">
-                                {% for e in unicorn.errors.name %}
-                                    <div class="error shadow-sm p-1 text-danger font-weight-bold"> {{e.message}}</div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    {% endif %}
-                    <div class="form-group">
-                        <label>Unique Name</label>
-                        <input unicorn:model.lazy="chatbot.name" unicorn:dirty.class="dirtied" type="text" id="name" class="form-control dirtable">
-                    </div>
-                    <br>
-                    <div class="section-title mt-0">Telegram</div>
-                    {% if unicorn.errors.telegram_key %}
-                        <div class="unicorn-errors ">
-                            <div class="mb-2">
-                                {% for e in unicorn.errors.telegram_key %}
-                                    <div class="error shadow-sm p-1 text-danger font-weight-bold">{{e.message}}</div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    {% endif %}
-                    <div class="form-group">
-                        <label>Bot Token</label>
-                        <div class="input-group">
-                        <div class="input-group-prepend">
-                            <div class="input-group-text" style="background: radial-gradient( #1c92d2, #9ee8f7 );color:#fff;">
-                                <i class="fas fa-key"></i>
-                            </div>
-                        </div>
-                            <input unicorn:model.lazy="chatbot.telegram_key" unicorn:dirty.class="dirtied" type="text" class="form-control dirtable">
-                        </div>
-                    </div>                
-                    <div class="form-group text-center">
-                        
-                        {% if telegram_bot %}
-                            
-                            <div class="p-3 d-inline-flex align-items-center justify-content-center shadow rounded bg-light animated rubberBand">
-                                <h4 class="my-auto"><i class="fab fa-telegram px-2" style="font-size: inherit;color:#0088cc;"></i></h4>
-                                <div class="">
-                                    <h4 class="my-auto px-2">@{{telegram_bot}}</h4>
-                                </div>
-                                <label class="custom-switch px-2">
-                                    <input unicorn:model="chatbot.telegram_status" unicorn:dirty.class="dirtied" type="checkbox" name="custom-switch-checkbox" class="custom-switch-input">
-                                    <span class="custom-switch-indicator"></span>
-                                    <span class="custom-switch-description">
-                                    {% if chatbot.telegram_status == 1 %}
-                                        &nbsp;Enabled
-                                    {% else %}
-                                        Disabled
-                                    {% endif %}
-                                    </span>
-                                    
-                                </label>
-                            </div>    
-
-                        {% endif %}
-
-                    </div>
+        <div class="card border-0">
+            <div class="card-header bg-primary text-light border-0 m-0">
+                <h3> Chatbot Preferences  <small  style="opacity:0.8;"><i class="fas fa-chevron-right" style="font-size: inherit !important;"></i> <b>{{cached_name}}</b> </small></h3>
+            </div>
+            <div class="">
+                <div class="line-loader bg-primary" style="opacity: 1;">
+                    <div class="bar shadow-lg rounded-pill" style="background-color: rgb(243, 106, 106);" ></div>
                 </div>
             </div>
+            <div class="card-body">
+                <div class="section-title mt-0">Chatbot</div>
+                
+                {% if unicorn.errors.name %}
+                    <div class="unicorn-errors">
+                        <div class="mb-2">
+                            {% for e in unicorn.errors.name %}
+                                <div class="error shadow-sm p-1 text-danger font-weight-bold"> {{e.message}}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+                <div class="form-group">
+                    <label>Unique Name</label>
+                    <input unicorn:model.lazy="chatbot.name" unicorn:dirty.class="dirtied" type="text" id="name" class="form-control dirtable">
+                </div>
+                <br>
+                <div class="section-title mt-0">Data Fetch</div>
+                {% if unicorn.errors.data_url %}
+                    <div class="unicorn-errors ">
+                        <div class="mb-2">
+                            {% for e in unicorn.errors.data_url %}
+                                <div class="error shadow-sm p-1 text-danger font-weight-bold">{{e.message}}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+                <div class="form-group">
+                    <label>URL</label>
+                    <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text bg-success" style="color:#fff;">
+                            <i class="fas fa-link"></i>
+                        </div>
+                    </div>
+                        <input unicorn:model.lazy="chatbot.data_url" unicorn:key="dataurlKey" unicorn:dirty.class="dirtied" type="text" class="form-control dirtable">
+                    </div>
+                </div>  
+                {% if unicorn.errors.data_key %}
+                    <div class="unicorn-errors ">
+                        <div class="mb-2">
+                            {% for e in unicorn.errors.data_key %}
+                                <div class="error shadow-sm p-1 text-danger font-weight-bold">{{e.message}}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+                <div class="form-group">
+                    <label>Key</label>
+                    <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text bg-success" style="color:#fff;">
+                            <i class="fas fa-key"></i>
+                        </div>
+                    </div>
+                        <input unicorn:model.lazy="chatbot.data_key"  unicorn:key="datakeyKey" unicorn:dirty.class="dirtied" type="text" class="form-control dirtable">
+                    </div>
+                </div>  
+                <br>
+                <div class="section-title mt-0">Telegram</div>
+                {% if unicorn.errors.telegram_key %}
+                    <div class="unicorn-errors ">
+                        <div class="mb-2">
+                            {% for e in unicorn.errors.telegram_key %}
+                                <div class="error shadow-sm p-1 text-danger font-weight-bold">{{e.message}}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+                <div class="form-group">
+                    <label>Bot Token</label>
+                    <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text" style="background: radial-gradient( #1c92d2, #9ee8f7 );color:#fff;">
+                            <i class="fas fa-key"></i>
+                        </div>
+                    </div>
+                        <input unicorn:model.lazy="chatbot.telegram_key" unicorn:dirty.class="dirtied" type="text" class="form-control dirtable">
+                    </div>
+                </div>                
+                <div class="form-group text-center">
+                    
+                    {% if telegram_bot %}
+                        
+                        <div class="p-3 d-inline-flex align-items-center justify-content-center shadow rounded bg-light animated rubberBand">
+                            <h4 class="my-auto"><i class="fab fa-telegram px-2" style="font-size: inherit;color:#0088cc;"></i></h4>
+                            <div class="">
+                                <h4 class="my-auto px-2">@{{telegram_bot}}</h4>
+                            </div>
+                            <label class="custom-switch px-2">
+                                <input unicorn:model="chatbot.telegram_status" unicorn:dirty.class="dirtied" type="checkbox" name="custom-switch-checkbox" class="custom-switch-input dirtable">
+                                <span class="custom-switch-indicator"></span>
+                                <span class="custom-switch-description">
+                                {% if chatbot.telegram_status == 1 %}
+                                    &nbsp;Enabled
+                                {% else %}
+                                    Disabled
+                                {% endif %}
+                                </span>
+                                
+                            </label>
+                        </div>    
+
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
     {% endif %}
 </div>

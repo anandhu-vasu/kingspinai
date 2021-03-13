@@ -5,22 +5,26 @@ from chatbot.core.exceptions import *
 class ConsoleActionbarView(UnicornView):
     corpus=""
     name=""
+    _chatbot=""
 
     def __init__(self, *args, **kwargs):
         super().__init__(**kwargs)
         self.name = kwargs.get('name')
-        self.chatbot = ChatBot(self.name)
+        self._chatbot = ChatBot(name=self.name)
+        print("chatbot","initialized")
 
     def mount(self):
-        self.corpus = self.chatbot.dataset()
+        print("dataset loading")
+        self.corpus = self._chatbot.dataset()
+        print("dataset loaded")
 
     def train(self):
         try:
-            self.chatbot.train()
+            self._chatbot.train()
         except EmptyTrainingDataError:
             self.call("Toast", "Training Failed!","Dataset is Empty.","error")
-        except Exception as e:
-            self.call("Toast", "Training Failed!","Something Went Wrong.","error")
+        # except Exception as e:
+        #     self.call("Toast", "Training Failed!","Something Went Wrong.","error")
         else:
             self.call("swal","Training Completed!","Your Bot is ready to go.","success")
         finally:
@@ -28,7 +32,7 @@ class ConsoleActionbarView(UnicornView):
 
     def save(self,corpus):
         try:
-            self.chatbot.save(corpus)
+            self._chatbot.save(corpus)
             self.corpus = corpus
             self.call("Toast", "Training Data Saved!","","success")
         except:

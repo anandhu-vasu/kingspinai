@@ -16,10 +16,14 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from django.urls import include, path
+from chatbot.core.api import TokenObtainPairView,TokenRefreshView
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('chatbot.urls')),
     path("unicorn/", include("django_unicorn.urls",namespace='django_unicorn')),
     url(r'^', include('django_telegrambot.urls')),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]

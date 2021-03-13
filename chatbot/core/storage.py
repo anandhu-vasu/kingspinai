@@ -1,9 +1,8 @@
 from chatterbot.storage import StorageAdapter
-from chatbot.core import constants
+from chatbot.core import chatbot, constants
 from chatbot.core.exceptions import BotkeyNotFoundError
 import json
-
-
+import pickle
 
 class DjangoStorageAdapter(StorageAdapter):
     """
@@ -236,7 +235,7 @@ class DjangoStorageAdapter(StorageAdapter):
         Remove all data from the database.
         """
         Tag = self.get_model('tag')
-        tag_ids=self.chatbot.statements.value_list("tag_id",flat=True)
+        tag_ids=self.chatbot.statements.values_list("tags",flat=True)
         tag_ids=list(set(tag_ids)) 
         self.chatbot.statements.all().delete()
         Tag.objects.filter(id__in=tag_ids).delete()
@@ -272,3 +271,24 @@ class DjangoStorageAdapter(StorageAdapter):
         """ Accept & try to save json string directly to database  """
         self.chatbot.dataset = dataset
         self.chatbot.save()
+
+    @property
+    def intent_model(self):
+        """ Return the python object from bytes form """
+        return pickle.loads(self.chatbot.intent_model)
+    @intent_model.setter
+    def intent_model(self,classifier):
+        """ Save python object as bytes """
+        self.chatbot.intent_model = pickle.dumps(classifier)
+        self.chatbot.save()
+    @property
+    def ner_model(self):
+        """ Return the python object from bytes form """
+        return pickle.loads(self.chatbot.ner_model)
+    @ner_model.setter
+    def ner_model(self,ner):
+        """ Save python object as bytes """
+        self.chatbot.ner_model = pickle.dumps(ner)
+        self.chatbot.save()
+    
+    

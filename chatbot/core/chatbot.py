@@ -3,7 +3,8 @@ from chatbot.core.config import CHATBOT_OPTIONS
 from chatbot.core.trainers import SophisticatedTrainer
 from chatbot.core.models import Chatbot as ChatbotModel
 class ChatBot:
-    
+    _name = None
+    _chatbot = None
     def __init__(self,name,telegram=False):
         if telegram:
             self._name = ChatbotModel.objects.get(telegram_key=name).name
@@ -20,6 +21,7 @@ class ChatBot:
         return self._name
 
     def train(self):
+        self._chatbot.storage.drop()
         trainer = SophisticatedTrainer(self._chatbot)
         trainer.train()
 
@@ -30,4 +32,8 @@ class ChatBot:
         self._chatbot.storage.dataset = dataset
 
     def reply(self,message):
-        self._chatbot.get_response(message)
+        try:
+            res = str(self._chatbot.get_response(message)).split("\n")
+        except:
+            res = "Sorry, Something really bad happend!"
+        return res

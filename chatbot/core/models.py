@@ -17,7 +17,10 @@ class Chatbot(models.Model):
     name = models.SlugField(max_length=255,unique=True,null=True)
     telegram_status = models.BooleanField(default=False)
     telegram_key = models.CharField(max_length=255,null=True,unique=True)
+    data_url = models.URLField(max_length=255,null=True)
+    data_key = models.CharField(max_length=255,null=True)
     dataset = models.JSONField(default=list)
+    intent_model = models.BinaryField(null=True)
     ner_model = models.BinaryField(null=True)
     created_at = models.DateTimeField(
         default=timezone.now

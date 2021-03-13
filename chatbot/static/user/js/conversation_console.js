@@ -6,6 +6,9 @@ function conversationConsole(){
             lift:false   
         },
         cached:"",
+        init(){
+            this.notifyUI()
+        },
         isDirty(){
             return this.cached.replaceAll('\"','\\\"') != this.setCorpus();
         },
@@ -16,20 +19,21 @@ function conversationConsole(){
             this.stories[i].categories.splice(j,1);
         },
         addConversation(e,i,k){
+            let conversation = {"intent":"","statements":["Statement"],"responses":["Response"]}
             if(k != null){
-                this.stories[i].conversations.splice(k,0,{"statements":["Statement"],"responses":["Response"]});
+                this.stories[i].conversations.splice(k,0,conversation);//insert to k'th position
             }else{
-                this.stories[i].conversations.push({"statements":["Statement"],"responses":["Response"]});
+                this.stories[i].conversations.push(conversation);//push to bottom
             }
-            this.notifyNiceScroll(e);
+            this.notifyUI(e);
         },
         removeConversation(e,i,k){
             this.stories[i].conversations.splice(k,1);
-            this.notifyNiceScroll(e);
+            this.notifyUI(e);
         },
         cloneConversation(e,i,k){
             this.stories[i].conversations.splice(k+1,0,this.stories[i].conversations[k]);
-            this.notifyNiceScroll(e);
+            this.notifyUI(e);
         },
         moveConversation(i,k){
             this.transmit.from=[i,k];
@@ -46,57 +50,79 @@ function conversationConsole(){
                 this.stories[this.transmit.from[0]].conversations.splice(this.transmit.from[1],1);
                 this.cancelTransmit();
             }
-            this.notifyNiceScroll(null,true);
+            this.notifyUI(null,true);
         },
         cancelTransmit(){
             this.transmit.from=null;
             this.transmit.lift=false;
         },
-        notifyNiceScroll(e,bool){
+        notifyUI(e,bool){
             if(e==null){
                 setTimeout(()=>{
                     $(".stories").getNiceScroll().resize();
                     if(bool){
                         $(".story").getNiceScroll().resize();
                     }
+                    $('[data-toggle="tooltip"]').tooltip('dispose');
+                    $('[data-toggle="tooltip"]').tooltip();
                 },1000);
             }
             else{
                 setTimeout(()=>{
                     $(e.target).parents(".story").getNiceScroll().resize();
+                    $('[data-toggle="tooltip"]').tooltip('dispose');
+                    $('[data-toggle="tooltip"]').tooltip();
                 },1000);
             }
             
-            $('[data-toggle="tooltip"]').tooltip('dispose');
-            $('[data-toggle="tooltip"]').tooltip();
         },
         addStory(){
-            this.stories.push({name:"Story "+(this.stories.length+1),categories:["Category"],conversations:[{"statements":["Statement"],"responses":["Response"]}]});
+            this.stories.push({name:"Story "+(this.stories.length+1),categories:["Category"],conversations:[{"intent":"","statements":["Statement"],"responses":["Response"]}]});
             setTimeout(()=>{$(".story").niceScroll(".scroll-wrapper");},100)
-            this.notifyNiceScroll()
+            this.notifyUI()
         },
         removeStory(i){
             this.stories.splice(i,1);
-            this.notifyNiceScroll()
+            this.notifyUI()
+        },
+        addIntent(e,i,k){
+            this.stories[i].conversations[k].intent = "intent_"+Math.floor(Date.now()).toString(36);
+            this.notifyUI(e);
+        },
+        removeIntent(e,i,k){
+            this.stories[i].conversations[k].intent = ""
+            this.notifyUI(e);
         },
         addStatement(e,i,k){
             this.stories[i].conversations[k].statements.push("Statement");
-            this.notifyNiceScroll(e);
+            this.notifyUI(e);
         },
         removeStatement(e,i,k,l){
             this.stories[i].conversations[k].statements.splice(l,1);
-            this.notifyNiceScroll(e);
+            this.notifyUI(e);
         },
         addResponse(e,i,k){
             this.stories[i].conversations[k].responses.push("Response");
-            this.notifyNiceScroll(e);
+            this.notifyUI(e);
         },
         removeResponse(e,i,k,m){
             this.stories[i].conversations[k].responses.splice(m,1);
-            this.notifyNiceScroll(e);
+            this.notifyUI(e);
         },
         setCorpus(){
             return JSON.stringify(this.stories,null,0).replaceAll('\"','\\\"');
+        },
+        validateUniqueIntent(ai,ak){
+            for(i in this.stories){
+                for(k in this.stories[i].conversations){
+                    this.stories[ai].conversations[ak].intent=this.stories[ai].conversations[ak].intent.replace(/[^_a-zA-Z0-9]+/g,"")
+                    if(""+i+k != ""+ai+ak){
+                        if(this.stories[i].conversations[k].intent == this.stories[ai].conversations[ak].intent ){
+                            this.stories[ai].conversations[ak].intent += "_"+Math.floor(Date.now()/1000).toString(36)
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -115,3 +141,5 @@ function refreshConsole(corpus){
     document.querySelector('[x-data]').__x.$data.cached=corpus;
     document.querySelector('[x-data]').__x.$data.$refresh();
 }
+
+///* (\w+)\|`([_A-Z]+)`  word|`ERD`*/

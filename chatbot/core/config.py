@@ -1,4 +1,3 @@
-from chatbot.core.corpus import TaggerLang
 from chatterbot.response_selection import get_random_response
 
 CHATBOT_OPTIONS={
@@ -10,8 +9,11 @@ CHATBOT_OPTIONS={
             "default_response": "I am sorry, but I do not understand.",
             "maximum_similarity_threshold": 0.90
         },
+        {
+            'import_path': 'chatbot.core.logic.Ingenious',
+            'default_response': 'Sorry, I don\'t understand.',
+        },
     ],
-    "tagger_language": TaggerLang("en_core_web_md"),
     "preprocessors": [
         "chatterbot.preprocessors.clean_whitespace",
         "chatbot.core.preprocessors.corrector"
