@@ -14,6 +14,20 @@ body.sidebar-mini .main-sidebar .sidebar-menu > li.li-active > a {
     background-color: #563d7c;
     color: #fff;
 }
+.console-help{
+    position: absolute;
+    top:0;
+    left: 0;
+    background: #fff;
+}
+.console-help .content{
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    position: relative;
+    letter-spacing: .3px;
+    box-shadow: inset  0 0 10px #fff;
+}
 .bicon{
     width: 50px !important;
     height: 50px !important;

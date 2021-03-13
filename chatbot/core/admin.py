@@ -10,7 +10,7 @@ class StatementAdmin(admin.ModelAdmin):
 
 @admin.register(Chatbot)
 class ChatbotAdmin(admin.ModelAdmin):
-    list_display = ('name','user','telegram_key','telegram_status','dataset','created_at')
+    list_display = ('name','user','telegram_status','data_url','created_at')
     list_filter = ('name','user','telegram_status','created_at', )
     search_fields = ('name','user','telegram_key')
 

@@ -5,4 +5,7 @@
     <button unicorn:click="train" unicorn:key="trainKey" unicorn:target="trainKey" unicorn:loading.attr="disabled" unicorn:loading.class="disabled console-actionbar-loading" data-toggle="tooltip" data-placement="bottom" data-trigger="hover" data-original-title="Train Chat Bot" class="btn btn-icon btn-primary bicon p-0 m-1 {% if corpus == '[]' %} disabled {% endif %}" {% if corpus == '[]' %} disabled {% endif %} >
         <i class="fab fa-battle-net"></i>
     </button>
+    <button x-on:click.prevent="help=true" data-toggle="tooltip" data-placement="bottom" data-trigger="hover" data-original-title="Help" class="btn btn-icon btn-primary bicon p-0 m-1" >
+        <i class="fas fa-question"></i>
+    </button>
 </div>

@@ -5,6 +5,7 @@ function conversationConsole(){
             from:null,
             lift:false   
         },
+        help:false,
         cached:"",
         init(){
             this.notifyUI()
@@ -141,5 +142,3 @@ function refreshConsole(corpus){
     document.querySelector('[x-data]').__x.$data.cached=corpus;
     document.querySelector('[x-data]').__x.$data.$refresh();
 }
-
-///* (\w+)\|`([_A-Z]+)`  word|`ERD`*/
