@@ -20,7 +20,7 @@ function conversationConsole(){
             this.stories[i].categories.splice(j,1);
         },
         addConversation(e,i,k){
-            let conversation = {"intent":"","statements":["Statement"],"responses":["Response"]}
+            let conversation = {"intent":"intent_"+Math.floor(Date.now()).toString(36),"entities":"","statements":["Statement"],"responses":["Response"]}
             if(k != null){
                 this.stories[i].conversations.splice(k,0,conversation);//insert to k'th position
             }else{
@@ -43,12 +43,18 @@ function conversationConsole(){
         placeConversation(i,k){
             if(this.transmit.lift && this.transmit.from!=null){
                 let con = this.stories[this.transmit.from[0]].conversations[this.transmit.from[1]];
-                if(k != null){
-                    this.stories[i].conversations.splice(k,0,con);
-                }else{
-                    this.stories[i].conversations.push(con);
+                if(this.transmit.from[0]==i && k!=null){
+                    this.stories[this.transmit.from[0]].conversations[this.transmit.from[1]]=this.stories[i].conversations[k]
+                    this.stories[i].conversations[k] = con
                 }
-                this.stories[this.transmit.from[0]].conversations.splice(this.transmit.from[1],1);
+                else{    
+                    if(k != null){
+                        this.stories[i].conversations.splice(k,0,con);
+                    }else{
+                        this.stories[i].conversations.push(con);
+                    }
+                    this.stories[this.transmit.from[0]].conversations.splice(this.transmit.from[1],1);
+                }
                 this.cancelTransmit();
             }
             this.notifyUI(null,true);
@@ -58,6 +64,7 @@ function conversationConsole(){
             this.transmit.lift=false;
         },
         notifyUI(e,bool){
+            $('.tooltip.show').remove()
             if(e==null){
                 setTimeout(()=>{
                     $(".stories").getNiceScroll().resize();
@@ -78,7 +85,7 @@ function conversationConsole(){
             
         },
         addStory(){
-            this.stories.push({name:"Story "+(this.stories.length+1),categories:["Category"],conversations:[{"intent":"","statements":["Statement"],"responses":["Response"]}]});
+            this.stories.push({name:"Story "+(this.stories.length+1),categories:["Category"],conversations:[{"intent":"intent_"+Math.floor(Date.now()).toString(36),"entities":[],"statements":["Statement"],"responses":["Response"]}]});
             setTimeout(()=>{$(".story").niceScroll(".scroll-wrapper");},100)
             this.notifyUI()
         },
@@ -100,6 +107,7 @@ function conversationConsole(){
         },
         removeStatement(e,i,k,l){
             this.stories[i].conversations[k].statements.splice(l,1);
+            this.extractEntities(i,k)
             this.notifyUI(e);
         },
         addResponse(e,i,k){
@@ -114,9 +122,17 @@ function conversationConsole(){
             return JSON.stringify(this.stories,null,0).replaceAll('\"','\\\"');
         },
         validateUniqueIntent(ai,ak){
+            if(!this.stories[ai].conversations[ak].intent){
+                setTimeout(()=>{
+                    if(!this.stories[ai].conversations[ak].intent){
+                        this.stories[ai].conversations[ak].intent = "intent_"+Math.floor(Date.now()).toString(36)
+                    }
+                },1000)
+            }
+            this.stories[ai].conversations[ak].intent=this.stories[ai].conversations[ak].intent.replace(/[\s]+/g,"_")
+            this.stories[ai].conversations[ak].intent=this.stories[ai].conversations[ak].intent.replace(/[^_a-zA-Z0-9]+/g,"")
             for(i in this.stories){
                 for(k in this.stories[i].conversations){
-                    this.stories[ai].conversations[ak].intent=this.stories[ai].conversations[ak].intent.replace(/[^_a-zA-Z0-9]+/g,"")
                     if(""+i+k != ""+ai+ak){
                         if(this.stories[i].conversations[k].intent == this.stories[ai].conversations[ak].intent ){
                             this.stories[ai].conversations[ak].intent += "_"+Math.floor(Date.now()/1000).toString(36)
@@ -124,6 +140,18 @@ function conversationConsole(){
                     }
                 }
             }
+        },
+        extractEntities(i,k){
+            let entities = new Set()
+
+            let regexp = /\w+\|~([_A-Z]+)~/g;
+            for(statement of this.stories[i].conversations[k].statements){
+                let matches = statement.matchAll(regexp);
+                for(let match of matches){
+                    entities.add(match[1])
+                }
+            }
+            this.stories[i].conversations[k].entities = [...entities]
         }
     }
 }

@@ -62,18 +62,26 @@ Dashboard
                                     <div class="text-center mb-2"><b>Conversations</b></div>
                                         <template x-for="(conversation,k) in story.conversations" :key="'#'+i+'*'+k">
                                             <div class="p-2 conversation" x-bind:style="(transmit.from && transmit.from[0]==i && transmit.from[1]==k)?`background-color: lightgreen;`:''">
-                                                <template x-if="conversation.intent" :key="conversation.intent">
-                                                    <div class="intent text-center">
-                                                        <small class="text-center mb-0 mt-2 p-1 px-2">Intent</small>
-                                                        <div>
-                                                            <input x-model.debounce.750="stories[i].conversations[k].intent" @input.debounce.750="validateUniqueIntent(i,k)" class="form-control border-0 py-0 shadow">
+                                                <div class="intent shadow text-center">
+                                                    <small class="text-center mb-0 mt-2 p-1 px-2">Intent</small>
+                                                    <div>
+                                                        <input x-model.debounce.750="stories[i].conversations[k].intent" @input.debounce.750="validateUniqueIntent(i,k)" class="form-control border-0 py-0 shadow">
+                                                    </div>
+                                                </div>
+                                                <template x-if="conversation.entities.length != 0">
+                                                    <div class="entities shadow p-2 text-center"> 
+                                                        <div class="entities-title"><small class="text-center mb-0 mt-2 p-1 px-2">Entities</small></div>
+                                                        <div class="">
+                                                            <template x-for="entity in conversation.entities">
+                                                                <span class="entity" x-text="entity"></span>
+                                                            </template>
                                                         </div>
                                                     </div>
                                                 </template>
                                                 <div class="statement shadow position-relative">
                                                     <template x-for="(statement, l) in conversation.statements" :key="'#'+i+'*'+k+'!'+l">
                                                         <div class="position-relative">
-                                                            <textarea class="edit-area" onkeyup="textareaResize(this)" x-model.debounce.750="stories[i].conversations[k].statements[l]"></textarea>
+                                                            <textarea class="edit-area" onkeyup="textareaResize(this)" @input.debounce.750="extractEntities(i,k)" x-model.debounce.750="stories[i].conversations[k].statements[l]"></textarea>
                                                             <div class="p-1 stdelete">
                                                                 <button x-on:click="removeStatement($event,i,k,l)" class="btn py-0 btn-icon btn-danger shadow-none btn-sm rounded-circle" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Remove Statement"><i class="fas fa-trash"></i></button>
                                                             </div>
@@ -84,7 +92,6 @@ Dashboard
                                                     </div>
                                                 </div>
                                                 <div class="p-1 cdelete">
-                                                    <button x-on:click="addIntent($event,i,k)" class="btn py-0 btn-icon btn-sm btn-dark rounded-circle shadow-none" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Add Intent"><i class="fas fa-boxes"></i></button>
                                                     <button x-on:click="moveConversation(i,k)" class="btn py-0 btn-icon btn-sm btn-info rounded-circle shadow-none" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Move Conversation"><i class="fas fa-arrows-alt"></i></button>
                                                     <button x-on:click="cloneConversation($event,i,k)" class="btn py-0 btn-icon btn-sm btn-success rounded-circle shadow-none" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Clone Conversation"><i class="fas fa-clone"></i></button>
                                                     <button x-on:click="removeConversation($event,i,k)" class="btn py-0 btn-icon btn-sm btn-danger rounded-circle shadow-none" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Remove Conversation"><i class="fas fa-trash"></i></button>
@@ -125,8 +132,8 @@ Dashboard
                 </div>
             </div>
             <div x-show.transition="help" x-on:click.away="help=false" class="console-help w-100 h-100">
-                <div class="card">
-                    <div class="card-header p-3" >
+                <div class="card border-0">
+                    <div class="card-header p-3 border-0" >
                         <h5>Help</h5>
                     </div>
                     <div class="card-body">
@@ -134,7 +141,6 @@ Dashboard
                         <div class="content">
                             <p>
                                 Stories and categories are used to organize your business idea.
-                                <blockquote>Categories are used for response generation if no intent is provided for the conversation.</blockquote>
                             </p>
                         </div>
                         <div class="section-title">Conversations</div>

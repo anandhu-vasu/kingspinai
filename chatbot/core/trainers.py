@@ -1,6 +1,5 @@
 from chatterbot import utils
 from chatterbot.trainers import Trainer
-from django.db import models
 from chatbot.core.conversation import Statement
 from chatbot.core.corpus import Corpus
 from chatbot.core.exceptions import EmptyTrainingDataError
@@ -85,9 +84,9 @@ class SophisticatedTrainer(Trainer):
                             start_index = match.span()[0]
                             ents.append([start_index,start_index+len(match.group(1)),match.group(2)])
                             text = re.sub(repatt,r"\1",text,1)
-
+                            
                         ner_dataset.append([text,{"entities":ents}])
-                        intent_dataset.append([text,conversation["intent"]])
+                        intent_dataset.append([text.lower(),conversation["intent"]])
                     else:
                         for res in conversation["responses"]:
                             statement_search_text = self.chatbot.storage.tagger.get_bigram_pair_string(stm)

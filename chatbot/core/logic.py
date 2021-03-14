@@ -24,24 +24,33 @@ class Ingenious(LogicAdapter):
         intent = None
         # Randomly select a confidence between 0 and 1
         IntentClassifier = self.chatbot.storage.intent_model
-        
-
+        # prob_dict = IntentClassifier.prob_classify(doc.lower())._prob_dict
+        # prob_dict.update((x, 2**y) for x, y in prob_dict.items())
+        # print(prob_dict)
         # intent classification
+        print()
+        print("TEXT: ",doc)
         try:
-            text_blob = TextBlob(doc, classifier=IntentClassifier)
+            text_blob = TextBlob(doc.lower(), classifier=IntentClassifier)
             for sentence in text_blob.sentences:
                 intent = sentence.classify()
+                confidence = sentence.classifier.prob_classify(sentence.raw).prob(intent)
+                print("INTENT: ",intent,confidence,(confidence >= 0.8))
+                if confidence < 0.8:
+                    response = Statement(text="Sorry, I don't understand.")
+                    response.confidence = 0
+                    return response
         except:
             pass
         
         if intent:
             #Get all entities from all statements of the obtainted intent
-            statement_entities:set = set()
+            statement_entities = set()
             for story in dataset:
                 for conversation in story["conversations"]:
                     if intent == conversation['intent']:
                         for smt in conversation["statements"]:
-                            statement_entities.update(set(re.findall(r"\|~([_A-Z]+)~",smt)))
+                            statement_entities.update(set(re.findall(r"\w+\|~([_A-Z]+)~",smt)))
 
             #Entity Extraction
             extracted_entities = {}
@@ -50,6 +59,10 @@ class Ingenious(LogicAdapter):
 
             for ent in doc.ents:
                 extracted_entities.setdefault(ent.label_,[]).append(ent.text)
+            
+            print("ENTITIES STATEMENT: ",statement_entities)
+            print("ENTITIES EXTRACTED: ",extracted_entities)
+            print()
 
             if statement_entities == set(extracted_entities.keys()):
                 for story in dataset:
@@ -79,8 +92,6 @@ class Ingenious(LogicAdapter):
                                             except:
                                                 raise exceptions.NonExtractedValueOnReply()
                                         
-
-
                                 response = Statement(text=res)
                                 response.confidence = 1
                                 return response
