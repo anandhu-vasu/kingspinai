@@ -48,6 +48,41 @@ def trainNER(training_data):
     
     return nlp
 
+def trainIntent(training_data):
+    n_iter=30
+    nlp = spacy.blank("en")
+    print("Created blank 'en' model")
+
+    if "textcat" not in nlp.pipe_names:
+        textcat=nlp.create_pipe( "textcat", config={"exclusive_classes": True, "architecture": "simple_cnn"})
+        nlp.add_pipe(textcat, last=True)
+    else:
+        textcat = nlp.get_pipe("textcat")
+
+
+    for _, annotations in training_data:
+        for intent in annotations.get("cats").keys():
+            if (intent not in textcat.labels):
+                textcat.add_label(intent)
+
+    other_pipes = [pipe for pipe in nlp.pipe_names if pipe != 'textcat']
+    with nlp.disable_pipes(*other_pipes):  # only train textcat
+        optimizer = nlp.begin_training()
+
+        print("Training the model...")
+
+        # Performing training
+        for i in range(n_iter):
+            random.shuffle(training_data)
+            losses = {}
+            batches = minibatch(training_data, size=compounding(4., 32., 1.001))
+            for batch in batches:
+                texts, annotations = zip(*batch)
+                nlp.update(texts, annotations, sgd=optimizer, drop=0.2,losses=losses)
+            print("Losses", losses)
+        
+        return nlp
+
 
 class SophisticatedTrainer(Trainer):
     def train(self, *corpus_data):
@@ -61,6 +96,14 @@ class SophisticatedTrainer(Trainer):
         intent_dataset = []
         ner_dataset = []
         repatt = r"(\w+)\|~([_A-Z]+)~"
+        # intents = []
+
+        # for story in corpus_data:
+        #     for conversation in story["conversations"]:
+        #         intent = conversation.get("intent")
+        #         if intent:
+        #             intents.append(intent)
+
 
         for corpus,categories,name in Corpus.load_from_dic(*corpus_data):
             statements_to_create = []
@@ -86,7 +129,10 @@ class SophisticatedTrainer(Trainer):
                             text = re.sub(repatt,r"\1",text,1)
                             
                         ner_dataset.append([text,{"entities":ents}])
+                        # cats = {intent:(1 if conversation["intent"]==intent else 0) for intent in intents}
+                        # intent_dataset.append([text.lower(),{"cats":cats}])
                         intent_dataset.append([text.lower(),conversation["intent"]])
+
                     else:
                         for res in conversation["responses"]:
                             statement_search_text = self.chatbot.storage.tagger.get_bigram_pair_string(stm)
@@ -107,7 +153,9 @@ class SophisticatedTrainer(Trainer):
                             statements_to_create.append(statement)
             self.chatbot.storage.create_many(statements_to_create)
 
+        print(intent_dataset)
         self.chatbot.storage.intent_model = NaiveBayesClassifier(intent_dataset)
+        # self.chatbot.storage.intent_model = trainIntent(intent_dataset)
         self.chatbot.storage.ner_model = trainNER(ner_dataset)
 
 

@@ -17,10 +17,10 @@ class DjangoStorageAdapter(StorageAdapter):
             'django_app_name',
             constants.DEFAULT_DJANGO_APP_NAME
         )
-        
-        if 'botkey' in kwargs:
+        print(kwargs.get('botkey'))
+        if 'botkey' in kwargs and kwargs.get('botkey'):
             Chatbot = self.get_model('chatbot')
-            self.chatbot = Chatbot.objects.get(name=kwargs.get('botkey'))
+            self.chatbot = Chatbot.objects.defer("dataset","ner_model","intent_model").get(name=kwargs.get('botkey'))
         else:
             raise BotkeyNotFoundError()
 

@@ -132,6 +132,7 @@ class ChatbotSettingsView(UnicornView):
         self.reset()
         self.errors.clear()
         self.chatbot = self.request.user.chatbots.get(pk=pk)
+        # self.chatbot = list(self.request.user.chatbots.values("id","name","data_url","data_key","telegram_status","telegram_key").get(id=pk))
         self.cached_name=self.chatbot.name
         try:
             self.telegram_bot = telegram.Bot(token=self.chatbot.telegram_key).username

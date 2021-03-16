@@ -5,15 +5,16 @@ from chatbot.core.exceptions import *
 class ConsoleActionbarView(UnicornView):
     corpus=""
     name=""
-    _chatbot=""
+    _chatbot=None
 
     def __init__(self, *args, **kwargs):
         super().__init__(**kwargs)
         self.name = kwargs.get('name')
-        self._chatbot = ChatBot(name=self.name)
         print("chatbot","initialized")
 
     def mount(self):
+        if not self._chatbot:
+            self._chatbot = ChatBot(name=self.name)
         print("dataset loading")
         self.corpus = self._chatbot.dataset()
         print("dataset loaded")

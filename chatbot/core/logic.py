@@ -1,7 +1,6 @@
 import random
 from chatterbot.logic import LogicAdapter
 import re
-from textblob import TextBlob
 from chatterbot.conversation import Statement
 from chatbot.core import exceptions
 
@@ -22,24 +21,20 @@ class Ingenious(LogicAdapter):
         val_pat = r"~([_a-z]+)~"
         
         intent = None
-        # Randomly select a confidence between 0 and 1
-        IntentClassifier = self.chatbot.storage.intent_model
-        # prob_dict = IntentClassifier.prob_classify(doc.lower())._prob_dict
-        # prob_dict.update((x, 2**y) for x, y in prob_dict.items())
-        # print(prob_dict)
-        # intent classification
+        # cat = self.chatbot.storage.intent_model
+        intent_classifier = self.chatbot.storage.intent_model
         print()
         print("TEXT: ",doc)
         try:
-            text_blob = TextBlob(doc.lower(), classifier=IntentClassifier)
-            for sentence in text_blob.sentences:
-                intent = sentence.classify()
-                confidence = sentence.classifier.prob_classify(sentence.raw).prob(intent)
-                print("INTENT: ",intent,confidence,(confidence >= 0.8))
-                if confidence < 0.8:
-                    response = Statement(text="Sorry, I don't understand.")
-                    response.confidence = 0
-                    return response
+            prob = intent_classifier.prob_classify(doc.lower())
+            intent = prob.max()
+            confidence = prob.prob(intent)
+            # confidence,intent = max((p, v) for (v, p) in cat(doc.lower()).cats.items())
+            print("INTENT: ",intent,confidence,(confidence >= 0.8))
+            if confidence < 0.8:
+                response = Statement(text="Sorry, I don't understand.")
+                response.confidence = 0
+                return response
         except:
             pass
         
