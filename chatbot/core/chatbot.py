@@ -3,8 +3,6 @@ from chatbot.core.config import CHATBOT_OPTIONS
 from chatbot.core.trainers import SophisticatedTrainer
 from chatbot.core.models import Chatbot as ChatbotModel
 class ChatBot:
-    _name = None
-    _chatbot = None
     def __init__(self,name,telegram=False):
         if telegram:
             self._name = ChatbotModel.objects.get(telegram_key=name).name
