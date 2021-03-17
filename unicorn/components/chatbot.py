@@ -10,9 +10,11 @@ class ChatbotView(UnicornView):
         self.refreshChatbots()
         self.nid = random.randint(0,9)
         self.call("notifyUI")
+
     def refreshChatbots(self):
-        chatbots = self.request.user.chatbots.values("id","name").all()
-        self.chatbots = list(chatbots)
+        if self.request:
+            chatbots = self.request.user.chatbots.values("id","name").all()
+            self.chatbots = list(chatbots)
 
     def create(self):
         try:
