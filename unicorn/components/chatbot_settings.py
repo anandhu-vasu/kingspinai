@@ -1,4 +1,4 @@
-from chatbot.core.telebot import TeleBot
+from chatbot.core.telegram_bot import TelegramBot
 from django_unicorn.components import UnicornView,UnicornField
 from django import forms
 from django.core.exceptions import ValidationError
@@ -132,13 +132,13 @@ class ChatbotSettingsView(UnicornView):
             
 
     def updated_chatbot_telegram_status(self,value):
-        self._chatbot.telegram_statue = value
+        self._chatbot.telegram_status = value
         if self.is_valid(['telegram_status']):
             self._chatbot.save(update_fields=['telegram_status'])
             if self.chatbot.telegram_status:
-                TeleBot.setWebhook(self.chatbot.telegram_key)
+                TelegramBot.setWebhook(self.chatbot.telegram_key)
             else:
-                TeleBot.deleteWebhook(self.chatbot.telegram_key)
+                TelegramBot.deleteWebhook(self.chatbot.telegram_key)
             
 
     def set_chatbot(self,pk):

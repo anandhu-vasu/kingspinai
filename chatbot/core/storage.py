@@ -290,5 +290,10 @@ class DjangoStorageAdapter(StorageAdapter):
         """ Save python object as bytes """
         self.chatbot.ner_model = pickle.dumps(ner)
         self.chatbot.save()
-    
+    @property
+    def data_url(self):
+        return self.chatbot.data_url
+    @property
+    def data_key(self):
+        return self.chatbot.data_key
     

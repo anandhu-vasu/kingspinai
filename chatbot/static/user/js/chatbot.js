@@ -9,14 +9,14 @@ function removeChatbot(event,name,id){
         .then((willDelete) => {
         if (willDelete) {
             $('.chatbot-btns .btn').prop('disabled', true)
-            $(event.target).find("i.far").removeClass('fa-trash-alt').addClass('loading-icon fa-spinner fa-pulse')
+            $(event.target).find("i.far").removeClass('far fa-trash-alt').addClass('loading-icon fas fa-spinner fa-pulse')
             Unicorn.call('chatbot', 'delete',id);
         }
     });
 }
 function removeChatbotFinished(){
     $('.chatbot-btns .btn').prop('disabled', false)
-    $("i.loading-icon").removeClass('loading-icon fa-spinner fa-pulse').addClass('fa-trash-alt')
+    $("i.loading-icon").removeClass('loading-icon fa-spinner fa-pulse').addClass('far fa-trash-alt')
     
 }
 

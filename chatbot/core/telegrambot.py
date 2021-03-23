@@ -53,9 +53,9 @@ def main():
     for bot in bots:
         if bot["TOKEN"] != "1639137992:AAGNJ_-zOm5DwTMnx6zEEaTY9VoZCUFULUM":
             dp = DjangoTelegramBot.getDispatcher(bot["TOKEN"])     #get by bot token
-
-            dp.add_handler(CommandHandler("start", start))
-            dp.add_handler(CommandHandler("help", help))
-            dp.add_handler(MessageHandler(Filters.text, reply))
+            if dp:
+                dp.add_handler(CommandHandler("start", start))
+                dp.add_handler(CommandHandler("help", help))
+                dp.add_handler(MessageHandler(Filters.text, reply))
 
 

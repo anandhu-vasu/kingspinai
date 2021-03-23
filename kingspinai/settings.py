@@ -29,7 +29,7 @@ SECRET_KEY = 'tlq9bz&=m-ze14=35!)lcc27!m@ex$@nd4k)!j()!%ey7&-uya'
 DEBUG = True
 #DEBUG_PROPAGATE_EXCEPTIONS = True
 
-ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1','kingspin-ai.herokuapp.com']
+# ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1','kingspin-ai.herokuapp.com']
 
 
 # Application definition
@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'chatbot',
     'chatbot.core',
-    'django_telegrambot',
+    'chatbot.core.telegram_bot',
     'django_unicorn',
     'unicorn',
     'widget_tweaks',
@@ -167,3 +167,17 @@ options = DATABASES['default'].get('OPTIONS', {})
 options.pop('sslmode', None)
 
 from chatbot.core.settings import *
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'WARNING',
+    },
+}

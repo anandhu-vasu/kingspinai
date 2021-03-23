@@ -8,13 +8,14 @@ class ConsoleActionbarView(UnicornView):
     _chatbot=None
 
     def __init__(self, *args, **kwargs):
-        super().__init__(**kwargs)
         self.name = kwargs.get('name')
+        print(self.name)
+        if not self._chatbot:
+            self._chatbot = ChatBot(name=self.name)
+        super().__init__(**kwargs)
         print("chatbot","initialized")
 
     def mount(self):
-        if not self._chatbot:
-            self._chatbot = ChatBot(name=self.name)
         print("dataset loading")
         self.corpus = self._chatbot.dataset()
         print("dataset loaded")

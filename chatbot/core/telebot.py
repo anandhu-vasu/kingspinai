@@ -59,17 +59,19 @@ class TeleBot:
 
             max_connections = 40
 
-            setted = bot.setWebhook(hookurl, certificate=certificate, timeout=timeout, max_connections=max_connections, allowed_updates=allowed_updates)
+            setted = bot.setWebhook(hookurl, certificate=certificate, timeout=timeout, max_connections=max_connections, allowed_updates=allowed_updates,drop_pending_updates=True)
             webhook_info = bot.getWebhookInfo()
             real_allowed = webhook_info.allowed_updates if webhook_info.allowed_updates else ["ALL"]
 
             bot.more_info = webhook_info
             logger.info('Telegram Bot <{}> setting webhook [ {} ] max connections:{} allowed updates:{} pending updates:{} : {}'.format(bot.username, webhook_info.url, webhook_info.max_connections, real_allowed, webhook_info.pending_update_count, setted))
+            print('Telegram Bot <{}> setting webhook [ {} ] max connections:{} allowed updates:{} pending updates:{} : {}'.format(bot.username, webhook_info.url, webhook_info.max_connections, real_allowed, webhook_info.pending_update_count, setted))
             
         except InvalidToken:
             logger.error('Invalid Token : {}'.format(token))
             return
         except TelegramError as er:
+            logger.error('Error : {}'.format(repr(er)))
             logger.error('Error : {}'.format(repr(er)))
             return
 
@@ -87,7 +89,7 @@ class TeleBot:
     def deleteWebhook(cls,token):
         try:
             bot = telegram.Bot(token=token)
-            bot.delete_webhook()
+            bot.delete_webhook(drop_pending_updates=True)
         except InvalidToken:
             logger.error('Invalid Token : {}'.format(token))
             return

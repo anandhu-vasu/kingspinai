@@ -3,14 +3,6 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from chatbot.core.chatbot import ChatBot
 
-class UserAPIView(APIView):
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request):
-        content = {'message': 'Success'}
-        print(request.data)
-        return Response(content)
-
 class ChatAPIView(APIView):
     permission_classes = (IsAuthenticated,)
 
@@ -18,7 +10,7 @@ class ChatAPIView(APIView):
         response = {"messages":[]}
         chatbot = ChatBot(request.auth.get('chatbot'))
         message = request.data.get("message","")
-        response["messages"].append(chatbot.reply(message=message))
+        response["messages"] = chatbot.reply(message=message)
         return Response(response)
     def get(self,request):
         response = {"messages":[]}

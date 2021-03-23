@@ -23,7 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('chatbot.urls')),
     path("unicorn/", include("django_unicorn.urls",namespace='django_unicorn')),
-    url(r'^', include('django_telegrambot.urls')),
+    url(r'^', include('chatbot.core.telegram_bot.urls')),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
