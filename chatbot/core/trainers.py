@@ -106,7 +106,7 @@ class SophisticatedTrainer(Trainer):
 
 
         for corpus,categories,name in Corpus.load_from_dic(*corpus_data):
-            statements_to_create = []
+            # statements_to_create = []
 
             for conversation_count, conversation in enumerate(corpus):
                 if self.show_training_progress:
@@ -133,27 +133,6 @@ class SophisticatedTrainer(Trainer):
                         # intent_dataset.append([text.lower(),{"cats":cats}])
                         intent_dataset.append([text.lower(),conversation["intent"]])
 
-                    else:
-                        for res in conversation["responses"]:
-                            statement_search_text = self.chatbot.storage.tagger.get_bigram_pair_string(stm)
-                            response_search_text = self.chatbot.storage.tagger.get_bigram_pair_string(res)
-
-                            statement = Statement(
-                                text=res,
-                                search_text=response_search_text,
-                                in_response_to=stm,
-                                search_in_response_to=statement_search_text,
-                                conversation='training'
-                            )
-
-                            statement.add_tags(*categories)
-
-                            statement = self.get_preprocessed_statement(statement)
-
-                            statements_to_create.append(statement)
-            self.chatbot.storage.create_many(statements_to_create)
-
-        print(intent_dataset)
         self.chatbot.storage.intent_model = NaiveBayesClassifier(intent_dataset)
         # self.chatbot.storage.intent_model = trainIntent(intent_dataset)
         self.chatbot.storage.ner_model = trainNER(ner_dataset)

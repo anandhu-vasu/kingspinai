@@ -39,8 +39,13 @@ function openChatbotSettings(){
     document.getElementById("chatbot-settings").__x.$data.open=true
     bindDirtyObserver()
 }
+function resetChatbotSettings(){
+    $('.chatbot-btns .btn').prop('disabled', false)
+    $("i.loading-icon").removeClass('loading-icon fa-spinner fa-pulse').addClass('fa-tools')
+}
 function showErrors(){
     $('.unicorn-errors:not(.error-shown)').addClass("error-shown").find(".error").slideDown();
+
     /* $('.has-error').removeClass("has-error").addClass("no-error")
     for ( field in Unicorn.getComponent("chatbot-settings").errors){
         $("#"+field).addClass("has-error").removeClass("no-error");
@@ -48,10 +53,18 @@ function showErrors(){
 }
 
 function bindDirtyObserver(){
+    $(".dirtable:not([type='checkbox'])").on('blur',function(){
+        $(".red-bar").removeClass("red-bar").addClass("green-bar")
+    })
+    $(".dirtable[type='checkbox']").on('change',function(){
+        $(".red-bar").removeClass("red-bar").addClass("green-bar")
+    })
     var observer = new MutationObserver(function (event) {
         if( $(".line-loader").hasClass("loading") ){
             if( $(".dirtable.dirtied").length == 0 ){
                 $(".line-loader").removeClass("loading")
+                $(".green-bar").removeClass("green-bar").addClass("red-bar")
+
             }
         }else{
             if( $(".dirtable.dirtied").length > 0 ){
@@ -68,6 +81,15 @@ function bindDirtyObserver(){
             characterData: false
         })
     })
+    
+}
+
+function tabLoading(){
+    $(".line-loader").removeClass("red-bar").addClass("loading light-bar")
+}
+
+function tabLoaded(){
+    $(".line-loader").removeClass("light-bar loading").addClass("red-bar")
 }
 
 function refreshChatbotComponent(){

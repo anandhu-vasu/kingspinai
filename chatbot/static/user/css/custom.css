@@ -582,6 +582,7 @@ input.has-error{
   padding: 0;
   position: relative;
   opacity: 0;
+  transition: all 1s;
 }
 .line-loader.loading{
     opacity: 1;
@@ -590,9 +591,65 @@ input.has-error{
   width: 100%;
   position: absolute;
   height: 5px;
-  background-color: dodgerblue;
+  background: dodgerblue;
   animation-name: line-loader-animation;
   animation-duration: 4s;
   animation-iteration-count: infinite;
-  animation-timing-function: ease-in-out;
+  animation-timing-function: cubic-bezier(.3,.3,.8,.6);
+}
+.line-loader.loading.red-bar .bar{
+    background: rgb(243, 106, 106);
+}
+.line-loader.loading.light-bar .bar{
+    background: white;
+}
+.line-loader.loading.green-bar .bar{
+    background: rgb(127, 206, 127);
+}
+
+.settings-card{
+    height: calc(100vh - 100px)  !important;
+}
+.settings-card .card-body{
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+#messages-panel .message{
+    height: 50% !important;
+    box-shadow: 0 0.3rem 1rem #563D7Caa;
+    border-radius: 5px;
+    padding: 0;
+    overflow: hidden;
+    height: 200px !important;
+    transition: all 0.5s;
+}
+#messages-panel .message:hover{
+    box-shadow: 0 0.3rem 1rem #563D7C;
+}
+#messages-panel .message-header{
+    color: #563D7C;
+    border: none;
+    font-weight: bold;
+    text-align: center;
+}
+#messages-panel textarea{
+    border: none;
+    outline: none;
+    resize: none;
+    width: 100%;
+    margin: 0;
+    background: #563D7C11;
+}
+.slim-switch{
+    height: 12px;
+    width: 28px;
+    background: #fff7;
+}
+.slim-switch:before{
+    height: 8px;
+    width: 8px;
+}
+.slim-switch-checkbox:checked+.slim-switch+.custom-switch-description{
+    color: rgb(190, 190, 190);
 }

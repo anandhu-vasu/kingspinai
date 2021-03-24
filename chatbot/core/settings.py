@@ -1,2 +1,2 @@
 
-WEBHOOK_SITE ='https://194cfebd9dfa.ngrok.io'
+WEBHOOK_SITE ='https://kingspin-ai.herokuapp.com'

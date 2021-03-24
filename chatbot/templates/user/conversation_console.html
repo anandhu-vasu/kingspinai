@@ -64,6 +64,13 @@ Dashboard
                                             <div class="p-2 conversation" x-bind:style="(transmit.from && transmit.from[0]==i && transmit.from[1]==k)?`background-color: lightgreen;`:''">
                                                 <div class="intent shadow text-center">
                                                     <small class="text-center mb-0 mt-2 p-1 px-2">Intent</small>
+                                                    <div class="form-group p-0 m-0">
+                                                        <label class="custom-switch m-0 p-0">
+                                                            <input x-model="stories[i].conversations[k].data_fetch" type="checkbox" name="custom-switch-checkbox" class="custom-switch-input slim-switch-checkbox">
+                                                            <span class="custom-switch-indicator slim-switch"></span>
+                                                            <span class="custom-switch-description">Data Fetch</span>
+                                                        </label>
+                                                    </div>
                                                     <div>
                                                         <input x-model.debounce.750="stories[i].conversations[k].intent" @input.debounce.750="validateUniqueIntent(i,k)" class="form-control border-0 py-0 shadow">
                                                     </div>

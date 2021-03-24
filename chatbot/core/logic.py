@@ -68,8 +68,10 @@ class Ingenious(LogicAdapter):
                                 data = []
                                 data_url = self.chatbot.storage.data_url
 
+                                res = re.sub(r"~uname~",self.chatbot.storage.uname,res)
+
                                 if data_url:
-                                    if re.search(r"__fetch$",intent)!=None:
+                                    if conversation['data_fetch']:
                                         _data = {
                                             "key" : self.chatbot.storage.data_key,
                                             "intent" : intent,
