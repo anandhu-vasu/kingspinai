@@ -96,7 +96,6 @@ class TelegramBotConfig(AppConfig):
             return cls.updaters[index]
 
     def ready(self) -> None:
-        print("RUNNING")
         if TelegramBotConfig.ready_run:
             return
         TelegramBotConfig.ready_run = True
