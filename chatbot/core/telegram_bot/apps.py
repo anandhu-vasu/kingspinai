@@ -5,7 +5,6 @@ import sqlalchemy as db
 
 import os
 import telegram
-from django.conf import settings
 from telegram.ext import Dispatcher
 from telegram.error import InvalidToken, TelegramError
 from telegram.ext import CommandHandler, MessageHandler, Filters

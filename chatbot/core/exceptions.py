@@ -53,3 +53,25 @@ class NonExtractedValueOnReply(ReplyError):
     
     def __str__(self) -> str:
         return self.message
+class UnAuthenticated(ReplyError):
+    def __init__(self, message="You are not Authenticated"):
+        self.message = message
+        super().__init__(self.message)
+    
+    def __str__(self) -> str:
+        return self.message
+class FacebookUserNotFound(ReplyError):
+    def __init__(self, message="You are not Authenticated"):
+        self.message = message
+        super().__init__(self.message)
+    
+    def __str__(self) -> str:
+        return self.message
+class FacebookUserNotFound(ReplyError):
+    def __init__(self, message="Facebook User Not Found"):
+        self.message = message
+        super().__init__(self.message)
+    
+    def __str__(self) -> str:
+        return self.message
+

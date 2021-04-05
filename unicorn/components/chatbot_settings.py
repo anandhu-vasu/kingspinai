@@ -1,3 +1,5 @@
+from chatbot.core.facebook_bot.views import get_facebook_page
+from chatbot.core.utils import Encrypt
 from chatbot.core.telegram_bot import TelegramBot
 from django_unicorn.components import UnicornView,UnicornField
 from django import forms
@@ -5,6 +7,8 @@ from django.forms.models import model_to_dict
 from django.core.exceptions import ValidationError
 import telegram,re
 from chatbot.core.models import Chatbot
+from django.conf import settings
+from chatbot.core.facebook_bot.apps import generate_facebook_verify_token
 
 import logging
 
@@ -25,13 +29,20 @@ def validate_chatbot_telegram_key(token):
     else:
         return token
 
+def validate_chatbot_facebook_key(token):
+    if get_facebook_page(token) == None:
+        raise ValidationError(message="Invalid facebook page access token.",code="invalid")
+    else:
+        return token
+
 class ChatbotSettingsForm(forms.ModelForm):
     name = forms.SlugField(required=True,max_length=100,min_length=3)
     telegram_key = forms.CharField(max_length=255,required=False,validators=[validate_chatbot_telegram_key])
+    facebook_key = forms.CharField(max_length=255,required=False,validators=[validate_chatbot_facebook_key])
 
     class Meta:
         model = Chatbot
-        fields = ('name', 'telegram_key', 'telegram_status','data_url','data_key')
+        fields = ('name', 'telegram_key', 'telegram_status','facebook_key', 'facebook_status','data_url','data_key')
         error_messages = {
             
         }
@@ -52,7 +63,7 @@ class ChatbotSettingsForm(forms.ModelForm):
         """
         exclude = self._get_validation_exclusions()
         try:
-            self.instance.validate_unique(exclude=[*exclude,'name','telegram_key'])
+            self.instance.validate_unique(exclude=[*exclude,'name','telegram_key','facebook_key'])
         except ValidationError as e:
             self._update_errors(e)
 
@@ -86,10 +97,12 @@ class ChatbotSettingsView(UnicornView):
     messages = None
     cached_name=None
     telegram_bot = None
+    facebook_bot = None
+    facebook_verify_token = ""
+    facebook_url = ""
     tab = "general"
 
     def updated(self, name, value):
-
         if name.startswith("messages."):
             value = re.sub(r" +", " ", value)
             value = re.sub(r"\n+", "\n", value)
@@ -97,14 +110,13 @@ class ChatbotSettingsView(UnicornView):
                 setattr(self.messages,name.split('.',1)[1],value.strip())
                 self.chatbot.messages = self.messages.to_json()
                 self.chatbot.save(update_fields=['messages'])
-
-
         self.call("showErrors")
 
     def updated_chatbot_name(self, value):
         if self.is_valid(['name']):
             self.chatbot.save(update_fields=['name'])
             self.cached_name = self.chatbot.name
+            self.set_facebook_verify_token()
             self.call("refreshChatbotSettingsComponent")
 
     def updated_chatbot_data_url(self, value):
@@ -132,7 +144,6 @@ class ChatbotSettingsView(UnicornView):
             self.chatbot.save(update_fields=["telegram_status"])
             self.telegram_bot = False
             
-
     def updated_chatbot_telegram_status(self,value):
         if self.is_valid(['telegram_status']):
             self.chatbot.save(update_fields=['telegram_status'])
@@ -141,6 +152,37 @@ class ChatbotSettingsView(UnicornView):
             else:
                 TelegramBot.deleteWebhook(self.chatbot.telegram_key)
             
+    def updated_chatbot_facebook_key(self, value):
+
+        if self.is_valid(['facebook_key']):
+            self.chatbot.save(update_fields=["facebook_key"])
+            if self.chatbot.facebook_key:
+                self.facebook_bot = get_facebook_page(self.chatbot.facebook_key)
+            else:
+                self.chatbot.facebook_status = False
+                self.chatbot.save(update_fields=["facebook_status"])
+                self.facebook_bot = False
+            self.set_facebook_verify_token()
+            self.set_facebook_url()
+        else:
+            self.chatbot.facebook_status = False
+            self.chatbot.save(update_fields=["facebook_status"])
+            self.facebook_bot = False
+            
+    def updated_chatbot_facebook_status(self,value):
+        if self.is_valid(['facebook_status']):
+            self.chatbot.save(update_fields=['facebook_status'])
+            
+    def set_facebook_verify_token(self):
+        if self.chatbot.facebook_key:
+                self.facebook_verify_token = generate_facebook_verify_token(self.cached_name,self.chatbot.facebook_key)
+        else: self.facebook_verify_token = ""
+    
+    def set_facebook_url(self):
+        if self.chatbot.facebook_key:
+            self.facebook_url = "{}/facebook_bot/{}/".format(settings.WEBHOOK_SITE[:-1] if settings.WEBHOOK_SITE.endswith("/") else settings.WEBHOOK_SITE,Encrypt(self.chatbot.facebook_key).base64urlstrip.substitution())
+        else:
+            self.facebook_url = ""
 
     def set_chatbot(self,pk):
         self.errors.clear()
@@ -149,11 +191,14 @@ class ChatbotSettingsView(UnicornView):
             self.messages = ChatbotMessages(**self.chatbot.messages)
             # self.chatbot = list(self.request.user.chatbots.values("id","name","data_url","data_key","telegram_status","telegram_key").get(id=pk))
             self.cached_name=self.chatbot.name
+            self.set_facebook_verify_token()
+            self.set_facebook_url()
             self.tab = "general"
             try:
                 self.telegram_bot = telegram.Bot(token=self.chatbot.telegram_key).username
             except:
                 self.telegram_bot = None
+            self.facebook_bot = get_facebook_page(self.chatbot.facebook_key)
             self.call("openChatbotSettings")
         else:
             self.call("resetChatbotSettings")

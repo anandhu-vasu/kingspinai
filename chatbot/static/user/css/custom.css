@@ -653,3 +653,60 @@ input.has-error{
 .slim-switch-checkbox:checked+.slim-switch+.custom-switch-description{
     color: rgb(190, 190, 190);
 }
+
+.copy-btn{
+    overflow: hidden;
+    position: relative;
+    border: none;
+    transition: all 1s;
+}
+.copy-btn input{
+    position: fixed;
+    top: -100%;
+    left: -100%;
+    z-index: -100000;
+    opacity: 0;
+}
+
+.copy-btn.copied:after{
+    content: "Copied!";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    font-size: inherit;
+    padding: inherit;
+    background: #33b864;
+    animation: copy-anim 0.3s;
+    opacity: 1;
+    box-shadow: 0 0 10px #33b864 !important;
+}
+.copy-btn:after{
+    opacity: 0;
+    transition: all 1s;
+}
+.copy-btn.copied{
+    box-shadow: 0 0 10px #33b864 !important;
+}
+
+@-webkit-keyframes copy-anim {
+    0% {
+        opacity:0;
+        -webkit-transform:scale(.5,.5);
+        transform:scale(.5,.5);
+    }
+    50% {
+        opacity:1;
+    }
+}
+@keyframes copy-anim {
+    0% {
+        opacity:0;
+        -webkit-transform:scale(.5,.5);
+        transform:scale(.5,.5);
+    }
+    50% {
+        opacity:1;
+    }
+}

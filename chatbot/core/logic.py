@@ -1,6 +1,7 @@
 import random
 from chatterbot.logic import LogicAdapter
 import re,requests
+from django.contrib import auth
 from chatterbot.conversation import Statement
 from chatbot.core import exceptions
 
@@ -8,6 +9,9 @@ class Ingenious(LogicAdapter):
 
     def __init__(self, chatbot, **kwargs):
         super().__init__(chatbot, **kwargs)
+        self.uid = kwargs.get('uid','')
+        self.uname = kwargs.get('uname','')
+        self.is_auth = kwargs.get('is_auth',False)
 
 
     def can_process(self, statement):
@@ -63,6 +67,8 @@ class Ingenious(LogicAdapter):
                 for story in dataset:
                     for conversation in story["conversations"]:
                         if intent == conversation['intent']:
+                            if conversation['auth'] and not self.is_auth:
+                                raise exceptions.UnAuthenticated()
                             res = random.choice(conversation["responses"])
                             if res:
                                 data = []
@@ -74,6 +80,7 @@ class Ingenious(LogicAdapter):
                                     if conversation['data_fetch']:
                                         _data = {
                                             "key" : self.chatbot.storage.data_key,
+                                            "uid" : self.uid,
                                             "intent" : intent,
                                             "entities" : extracted_entities
                                         }

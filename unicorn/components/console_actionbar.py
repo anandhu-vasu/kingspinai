@@ -11,7 +11,7 @@ class ConsoleActionbarView(UnicornView):
         self.name = kwargs.get('name')
         print(self.name)
         if not self._chatbot:
-            self._chatbot = ChatBot(name=self.name)
+            self._chatbot = ChatBot(key=self.name)
         super().__init__(**kwargs)
         print("chatbot","initialized")
 

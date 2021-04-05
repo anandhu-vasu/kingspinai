@@ -10,7 +10,7 @@ class ChatAPIView(APIView):
 
     def post(self, request):
         response = {"messages":[]}
-        chatbot = ChatBot(request.auth.get('chatbot'),uname=request.auth.get('uname',''))
+        chatbot = ChatBot(request.auth.get('chatbot'),uname=request.auth.get('uname',''),uid=request.auth.get('uid',''))
         message = request.data.get("message","")
         response["messages"] = chatbot.reply(message=message)
         return Response(response)

@@ -13,7 +13,6 @@ dashboard_urlpatterns = [
 urlpatterns = [
 
     path('',views.index,name='index'),
-    path('demo',views.demo,name='console'),
 
     path('register',views.Register,name="register"),
     path('login',views.login_view,name="login"),

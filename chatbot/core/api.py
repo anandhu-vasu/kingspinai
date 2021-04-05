@@ -1,4 +1,7 @@
+import base64
+from chatbot.core.facebook_bot.views import get_facebook_page
 from rest_framework.exceptions import ValidationError
+import telegram
 from chatbot.core.exceptions import ChatbotNotFound
 from rest_framework_simplejwt.settings import api_settings
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -6,6 +9,8 @@ from rest_framework import serializers
 from django.contrib.auth.models import update_last_login
 from rest_framework_simplejwt.serializers import TokenObtainSerializer
 from rest_framework_simplejwt.views import TokenViewBase
+from chatbot.core.models import Auth
+from chatbot.core.utils import Encrypt
 
 class TokenObtainPairSerializer(TokenObtainSerializer):
     data = {}
@@ -28,13 +33,27 @@ class TokenObtainPairSerializer(TokenObtainSerializer):
             raise ValidationError({"chatbot": ["This field is required"]},"required")
         
         try:
-            self.user.chatbots.get(name=self.data.get("chatbot"))
+            chatbot = self.user.chatbots.get(name=self.data.get("chatbot"))
         except:
             raise ChatbotNotFound()
 
         if not "uid" in self.data.keys():
             raise ValidationError({"uid": ["This field is required"]},"required")
+        auth = self.data.get("auth",False)
+        if auth:
+            Auth.objects.update_or_create(chatbot=chatbot,uid=self.data.get("uid"),defaults={"uname":self.data.get("uname",None)})
+            data['auth']=Encrypt(self.data.get("uid")).prependrandom.base64urlstrip.substitution()
 
+        if chatbot.telegram_status and chatbot.telegram_key:
+            try:
+                data['telegram'] = telegram.Bot(token=chatbot.telegram_key).username
+            except:
+                pass
+        if chatbot.facebook_status and chatbot.facebook_key:
+            try:
+                data['facebook'] = get_facebook_page(chatbot.facebook_key)['id']
+            except:
+                pass
         return data
 
     @classmethod

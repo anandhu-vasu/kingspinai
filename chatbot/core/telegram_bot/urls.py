@@ -7,5 +7,5 @@ webhook_base = "telegram_bot/"
 
 urlpatterns = [
     url(r'admin/django-telegrambot/$', views.home, name='django-telegrambot'),
-    url(r'{}(?P<bot_token>.+?)/$'.format(webhook_base), views.webhook, name='webhook'),
+    url(r'{}(?P<bot_token>.+?)/$'.format(webhook_base), views.webhook, name='webhook.telegram'),
 ]

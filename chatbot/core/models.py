@@ -21,6 +21,8 @@ class Chatbot(models.Model):
     name = models.SlugField(max_length=255,unique=True,null=True)
     telegram_status = models.BooleanField(default=False)
     telegram_key = models.CharField(max_length=255,null=True,unique=True)
+    facebook_status = models.BooleanField(default=False)
+    facebook_key = models.CharField(max_length=255,null=True,unique=True)
     data_url = models.URLField(max_length=255,null=True)
     data_key = models.CharField(max_length=255,null=True)
     messages = models.JSONField(default=default_messages)
@@ -44,16 +46,14 @@ class Training(models.Model):
     intent_model = models.BinaryField(null=True)
     ner_model = models.BinaryField(null=True)
 
-# class Statement(AbstractBaseStatement):
-#     """
-#     A statement represents a single spoken entity, sentence or
-#     phrase that someone can say.
-#     """
-#     chatbot = models.ForeignKey(Chatbot,on_delete=models.CASCADE,related_name="statements")
+class Auth(models.Model):
+    chatbot = models.ForeignKey(Chatbot,on_delete=models.CASCADE,related_name="auth")
+    uid = models.CharField(max_length=255)
+    uname = models.CharField(max_length=255,null=True)
+    telegram = models.PositiveIntegerField(null=True)
+    facebook = models.PositiveIntegerField(null=True)
 
-
-# class Tag(AbstractBaseTag):
-#     """
-#     A label that categorizes a statement.
-#     """
-
+    def update(self, **kwargs):
+        for k, v in kwargs.items():
+            setattr(self, k, v)
+        self.save()

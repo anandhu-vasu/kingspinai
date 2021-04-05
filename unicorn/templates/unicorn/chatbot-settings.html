@@ -82,7 +82,7 @@
                             <div class="input-group">
                             <div class="input-group-prepend">
                                 <div class="input-group-text bg-success" style="color:#fff;">
-                                    <i class="fas fa-key"></i>
+                                  <i class="fas fa-key"></i>
                                 </div>
                             </div>
                                 <input unicorn:model.lazy="chatbot.data_key"  unicorn:key="datakeyKey" unicorn:dirty.class="dirtied" type="text" class="form-control dirtable">
@@ -110,11 +110,11 @@
                                 <input unicorn:model.lazy="chatbot.telegram_key" unicorn:dirty.class="dirtied" type="text" class="form-control dirtable">
                             </div>
                         </div>                
-                        <div class="form-group text-center">
+                        <div class="form-group text-center mb-0">
                             
                             {% if telegram_bot %}
                                 
-                                <div class="p-3 d-inline-flex align-items-center justify-content-center shadow rounded bg-light animated rubberBand">
+                                <div class="p-3 d-flex align-items-center justify-content-between shadow rounded bg-light animated slideInDown">
                                     <h4 class="my-auto"><i class="fab fa-telegram px-2" style="font-size: inherit;color:#0088cc;"></i></h4>
                                     <div class="">
                                         <h4 class="my-auto px-2">@{{telegram_bot}}</h4>
@@ -136,6 +136,58 @@
                             {% endif %}
 
                         </div>
+                        
+                        <br>
+                        <div class="section-title">Facebook</div>
+                        {% if unicorn.errors.facebook_key %}
+                            <div class="unicorn-errors ">
+                                <div class="mb-2">
+                                    {% for e in unicorn.errors.facebook_key %}
+                                        <div class="error shadow-sm p-1 text-danger font-weight-bold">{{e.message}}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="form-group">
+                            <label>Page Access Token</label>
+                            <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text" style="background: linear-gradient( #0084ff, #00c6ff );color:#fff;">
+                                    <i class="fas fa-key"></i>
+                                </div>
+                            </div>
+                                <input unicorn:model.lazy="chatbot.facebook_key" unicorn:dirty.class="dirtied" type="text" class="form-control dirtable">
+                            </div>
+                        </div>                
+                        <div class="form-group text-center mb-0">
+                            
+                            {% if facebook_bot %}
+                                    
+                                <div class="p-3 d-flex align-items-center justify-content-between shadow rounded bg-light animated slideInDown">
+                                    <h4 class="my-auto"><i class="fab fa-facebook-messenger px-2" style="font-size: inherit;color:#0084ff"></i></h4>
+                                    <div class="">
+                                        <h4 class="my-auto px-2">{{facebook_bot.name}}</h4>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-sm copy-btn btn-dark"><input value="{{facebook_url}}">Copy Callback URL</button>
+                                        <button class="btn btn-sm copy-btn btn-dark"><input value="{{facebook_verify_token}}">Copy Validation Token</button>
+                                    </div>
+                                    <label class="custom-switch px-2">
+                                        <input unicorn:model="chatbot.facebook_status" unicorn:dirty.class="dirtied" type="checkbox" name="custom-switch-checkbox" class="custom-switch-input dirtable">
+                                        <span class="custom-switch-indicator"></span>
+                                        <span class="custom-switch-description">
+                                        {% if chatbot.facebook_status == 1 %}
+                                            &nbsp;Enabled
+                                        {% else %}
+                                            Disabled
+                                        {% endif %}
+                                        </span>
+                                    </label>
+                                </div>
+                            {% endif %}
+                            
+                        </div>
+
                     </div>
                     <div id="messages-panel" class="tab-pane animated fadeIn position-relative  {% if tab == 'messages' %} active show {% endif %}"><!--  role="tabpanel" aria-labelledby="messages-tab" -->
                         <div class="w-100 h-100 d-flex flex-wrap">
