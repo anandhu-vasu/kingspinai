@@ -72,6 +72,7 @@ class ChatBot:
         except exceptions.UnAuthenticated:
             res = ["You are not Authenticated.","Please Login to the website."]
         except Exception as e:
+            print(e)
             res = ["Sorry, Something really bad happend!"]
         return res
 
