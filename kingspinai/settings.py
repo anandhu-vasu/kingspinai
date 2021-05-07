@@ -123,7 +123,7 @@ REST_FRAMEWORK = {
     )
 }
 
-ALLOWED_HOSTS=['0.0.0.0', 'localhost', '127.0.0.1','kingspinai-env.eba-mpirwmud.us-west-2.elasticbeanstalk.com'] 
+ALLOWED_HOSTS=['0.0.0.0', 'localhost', '127.0.0.1','kingspinai.eba-5ssf86gq.ap-south-1.elasticbeanstalk.com'] 
 CORS_ORIGIN_ALLOW_ALL = True
 
 # Internationalization
