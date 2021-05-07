@@ -8,6 +8,7 @@ staticfiles/
 *.http
 .history/
 .requirements.txt
+dependencies
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
