@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 
-import django_heroku
 
 import dj_database_url
 
@@ -83,6 +82,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'kingspinai.wsgi.application'
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
@@ -123,7 +123,7 @@ REST_FRAMEWORK = {
     )
 }
 
-ALLOWED_HOSTS=['kingspinai-env.eba-mpirwmud.us-west-2.elasticbeanstalk.com'] 
+ALLOWED_HOSTS=['0.0.0.0', 'localhost', '127.0.0.1','kingspinai-env.eba-mpirwmud.us-west-2.elasticbeanstalk.com'] 
 CORS_ORIGIN_ALLOW_ALL = True
 
 # Internationalization
@@ -162,9 +162,7 @@ try:
 except Exception as e:
   pass
 
-django_heroku.settings(locals())
-options = DATABASES['default'].get('OPTIONS', {})
-options.pop('sslmode', None)
+#from heroku_settings import *
 
 from chatbot.core.settings import *
 
