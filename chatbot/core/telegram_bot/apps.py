@@ -173,8 +173,7 @@ class TelegramBot:
             logger.error('Invalid Token : {}'.format(token))
             return
         except TelegramError as er:
-            logger.error('Error : {}'.format(repr(er)))
-            logger.error('Error : {}'.format(repr(er)))
+            logger.error('Error : {}'.format(er))
             return
 
         TelegramBotConfig.bots.append(bot)
@@ -192,7 +191,7 @@ class TelegramBot:
             logger.error('Invalid Token : {}'.format(token))
             return
         except TelegramError as er:
-            logger.error('Error : {}'.format(repr(er)))
+            logger.error('Error : {}'.format(er))
             return
         try:
             TelegramBotConfig.bots.remove(bot)

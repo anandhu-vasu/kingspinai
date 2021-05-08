@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 from pathlib import Path
 
 
-import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,8 +26,6 @@ SECRET_KEY = 'tlq9bz&=m-ze14=35!)lcc27!m@ex$@nd4k)!j()!%ey7&-uya'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 #DEBUG_PROPAGATE_EXCEPTIONS = True
-
-# ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1','kingspin-ai.herokuapp.com']
 
 
 # Application definition
@@ -82,7 +79,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'kingspinai.wsgi.application'
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
@@ -94,7 +91,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #     }
 # }
 DATABASES = {}
-DATABASES['default'] = dj_database_url.config(conn_max_age=600,ssl_require=True)
 
 AUTH_USER_MODEL = 'chatbot.User'
 LOGIN_URL = 'login'
@@ -123,7 +119,7 @@ REST_FRAMEWORK = {
     )
 }
 
-ALLOWED_HOSTS=['0.0.0.0', 'localhost', '127.0.0.1','kingspinai.eba-5ssf86gq.ap-south-1.elasticbeanstalk.com'] 
+ALLOWED_HOSTS=['*'] 
 CORS_ORIGIN_ALLOW_ALL = True
 
 # Internationalization
@@ -139,14 +135,12 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
 
 #SMTP Configuration
 
@@ -157,14 +151,15 @@ EMAIL_USE_TLS=True
 EMAIL_HOST_USER=''
 EMAIL_HOST_PASSWORD=''
 
+#from heroku_settings import *
+from aws_settings import *
+
+from chatbot.core.settings import *
+
 try:
   from local_settings import *
 except Exception as e:
   pass
-
-#from heroku_settings import *
-
-from chatbot.core.settings import *
 
 LOGGING = {
     'version': 1,
