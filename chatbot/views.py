@@ -9,6 +9,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 import json,telegram
 from .models import *
 from django.http import HttpResponse
+from django.conf import settings
+
 
 
 def index(request):
@@ -57,6 +59,7 @@ def console(request,name):
             pass
 
     context['token'] = json.dumps(context['token'])
+    context['api_url'] = settings.WEBHOOK_SITE[:-1] if settings.WEBHOOK_SITE.endswith("/") else settings.WEBHOOK_SITE
     return render(request,'user/conversation_console.html',context)
 
 def Register(request):

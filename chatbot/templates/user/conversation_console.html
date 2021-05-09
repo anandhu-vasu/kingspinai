@@ -229,7 +229,7 @@ Dashboard
     <script src="{% static 'user/js/conversation_console.js' %}"></script>
     <script>
         window.onload=()=>{if(KingSpinAI.$status == "NOT INITIALIZED"){
-            KingSpinAI.Initialize(`{{token}}`.replace(/&quot;/g,'"'),{title:`{{chatbot.name}}`,subtitle:"Testing"})
+            KingSpinAI.Initialize(`{{token}}`.replace(/&quot;/g,'"'),{url:"{{api_url}}/api/",title:`{{chatbot.name}}`,subtitle:"Testing"})
         }}
     </script>
 {% endblock script %}
