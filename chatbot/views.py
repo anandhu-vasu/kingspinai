@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from rest_framework_simplejwt.tokens import RefreshToken
 import json,telegram
 from .models import *
+from django.http import HttpResponse
 
 
 def index(request):
@@ -101,3 +102,8 @@ def logout_view(request):
      logout(request)
      return redirect("login")   
 
+def ssl_verify(request):
+    f = open('.well-known/pki-validation/30269148F03B43DFA891A56CB33FA529.txt', 'r')
+    file_content = f.read()
+    f.close()
+    return HttpResponse(file_content, content_type="text/plain")

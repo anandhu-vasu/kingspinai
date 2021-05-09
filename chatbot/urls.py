@@ -13,6 +13,9 @@ dashboard_urlpatterns = [
 urlpatterns = [
 
     path('',views.index,name='index'),
+    
+          path('.well-known/pki-validation/30269148F03B43DFA891A56CB33FA529.txt', views.ssl_verify),
+
 
     path('register',views.Register,name="register"),
     path('login',views.login_view,name="login"),
