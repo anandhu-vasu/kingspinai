@@ -1,4 +1,8 @@
 from chatbot.core.chatbot import Channel, ChatBot
+import re
+
+reg_media = r"(<(image|video)\|(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*))>)"
+
 
 def start(update, context):
     """Send a message when the command /start is issued."""
@@ -11,7 +15,14 @@ def start(update, context):
     uname = update.message.chat.first_name if update.message.chat.first_name else ''+' '+ update.message.chat.last_name if update.message.chat.last_name else ''
     response = ChatBot.intro(context.bot.token,channel=Channel.Telegram,uid=uid,uname=uname,auth=auth)
     for message in response:
-        context.bot.sendMessage(chat_id=update.message.chat_id, text=str(message))
+        match = re.search(reg_media,message)
+        if match:
+            if(match.groups()[2]=='image'):
+                context.bot.send_photo(chat_id=update.message.chat_id,photo=match.groups()[3])
+            elif match.group()[2]=='video':
+                context.bot.send_video(chat_id=update.message.chat_id, video=match.groups()[3], supports_streaming=True)
+        else:
+            context.bot.sendMessage(chat_id=update.message.chat_id, text=str(message))
 
 def help(update, context):
     """send message"""
@@ -25,7 +36,14 @@ def reply(update, context):
     try:
         response = ChatBot(context.bot.token,channel=Channel.Telegram,uname=uname,auth=auth).reply(message)
         for message in response:
-            context.bot.sendMessage(chat_id=update.message.chat_id, text=str(message))
+            match = re.search(reg_media,message)
+            if match:
+                if(match.groups()[2]=='image'):
+                    context.bot.send_photo(chat_id=update.message.chat_id,photo=match.groups()[3])
+                elif match.group()[2]=='video':
+                    context.bot.send_video(chat_id=update.message.chat_id, video=match.groups()[3], supports_streaming=True)
+            else:
+                context.bot.sendMessage(chat_id=update.message.chat_id, text=str(message))
     except Exception as e:
         print(e)
         context.bot.sendMessage(chat_id=update.message.chat_id, text='You are Restricted...!')

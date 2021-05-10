@@ -4,9 +4,11 @@ import chatbot
 from chatterbot import ChatBot as Bot
 from chatbot.core.config import CHATBOT_OPTIONS
 from chatbot.core.trainers import SophisticatedTrainer
-import re
 from enum import Enum
+import re
 
+
+reg_media = r"(\n)?(<(image|video)\|https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)>)(\n)?"
 class Channel(str,Enum):
     Web = "Web"
     Telegram = "Telegram"
@@ -68,6 +70,7 @@ class ChatBot:
                 res = re.sub(r"~uname~",self.chatbot.storage.uname,res)
             else:
                 res = str(statement)
+                res = re.sub(reg_media, r'\n\g<2>\n', res)#wrap media files
             res = res.split("\n")
         except exceptions.UnAuthenticated:
             res = ["You are not Authenticated.","Please Login to the website."]
@@ -100,5 +103,6 @@ class ChatBot:
         
         intro = chatbot.messages["INTRO"]
         intro = re.sub(r"~uname~",uname,intro)
+        intro = re.sub(reg_media, r'\n\g<2>\n', intro)#wrap media files
         return intro.split("\n")
 
