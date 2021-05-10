@@ -1,0 +1,1 @@
+web: gunicorn kingspinai.wsgi --workers=1

@@ -6,11 +6,11 @@ from django.contrib.auth import authenticate
 from chatbot.models import User
   
 class UserRegistrationForm(UserCreationForm): 
+    name =  forms.CharField(label = "Full name")
     class Meta: 
         model = User 
         fields = ('email','name','company_name','phone','password1','password2')
-     
-
+        
 class UserLoginForm(forms.ModelForm):
     password=forms.CharField(label="password", widget=forms.PasswordInput)
 

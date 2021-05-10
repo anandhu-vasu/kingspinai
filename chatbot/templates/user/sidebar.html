@@ -2,16 +2,25 @@
 <div class="main-sidebar sidebar-style-3">
     <aside id="sidebar-wrapper">
         <div class="sidebar-brand">
-            <a href="index-2.html">Kingspin AI</a>
+            <a href="/">Kingspin AI</a>
         </div>
         <div class="sidebar-brand sidebar-brand-sm">
-            <a href="index-2.html">KP</a>
+            <a href="/">KP</a>
         </div>
         <ul class="sidebar-menu">
             <li class="menu-header">Dashboard</li>
-            <li class=""><a class="nav-link" href="{% url 'user:chatbot' %}"><i class="fas fa-robot"></i> <span>Chat Bots</span></a></li>
+            <li class="">
+                <a class="nav-link" href="{% url 'user:chatbot' %}"
+                    ><i class="fas fa-robot"></i> <span>Chat Bots</span></a
+                >
+            </li>
             {% comment %}
-              <li class="li-active"><a class="nav-link" href="{% url 'user:console' %}"><i class="fas fa-terminal"></i> <span>Conversation Console</span></a></li>
+            <li class="li-active">
+                <a class="nav-link" href="{% url 'user:console' %}"
+                    ><i class="fas fa-terminal"></i>
+                    <span>Conversation Console</span></a
+                >
+            </li>
             {% endcomment %}
             <!-- <li class="dropdown">
                 <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>Dashboard</span></a>

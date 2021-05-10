@@ -151,15 +151,11 @@ EMAIL_USE_TLS=True
 EMAIL_HOST_USER=''
 EMAIL_HOST_PASSWORD=''
 
-#from heroku_settings import *
-from aws_settings import *
-
-from chatbot.core.settings import *
-
 try:
   from local_settings import *
 except Exception as e:
-  pass
+    #from heroku_settings import *
+    from aws_settings import *
 
 LOGGING = {
     'version': 1,
