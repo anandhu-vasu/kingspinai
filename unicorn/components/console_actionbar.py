@@ -22,6 +22,8 @@ class ConsoleActionbarView(UnicornView):
 
     def train(self):
         try:
+            if not self._chatbot:
+                self._chatbot = ChatBot(key=self.name)
             self._chatbot.train()
         except EmptyTrainingDataError:
             self.call("Toast", "Training Failed!","Dataset is Empty.","error")
@@ -35,11 +37,13 @@ class ConsoleActionbarView(UnicornView):
 
     def save(self,corpus):
         try:
+            if not self._chatbot:
+                self._chatbot = ChatBot(key=self.name)
             self._chatbot.save(corpus)
             self.corpus = corpus
             self.call("Toast", "Training Data Saved!","","success")
-        # except:
-        #     self.call("Toast", "Saving Failed!","Something Went Wrong.","error")
+        except:
+            self.call("Toast", "Saving Failed!","Something Went Wrong.","error")
         finally:
             self.call("refreshConsole",self.corpus)
             

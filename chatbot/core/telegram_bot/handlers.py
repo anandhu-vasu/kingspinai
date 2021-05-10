@@ -17,10 +17,10 @@ def start(update, context):
     for message in response:
         match = re.search(reg_media,message)
         if match:
-            if(match.groups()[2]=='image'):
-                context.bot.send_photo(chat_id=update.message.chat_id,photo=match.groups()[3])
-            elif match.group()[2]=='video':
-                context.bot.send_video(chat_id=update.message.chat_id, video=match.groups()[3], supports_streaming=True)
+            if(match.groups()[1]=='image'):
+                context.bot.send_photo(chat_id=update.message.chat_id,photo=match.groups()[2])
+            elif match.groups()[1]=='video':
+                context.bot.send_video(chat_id=update.message.chat_id, video=match.groups()[2], supports_streaming=True)
         else:
             context.bot.sendMessage(chat_id=update.message.chat_id, text=str(message))
 
@@ -35,16 +35,19 @@ def reply(update, context):
     auth = {"telegram":update.message.chat_id}
     try:
         response = ChatBot(context.bot.token,channel=Channel.Telegram,uname=uname,auth=auth).reply(message)
+        
+        print(response)
         for message in response:
             match = re.search(reg_media,message)
             if match:
-                if(match.groups()[2]=='image'):
-                    context.bot.send_photo(chat_id=update.message.chat_id,photo=match.groups()[3])
-                elif match.group()[2]=='video':
-                    context.bot.send_video(chat_id=update.message.chat_id, video=match.groups()[3], supports_streaming=True)
-            else:
+                if(match.groups()[1]=='image'):
+                    context.bot.send_photo(chat_id=update.message.chat_id,photo=match.groups()[2])
+                elif match.groups()[1]=='video':
+                    context.bot.send_video(chat_id=update.message.chat_id, video=match.groups()[2], supports_streaming=True)
+            elif message:
                 context.bot.sendMessage(chat_id=update.message.chat_id, text=str(message))
     except Exception as e:
         print(e)
         context.bot.sendMessage(chat_id=update.message.chat_id, text='You are Restricted...!')
         context.bot.sendMessage(chat_id=update.message.chat_id, text='Sorry for the Inconvenience')
+    
