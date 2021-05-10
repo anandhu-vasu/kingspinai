@@ -38,8 +38,8 @@ class ConsoleActionbarView(UnicornView):
             self._chatbot.save(corpus)
             self.corpus = corpus
             self.call("Toast", "Training Data Saved!","","success")
-        except:
-            self.call("Toast", "Saving Failed!","Something Went Wrong.","error")
+        # except:
+        #     self.call("Toast", "Saving Failed!","Something Went Wrong.","error")
         finally:
             self.call("refreshConsole",self.corpus)
             

@@ -3,6 +3,7 @@ from chatbot.core import chatbot, constants
 from chatbot.core.exceptions import BotkeyNotFoundError
 import json
 import pickle
+from pprint import pprint
 
 class DjangoStorageAdapter(StorageAdapter):
     """
@@ -48,7 +49,9 @@ class DjangoStorageAdapter(StorageAdapter):
     def dataset(self, dataset):
         """ Accept & save python object to database """
         if isinstance(dataset,str):
+            pprint(dataset)
             dataset = json.loads(dataset)
+            pprint(dataset)
         self.training.dataset = dataset
         self.training.save()
 
