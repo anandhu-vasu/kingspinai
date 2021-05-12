@@ -6,6 +6,7 @@ from chatbot.core.config import CHATBOT_OPTIONS
 from chatbot.core.trainers import SophisticatedTrainer
 from enum import Enum
 import re
+from textblob import TextBlob
 
 
 reg_media = r"(\n)?(<(image|video)\|https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)>)(\n)?"
@@ -64,7 +65,11 @@ class ChatBot:
 
     def reply(self,message):
         try:
-            statement = self.chatbot.get_response(message)
+            blob = TextBlob(message)
+            lang = blob.detect_language()
+            if (lang != 'en'):
+                blob=blob.translate(to='en')
+            statement = self.chatbot.get_response(str(blob))
             if statement.confidence == 0:
                 res = self.chatbot.storage.messages["UNKNOWN"]
                 res = re.sub(r"~uname~",self.chatbot.storage.uname,res)
@@ -72,6 +77,7 @@ class ChatBot:
                 res = str(statement)
                 res = re.sub(reg_media, r'\n\g<2>\n', res)#wrap media files
             res = res.split("\n")
+            res = [i if (lang == 'en' or re.match(reg_media,i)) else str(TextBlob(i).translate(to=lang)) for i in res if i]
         except exceptions.UnAuthenticated:
             res = ["You are not Authenticated.","Please Login to the website."]
         except Exception as e:

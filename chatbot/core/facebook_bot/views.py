@@ -125,8 +125,6 @@ class FacebookWebhook(generic.View):
                     except Exception as e:
                         print(e)
                         post_facebook_message(bot_token,message['sender']['id'], "Sorry for the Inconvenience.")
-                        post_facebook_message(bot_token,message['sender']['id'], "We can't process the response")
-                        
-                    
-        return HttpResponse(status=200)
+                        post_facebook_message(bot_token,message['sender']['id'], "We can't process the response") 
+            return HttpResponse("Success", status=200)
 

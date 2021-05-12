@@ -21,9 +21,7 @@ class ConsoleActionbarView(UnicornView):
         print("dataset loaded")
 
     def train(self):
-        try:
-            if not self._chatbot:
-                self._chatbot = ChatBot(key=self.name)
+        try:    
             self._chatbot.train()
         except EmptyTrainingDataError:
             self.call("Toast", "Training Failed!","Dataset is Empty.","error")
