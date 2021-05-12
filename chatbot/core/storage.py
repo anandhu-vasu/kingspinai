@@ -22,7 +22,6 @@ class DjangoStorageAdapter(StorageAdapter):
         if 'botkey' in kwargs and kwargs.get('botkey'):
             Chatbot = self.get_model('chatbot')
             self.chatbot = Chatbot.objects.get(name=kwargs.get('botkey'))
-            self.training = self.chatbot.training
         else:
             raise BotkeyNotFoundError()
         self.uname = kwargs.get('uname','')
@@ -38,7 +37,7 @@ class DjangoStorageAdapter(StorageAdapter):
     @property
     def dataset(self):
         """ Returns the value of training dataset as python object """
-        dataset = self.training.dataset
+        dataset = self.chatbot.training.dataset
         if not dataset:
             return []
         if isinstance(dataset,str):
@@ -52,12 +51,12 @@ class DjangoStorageAdapter(StorageAdapter):
             pprint(dataset)
             dataset = json.loads(dataset)
             pprint(dataset)
-        self.training.dataset = dataset
-        self.training.save()
+        self.chatbot.training.dataset = dataset
+        self.chatbot.training.save()
 
     def gets_dataset(self)->str:
         """ Returns the value of training dataset as json string """
-        dataset = self.training.dataset
+        dataset = self.chatbot.training.dataset
         if not dataset:
             return "[]"
         if not isinstance(dataset,str):
@@ -66,27 +65,27 @@ class DjangoStorageAdapter(StorageAdapter):
 
     def sets_dataset(self,dataset:str):
         """ Accept & try to save json string directly to database  """
-        self.training.dataset = dataset
-        self.training.save()
+        self.chatbot.training.dataset = dataset
+        self.chatbot.training.save()
 
     @property
     def intent_model(self):
         """ Return the python object from bytes form """
-        return pickle.loads(self.training.intent_model)
+        return pickle.loads(self.chatbot.training.intent_model)
     @intent_model.setter
     def intent_model(self,classifier):
         """ Save python object as bytes """
-        self.training.intent_model = pickle.dumps(classifier)
-        self.training.save()
+        self.chatbot.training.intent_model = pickle.dumps(classifier)
+        self.chatbot.training.save()
     @property
     def ner_model(self):
         """ Return the python object from bytes form """
-        return pickle.loads(self.training.ner_model)
+        return pickle.loads(self.chatbot.training.ner_model)
     @ner_model.setter
     def ner_model(self,ner):
         """ Save python object as bytes """
-        self.training.ner_model = pickle.dumps(ner)
-        self.training.save()
+        self.chatbot.training.ner_model = pickle.dumps(ner)
+        self.chatbot.training.save()
     @property
     def data_url(self):
         return self.chatbot.data_url

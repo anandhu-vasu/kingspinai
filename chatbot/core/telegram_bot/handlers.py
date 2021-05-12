@@ -15,14 +15,15 @@ def start(update, context):
     uname = update.message.chat.first_name if update.message.chat.first_name else ''+' '+ update.message.chat.last_name if update.message.chat.last_name else ''
     response = ChatBot.intro(context.bot.token,channel=Channel.Telegram,uid=uid,uname=uname,auth=auth)
     for message in response:
-        match = re.search(reg_media,message)
-        if match:
-            if(match.groups()[1]=='image'):
-                context.bot.send_photo(chat_id=update.message.chat_id,photo=match.groups()[2])
-            elif match.groups()[1]=='video':
-                context.bot.send_video(chat_id=update.message.chat_id, video=match.groups()[2], supports_streaming=True)
-        else:
-            context.bot.sendMessage(chat_id=update.message.chat_id, text=str(message))
+        if message:
+            match = re.search(reg_media,message)
+            if match:
+                if(match.groups()[1]=='image'):
+                    context.bot.send_photo(chat_id=update.message.chat_id,photo=match.groups()[2])
+                elif match.groups()[1]=='video':
+                    context.bot.send_video(chat_id=update.message.chat_id, video=match.groups()[2], supports_streaming=True)
+            else:
+                context.bot.sendMessage(chat_id=update.message.chat_id, text=str(message))
 
 def help(update, context):
     """send message"""
@@ -38,14 +39,15 @@ def reply(update, context):
         
         print(response)
         for message in response:
-            match = re.search(reg_media,message)
-            if match:
-                if(match.groups()[1]=='image'):
-                    context.bot.send_photo(chat_id=update.message.chat_id,photo=match.groups()[2])
-                elif match.groups()[1]=='video':
-                    context.bot.send_video(chat_id=update.message.chat_id, video=match.groups()[2], supports_streaming=True)
-            elif message:
-                context.bot.sendMessage(chat_id=update.message.chat_id, text=str(message))
+            if message:
+                match = re.search(reg_media,message)
+                if match:
+                    if(match.groups()[1]=='image'):
+                        context.bot.send_photo(chat_id=update.message.chat_id,photo=match.groups()[2])
+                    elif match.groups()[1]=='video':
+                        context.bot.send_video(chat_id=update.message.chat_id, video=match.groups()[2], supports_streaming=True)
+                else:
+                    context.bot.sendMessage(chat_id=update.message.chat_id, text=str(message))
     except Exception as e:
         print(e)
         context.bot.sendMessage(chat_id=update.message.chat_id, text='You are Restricted...!')

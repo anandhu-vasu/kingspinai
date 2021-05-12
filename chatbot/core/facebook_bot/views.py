@@ -8,6 +8,10 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views import generic
 from django.http.response import HttpResponse
 import json,requests
+import re
+
+reg_media = r"(<(image|video)\|(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*))>)"
+
 
 def post_facebook_message(access_token,fbid,message):
     post_message_url = 'https://graph.facebook.com/v2.6/me/messages?access_token={}'.format(access_token)
@@ -20,6 +24,20 @@ def get_facebook_user(access_token,fbid,fields='first_name,last_name'):
     user_details_params = {'fields':fields, 'access_token':access_token}
     user_details = requests.get(user_details_url, user_details_params).json()
     return user_details
+
+def upload_attachment(access_token,media_type,url) -> str:
+    attachment_url = "https://graph.facebook.com/v2.6/me/message_attachments?access_token={}".format(access_token)
+    attachment_data = json.dumps({"message":{"attachment":{"type":media_type, "payload":{"url":url,}}}})
+    attachment = requests.post(attachment_url, headers={"Content-Type": "application/json","Accept": "application/json"}, data=attachment_data,).json()
+    print(attachment)
+    
+    return attachment['attachment_id']
+
+def post_facebook_media(access_token,fbid,media_type,attachment_id):
+    post_message_url = 'https://graph.facebook.com/v2.6/me/messages?access_token={}'.format(access_token)
+    response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"attachment":{"type":media_type, "payload":{"attachment_id": attachment_id}}}})
+    status = requests.post(post_message_url, headers={"Content-Type": "application/json"},data=response_msg)
+    
 
 def get_facebook_page(access_token):
     try:
@@ -80,7 +98,13 @@ class FacebookWebhook(generic.View):
                         
                             response = ChatBot(bot_token,channel=Channel.Facebook,uname=uname,auth=auth).reply(msg)
                             for msg in response:
-                                post_facebook_message(bot_token,message['sender']['id'], str(msg))
+                                if msg:
+                                    match = re.search(reg_media,msg)
+                                    if match:
+                                        media_type=match.groups()[1]
+                                        post_facebook_media(bot_token,message['sender']['id'],media_type,upload_attachment(bot_token,media_type,url=match.groups()[2]))
+                                    else:
+                                        post_facebook_message(bot_token,message['sender']['id'], str(msg))
                         elif 'postback' in message:
                             if message['postback']['title'] == "Get Started":
                                 uid = ''
@@ -91,9 +115,18 @@ class FacebookWebhook(generic.View):
                                 auth = {"facebook":message['sender']['id']}
                                 response = ChatBot.intro(bot_token,channel=Channel.Facebook,uid=uid,uname=uname,auth=auth)
                                 for msg in response:
-                                    post_facebook_message(bot_token,message['sender']['id'], str(msg))
-                    except:
-                        pass
+                                    if msg:
+                                        match = re.search(reg_media,msg)
+                                        if match:
+                                            media_type=match.groups()[1]
+                                            post_facebook_media(bot_token,message['sender']['id'],media_type,upload_attachment(bot_token,media_type,url=match.groups()[2]))
+                                        else:
+                                            post_facebook_message(bot_token,message['sender']['id'], str(msg))
+                    except Exception as e:
+                        print(e)
+                        post_facebook_message(bot_token,message['sender']['id'], "Sorry for the Inconvenience.")
+                        post_facebook_message(bot_token,message['sender']['id'], "We can't process the response")
+                        
                     
-        return HttpResponse()
+        return HttpResponse(status=200)
 
