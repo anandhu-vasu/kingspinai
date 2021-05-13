@@ -158,7 +158,7 @@ class TelegramBot:
         timeout = None
         try:
             bot = telegram.Bot(token=token)
-            TelegramBotConfig.dispatchers.append(Dispatcher(bot, None, workers=0))
+            TelegramBotConfig.dispatchers.append(Dispatcher(bot, None, workers=1))
             hookurl = '{}/{}/{}/'.format(webhook_site, webhook_base, token)
 
             max_connections = 40
