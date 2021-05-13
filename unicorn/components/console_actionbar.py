@@ -8,16 +8,20 @@ class ConsoleActionbarView(UnicornView):
     _chatbot=None
 
     def __init__(self, *args, **kwargs):
-        self.name = kwargs.get('name')
-        print(self.name)
-        if not self._chatbot:
-            self._chatbot = ChatBot(key=self.name)
         super().__init__(**kwargs)
-        print("chatbot","initialized")
+        try:
+            self.name = kwargs.get('name')
+            if not self._chatbot:
+                self._chatbot = ChatBot(key=self.name)
+                self.corpus = self._chatbot.dataset()
+            print("chatbot","initialized")
+        except Exception as e:
+            print(e)
+            self.call("Toast", "Error!","Something Went Wrong.","error")
+            
 
     def mount(self):
         print("dataset loading")
-        self.corpus = self._chatbot.dataset()
         print("dataset loaded")
 
     def train(self):

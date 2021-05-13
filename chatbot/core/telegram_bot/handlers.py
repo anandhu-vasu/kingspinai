@@ -55,7 +55,7 @@ def reply(update, context):
         context.bot.sendMessage(chat_id=update.message.chat_id, text='Sorry for the Inconvenience')
     
 def voice_handler(update, context):
-    try:
+    # try:
         bot = context.bot
         file = bot.getFile(update.message.voice.file_id)
         print(update)
@@ -75,8 +75,8 @@ def voice_handler(update, context):
                         context.bot.send_video(chat_id=update.message.chat_id, video=match.groups()[2], supports_streaming=True)
                 else:
                     context.bot.sendMessage(chat_id=update.message.chat_id, text=str(message))
-    except Exception as e:
-        print(e)
-        context.bot.sendMessage(chat_id=update.message.chat_id, text='We are unable to process the response...!')
-        context.bot.sendMessage(chat_id=update.message.chat_id, text='Sorry for the Inconvenience')
+    # except Exception as e:
+    #     print(e)
+    #     context.bot.sendMessage(chat_id=update.message.chat_id, text='We are unable to process the response...!')
+    #     context.bot.sendMessage(chat_id=update.message.chat_id, text='Sorry for the Inconvenience')
     
