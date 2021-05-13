@@ -1,6 +1,8 @@
 from chatbot.core.chatbot import Channel, ChatBot
 import re
 
+import logging
+logger = logging.getLogger(__name__)
 
 reg_media = r"(<(image|video)\|(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*))>)"
 
@@ -77,6 +79,7 @@ def voice_handler(update, context):
                     context.bot.sendMessage(chat_id=update.message.chat_id, text=str(message))
     except Exception as e:
         print(e)
+        logger.error("Error: {}".format(e))
         context.bot.sendMessage(chat_id=update.message.chat_id, text='We are unable to process the response...!')
         context.bot.sendMessage(chat_id=update.message.chat_id, text='Sorry for the Inconvenience')
     

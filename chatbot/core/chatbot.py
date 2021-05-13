@@ -126,21 +126,21 @@ class ChatBot:
         audio_file = sr.AudioFile(voice_wav)
         with audio_file as source:
             audio = r.record(source)
-            try:
-                result = r.recognize_google(audio)
-                print(result)
-                res = self.reply(str(result))
-            except sr.RequestError:
-            # API was unreachable or unresponsive
-                res = ["Sorry, We are unable to process your voice"]
-            except sr.UnknownValueError:
-                # speech was unintelligible
-                res = self.chatbot.storage.messages["UNKNOWN"]
-            
-            if os.path.exists(voice):
-                os.remove(voice)
-            if os.path.exists(voice_wav):
-                os.remove(voice_wav)
+        try:
+            result = r.recognize_google(audio)
+            print(result)
+            res = self.reply(str(result))
+        except sr.RequestError:
+        # API was unreachable or unresponsive
+            res = ["Sorry, We are unable to process your voice"]
+        except sr.UnknownValueError:
+            # speech was unintelligible
+            res = self.chatbot.storage.messages["UNKNOWN"]
+        
+        if os.path.exists(voice):
+            os.remove(voice)
+        if os.path.exists(voice_wav):
+            os.remove(voice_wav)
         return res
         # res = [result]
         
