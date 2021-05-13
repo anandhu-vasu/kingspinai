@@ -7,6 +7,9 @@ from chatbot.core.trainers import SophisticatedTrainer
 from enum import Enum
 import re
 from textblob import TextBlob
+import speech_recognition as sr
+from pyffmpeg import FFmpeg
+import os
 
 
 reg_media = r"(\n)?(<(image|video)\|https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)>)(\n)?"
@@ -66,9 +69,13 @@ class ChatBot:
     def reply(self,message):
         try:
             blob = TextBlob(message)
-            lang = blob.detect_language()
-            if (lang != 'en'):
-                blob=blob.translate(to='en')
+            if len(message)>=3:
+                lang = blob.detect_language()
+                if lang != 'en':
+                    blob=blob.translate(to='en')
+            else:
+                lang = 'en'
+            
             statement = self.chatbot.get_response(str(blob))
             if statement.confidence == 0:
                 res = self.chatbot.storage.messages["UNKNOWN"]
@@ -111,4 +118,29 @@ class ChatBot:
         intro = re.sub(r"~uname~",uname,intro)
         intro = re.sub(reg_media, r'\n\g<2>\n', intro)#wrap media files
         return intro.split("\n")
-
+    
+    def replyFromVoice(self,voice):
+        r = sr.Recognizer()
+        ff = FFmpeg()
+        voice_wav = ff.convert(voice, voice.rsplit('.', 1)[0] + '.wav')
+        audio_file = sr.AudioFile(voice_wav)
+        with audio_file as source:
+            audio = r.record(source)
+        try:
+            result = r.recognize_google(audio)
+            print(result)
+            res = self.reply(str(result))
+        except sr.RequestError:
+        # API was unreachable or unresponsive
+            res = ["Sorry, We are unable to process your voice"]
+        except sr.UnknownValueError:
+            # speech was unintelligible
+            res = self.chatbot.storage.messages["UNKNOWN"]
+        
+        if os.path.exists(voice):
+            os.remove(voice)
+        if os.path.exists(voice_wav):
+            os.remove(voice_wav)
+        return res
+        # res = [result]
+        

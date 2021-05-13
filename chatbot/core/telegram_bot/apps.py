@@ -123,8 +123,9 @@ class TelegramBot:
         dispatcher = cls.getDispatcher(token)     #get by bot token
         if dispatcher:
             dispatcher.add_handler(CommandHandler("start", start))
-            dispatcher.add_handler(CommandHandler("help", help))
+            # dispatcher.add_handler(CommandHandler("help", help))
             dispatcher.add_handler(MessageHandler(Filters.text, reply))
+            dispatcher.add_handler(MessageHandler(Filters.voice, voice_handler))
 
     @classmethod
     def setWebhook(cls,token):
