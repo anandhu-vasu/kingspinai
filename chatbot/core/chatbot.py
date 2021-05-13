@@ -137,10 +137,10 @@ class ChatBot:
             # speech was unintelligible
             res = self.chatbot.storage.messages["UNKNOWN"]
         
-        if os.path.exists(voice):
-            os.remove(voice)
-        if os.path.exists(voice_wav):
-            os.remove(voice_wav)
+        # if os.path.exists(voice):
+        #     os.remove(voice)
+        # if os.path.exists(voice_wav):
+        #     os.remove(voice_wav)
         return res
         # res = [result]
         
