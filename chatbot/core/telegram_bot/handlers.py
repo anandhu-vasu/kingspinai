@@ -76,6 +76,7 @@ def voice_handler(update, context):
                 else:
                     context.bot.sendMessage(chat_id=update.message.chat_id, text=str(message))
     except Exception as e:
+        print(e)
         context.bot.sendMessage(chat_id=update.message.chat_id, text='We are unable to process the response...!')
         context.bot.sendMessage(chat_id=update.message.chat_id, text='Sorry for the Inconvenience')
     
