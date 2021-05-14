@@ -135,7 +135,7 @@ class ChatBot:
             res = ["Sorry, We are unable to process your voice"]
         except sr.UnknownValueError:
             # speech was unintelligible
-            res = [self.chatbot.storage.messages["UNKNOWN"]]
+            res = self.chatbot.storage.messages["UNKNOWN"].split("\n")
         
         if os.path.exists(voice):
             os.remove(voice)
