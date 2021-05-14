@@ -18,7 +18,7 @@ def start(update, context):
     uname = update.message.chat.first_name if update.message.chat.first_name else ''+' '+ update.message.chat.last_name if update.message.chat.last_name else ''
     response = ChatBot.intro(context.bot.token,channel=Channel.Telegram,uid=uid,uname=uname,auth=auth)
     for message in response:
-        if message:
+        if message and not message.isspace():
             match = re.search(reg_media,message)
             if match:
                 if(match.groups()[1]=='image'):
@@ -42,7 +42,7 @@ def reply(update, context):
         
         print(response)
         for message in response:
-            if message:
+            if message and not message.isspace():
                 match = re.search(reg_media,message)
                 if match:
                     if(match.groups()[1]=='image'):
@@ -57,7 +57,7 @@ def reply(update, context):
         context.bot.sendMessage(chat_id=update.message.chat_id, text='Sorry for the Inconvenience')
     
 def voice_handler(update, context):
-    # try:
+    try:
         bot = context.bot
         file = bot.getFile(update.message.voice.file_id)
         print(update)
@@ -68,7 +68,7 @@ def voice_handler(update, context):
         
         response = ChatBot(context.bot.token,channel=Channel.Telegram,uname=uname,auth=auth).replyFromVoice(voice)
         for message in response:
-            if message:
+            if message and not message.isspace():
                 match = re.search(reg_media,message)
                 if match:
                     if(match.groups()[1]=='image'):
@@ -76,10 +76,10 @@ def voice_handler(update, context):
                     elif match.groups()[1]=='video':
                         context.bot.send_video(chat_id=update.message.chat_id, video=match.groups()[2], supports_streaming=True)
                 else:
-                    context.bot.sendMessage(chat_id=update.message.chat_id, text=str(message))
-    # except Exception as e:
-    #     print(e)
-    #     logger.error("Error: {}".format(e))
-    #     context.bot.sendMessage(chat_id=update.message.chat_id, text='We are unable to process the response...!')
-    #     context.bot.sendMessage(chat_id=update.message.chat_id, text='Sorry for the Inconvenience')
+                    context.bot.sendMessage(chat_id=update.message.chat_id, text=message)
+    except Exception as e:
+        print(e)
+        logger.error("Error: {}".format(e))
+        context.bot.sendMessage(chat_id=update.message.chat_id, text='We are unable to process the response...!')
+        context.bot.sendMessage(chat_id=update.message.chat_id, text='Sorry for the Inconvenience')
     
