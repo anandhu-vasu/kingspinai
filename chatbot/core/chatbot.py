@@ -10,13 +10,15 @@ from textblob import TextBlob
 import speech_recognition as sr
 from pyffmpeg import FFmpeg
 import os
+import time
+import datetime
 
 
 reg_media = r"(\n)?(<(image|video)\|https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)>)(\n)?"
 class Channel(str,Enum):
     Web = "Web"
     Telegram = "Telegram"
-    Facebook = "Facebook"
+    Facebook = "Messenger"
 
 
 class ChatBot:
@@ -24,11 +26,13 @@ class ChatBot:
         from chatbot.core.models import Chatbot as ChatbotModel
         is_auth = False
         self.uid=uid
+        self.channel = channel
         if channel in Channel and channel != Channel.Web:
             chatbot = ChatbotModel.objects.get(**{"{}_key".format(channel.value.lower()):key})
         else:
             chatbot = ChatbotModel.objects.get(name = key)
         self.name = chatbot.name
+        self.chatbot_id = chatbot.id
         if uid:
             try:
                 _auth = chatbot.auth.get(uid=uid)
@@ -67,6 +71,8 @@ class ChatBot:
         self.chatbot.storage.dataset = dataset
 
     def reply(self,message):
+        start = time.time_ns()//1e6
+        confidence = None
         try:
             blob = TextBlob(message)
             if len(message)>=3:
@@ -81,6 +87,7 @@ class ChatBot:
                 res = self.chatbot.storage.messages["UNKNOWN"]
                 res = re.sub(r"~uname~",self.chatbot.storage.uname,res)
             else:
+                confidence = statement.confidence
                 res = str(statement)
                 res = re.sub(reg_media, r'\n\g<2>\n', res)#wrap media files
             res = res.split("\n")
@@ -90,6 +97,9 @@ class ChatBot:
         except Exception as e:
             print(e)
             res = ["Sorry, Something really bad happend!"]
+        end = time.time_ns()//1e6
+        from chatbot.core.models import Analytics
+        Analytics.objects.create(chatbot_id=self.chatbot_id,duration=int(end-start),channel=self.channel.value,confidence=confidence)
         return res
 
     @classmethod

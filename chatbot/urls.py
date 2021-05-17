@@ -8,6 +8,7 @@ dashboard_urlpatterns = [
     path('',views.dashboard,name='dashboard'),
     path('chatbots/',views.chatbot,name='chatbot'),
     path('chatbot/<slug:name>/conversation-console/',views.console,name='console'),
+    path('analytics',views.analytics,name='analytics'),
 ]
 
 urlpatterns = [

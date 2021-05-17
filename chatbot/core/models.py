@@ -57,3 +57,11 @@ class Auth(models.Model):
         for k, v in kwargs.items():
             setattr(self, k, v)
         self.save()
+
+class Analytics(models.Model):
+    chatbot = models.ForeignKey(Chatbot,on_delete=models.CASCADE,related_name="analytics")
+    duration = models.PositiveSmallIntegerField()
+    channel = models.CharField(max_length=100)
+    confidence = models.DecimalField(null=True,max_digits=4,decimal_places=3)
+    created_at = models.DateTimeField(auto_now_add=True)
+    

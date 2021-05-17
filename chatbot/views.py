@@ -10,7 +10,12 @@ import json,telegram
 from .models import *
 from django.http import HttpResponse
 from django.conf import settings
-
+from django.db.models import Avg, Count, Max, Q
+from chatbot.core.chatbot import Channel
+from django.db.models.functions import TruncDay
+from django.core.serializers.json import DjangoJSONEncoder
+from datetime import datetime
+import pytz
 
 
 def index(request):
@@ -28,6 +33,41 @@ def dashboard(request):
 def chatbot(request):
     context = {}
     return render(request,'user/chatbot.html',context)
+
+def datetimetoms(obj):
+    if isinstance(obj, datetime):
+        return int(round(obj.timestamp() * 1000))
+
+@login_required
+def analytics(request):
+    
+    analytics = []
+    for chatbot in request.user.chatbots.all():
+        if chatbot.analytics.exists():
+            analysis = {} 
+            analysis["chatbot_name"] = chatbot.name
+            analysis["chatbot_id"] = chatbot.id
+            analysis["proficiency"] = chatbot.analytics.aggregate(Avg('confidence'))['confidence__avg']*100
+            analysis["response_time"] = chatbot.analytics.aggregate(avg=Avg('duration'),max=Max('duration'))
+            messagesPerDay=[]
+            for channel in Channel:
+                data = chatbot.analytics.annotate(x=TruncDay('created_at',tzinfo=pytz.timezone('Asia/Calcutta'))).values('x').annotate(y=Count('channel',filter=Q(channel=channel.value))).values('x','y').order_by('created_at__date')
+                #chatbot.analytics.annotate(x=TruncDay('created_at')).values('x').order_by('created_at__date').annotate(y=Count('created_at__date',filter=Q()))
+                messagesPerDay.append({'name':channel.value,'data':list(data)})
+            
+            analysis['messagesPerDay'] = json.dumps(messagesPerDay,default=datetimetoms)
+            
+            analytics.append(analysis)
+    context = {"analytics":analytics}
+    print(analytics)
+    return render(request,'user/analytics.html',context)
+
+# analytics[{bot:"",proficiency:100,messagesPerDay: [{name:'Web',data:[{x:Date(),y:}]}] }]
+# 
+# 
+# 
+# 
+
 
 @login_required
 def console(request,name):

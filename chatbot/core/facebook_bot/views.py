@@ -17,7 +17,7 @@ def post_facebook_message(access_token,fbid,message):
     post_message_url = 'https://graph.facebook.com/v2.6/me/messages?access_token={}'.format(access_token)
     response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text":message}})
     status = requests.post(post_message_url, headers={"Content-Type": "application/json"},data=response_msg)
-    print(status.json())
+    # print(status.json())
 
 def get_facebook_user(access_token,fbid,fields='first_name,last_name'):
     user_details_url = "https://graph.facebook.com/v2.6/%s"%fbid
@@ -26,7 +26,7 @@ def get_facebook_user(access_token,fbid,fields='first_name,last_name'):
     return user_details
 
 def upload_attachment(access_token,media_type,url) -> str:
-    attachment_url = "https://graph.facebook.com/v2.6/me/message_attachments?access_token={}".format(access_token)
+    attachment_url = "https://graph.facebook.com/v10.0/me/message_attachments?access_token={}".format(access_token)
     attachment_data = json.dumps({"message":{"attachment":{"type":media_type, "payload":{"url":url,}}}})
     attachment = requests.post(attachment_url, headers={"Content-Type": "application/json","Accept": "application/json"}, data=attachment_data,).json()
     print(attachment)
@@ -34,10 +34,9 @@ def upload_attachment(access_token,media_type,url) -> str:
     return attachment['attachment_id']
 
 def post_facebook_media(access_token,fbid,media_type,attachment_id):
-    post_message_url = 'https://graph.facebook.com/v2.6/me/messages?access_token={}'.format(access_token)
+    post_message_url = 'https://graph.facebook.com/v10.0/me/messages?access_token={}'.format(access_token)
     response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"attachment":{"type":media_type, "payload":{"attachment_id": attachment_id}}}})
     status = requests.post(post_message_url, headers={"Content-Type": "application/json"},data=response_msg)
-    
 
 def get_facebook_page(access_token):
     try:
@@ -49,7 +48,6 @@ def get_facebook_page(access_token):
     except:
         pass
     return None
-
 
 def set_start_button(access_token):
     start_button_url = "https://graph.facebook.com/v2.6/me/messenger_profile?access_token={}".format(access_token)
@@ -81,7 +79,7 @@ class FacebookWebhook(generic.View):
         if status:
             # Converts the text payload into a python dictionary
             incoming_message = json.loads(self.request.body.decode('utf-8'))
-            
+            print(incoming_message)
             # Facebook recommends going through every entry since they might send
             # multiple messages in a single call during high load
             for entry in incoming_message['entry']:
@@ -105,6 +103,7 @@ class FacebookWebhook(generic.View):
                                         post_facebook_media(bot_token,message['sender']['id'],media_type,upload_attachment(bot_token,media_type,url=match.groups()[2]))
                                     else:
                                         post_facebook_message(bot_token,message['sender']['id'], str(msg))
+                            
                         elif 'postback' in message:
                             if message['postback']['title'] == "Get Started":
                                 uid = ''
@@ -122,9 +121,10 @@ class FacebookWebhook(generic.View):
                                             post_facebook_media(bot_token,message['sender']['id'],media_type,upload_attachment(bot_token,media_type,url=match.groups()[2]))
                                         else:
                                             post_facebook_message(bot_token,message['sender']['id'], str(msg))
+                                
                     except Exception as e:
                         print(e)
                         post_facebook_message(bot_token,message['sender']['id'], "Sorry for the Inconvenience.")
                         post_facebook_message(bot_token,message['sender']['id'], "We can't process the response") 
-            return HttpResponse("Success", status=200)
-
+            
+        return HttpResponse()
