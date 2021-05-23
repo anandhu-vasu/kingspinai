@@ -323,6 +323,131 @@ textarea:focus+.stdelete,textarea:focus+.redelete{
     border-radius: 30px/40px;
     box-shadow: -0.1rem 0 8px #ff00cc;
 }
+.chat-buttons{
+    background: #0f0c29;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    text-align: center;
+    padding: 5px 15px;
+}
+.chat-buttons .chat-button{
+    /* margin: 2em auto; */
+  display: block;
+  -webkit-appearance: none;
+  /* border: 6px solid rgba(255, 255, 255, 0.45); */
+  border-radius: 50px;
+  padding: 4px 27px;
+  background-repeat: no-repeat;
+  background-size: 100%;
+  background-clip: padding-box;
+  position: relative;
+  background: transparent;
+  backdrop-filter: blur(14px);
+  height: 30px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.chat-buttons input{
+    position: relative;
+    z-index: 10;
+    border: none;
+    padding: 0px;
+    margin: 0px;
+    outline: 0px;
+    background: transparent;
+    display: block;
+    width: 100%;
+    text-align: center;
+    color: #FFF;
+    font-weight:700;
+}
+.conversation .cb-add{
+    position: absolute;
+    right: 5px;
+    transform: translateY(-18px) scale(0,0);
+    opacity: 0;
+    transition: all .4s ease-in-out;
+}
+.conversation:hover .cb-add{
+    opacity: 1;
+    transform: translateY(-18px) scale(1,1);
+}
+.chat-buttons>div {
+    background: #aaa5;
+    border-radius: 15px;
+}
+.chat-buttons .chat-callback{
+    overflow: hidden;
+    padding: 0px 10px;
+}
+.chat-buttons .chat-button:before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  border-radius: 50px;
+  filter: blur(7px);
+  background:#fff9;
+}
+
+.chat-buttons .chat-button {
+  background-image: linear-gradient(90deg, #7b81ecaa, #3bd1d3aa);
+}
+.chat-buttons div{
+  margin: 3px 0px;
+
+}
+.cb-btns{
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 30px;
+    top: 0;
+    left:-2px;
+    right: -2px;
+    overflow: hidden;
+    border-radius: 50px;
+}
+.cb-btns button{
+    transition: all 0.25s ease-out;
+}
+.chat-buttons .cb-btns button:nth-child(1){
+    transform: translateX(-10px);
+    opacity: 0 !important;
+}
+.chat-buttons .cb-btns button:nth-child(2){
+    transform: translateX(10px);
+    opacity: 0 !important;
+}
+
+.chat-buttons>div:hover .cb-btns button:nth-child(1){
+    transform: translateX(0px);
+    opacity: 1 !important;
+}
+.chat-buttons>div:hover .cb-btns button:nth-child(2){
+    transform: translateX(0px);
+    opacity: 1 !important;
+}
+.touch .chat-buttons .cb-btns button:nth-child(1){
+    transform: translateX(0px);
+    opacity: 1 !important;
+}
+.touch .chat-buttons .cb-btns button:nth-child(2){
+    transform: translateX(0px);
+    opacity: 1 !important;
+}
+.touch .conversation .cb-add{
+    opacity: 1;
+    transform: translateY(-18px) scale(1,1);
+
+}
 .touch .statement .stadd,.touch .response .readd{
     opacity: 1;
     transform: translateY(-50%) scale(1,1);

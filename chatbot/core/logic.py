@@ -4,6 +4,8 @@ import re,requests
 from django.contrib import auth
 from chatterbot.conversation import Statement
 from chatbot.core import exceptions
+from pprint import pprint
+import json
 
 class Ingenious(LogicAdapter):
 
@@ -70,27 +72,34 @@ class Ingenious(LogicAdapter):
                             if conversation['auth'] and not self.is_auth:
                                 raise exceptions.UnAuthenticated()
                             res = random.choice(conversation["responses"])
+                            # for button in conversation['buttons']:
+                                # res+="\n<buttons|{}|{}|>".format(button['label'],button['callback'])
+                            if conversation['buttons']:
+                                res+="\n<buttons|{}|>".format(json.dumps(conversation['buttons']))
+                            
                             if res:
                                 data = []
                                 data_url = self.chatbot.storage.data_url
-
+                                
                                 res = re.sub(r"~uname~",self.chatbot.storage.uname,res)
 
                                 if data_url:
                                     if conversation['data_fetch']:
                                         _data = {
-                                            "key" : self.chatbot.storage.data_key,
+                                            "api_key" : self.chatbot.storage.data_key,
                                             "uid" : self.uid,
                                             "intent" : intent,
                                             "entities" : extracted_entities
                                         }
+                                        _headers = {'Content-Type': 'application/json','Accept':'application/json'}
                                         try:
-                                            data_res = requests.post(data_url,json=_data)
+                                            data_res = requests.post(data_url,data=json.dumps(_data),headers=_headers)
                                             if data_res.status_code == 200:
                                                 data = data_res.json()
                                         except:
                                             pass
                                 if data:
+                                    print(data)
                                     res_strp = res
                                     res = ""
                                     ei=0

@@ -23,6 +23,8 @@ class Chatbot(models.Model):
     telegram_key = models.CharField(max_length=255,null=True,unique=True)
     facebook_status = models.BooleanField(default=False)
     facebook_key = models.CharField(max_length=255,null=True,unique=True)
+    whatsapp_status = models.BooleanField(default=False)
+    whatsapp_key = models.CharField(max_length=255,null=True,unique=True)
     data_url = models.URLField(max_length=255,null=True)
     data_key = models.CharField(max_length=255,null=True)
     messages = models.JSONField(default=default_messages)
@@ -52,6 +54,7 @@ class Auth(models.Model):
     uname = models.CharField(max_length=255,null=True)
     telegram = models.PositiveIntegerField(null=True)
     facebook = models.PositiveIntegerField(null=True)
+    whatsapp = models.PositiveIntegerField(null=True)
 
     def update(self, **kwargs):
         for k, v in kwargs.items():

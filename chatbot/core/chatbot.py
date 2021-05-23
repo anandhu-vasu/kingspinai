@@ -12,13 +12,18 @@ from pyffmpeg import FFmpeg
 import os
 import time
 import datetime
+import json
 
 
 reg_media = r"(\n)?(<(image|video)\|https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)>)(\n)?"
+# reg_button = r"<button\|([^|\n]+)\|([^|\n]+)\|>"
+reg_buttons = r"<buttons\|([^|\n]+)\|>"
+
 class Channel(str,Enum):
     Web = "Web"
     Telegram = "Telegram"
     Facebook = "Messenger"
+    
 
 
 class ChatBot:
@@ -28,7 +33,7 @@ class ChatBot:
         self.uid=uid
         self.channel = channel
         if channel in Channel and channel != Channel.Web:
-            chatbot = ChatbotModel.objects.get(**{"{}_key".format(channel.value.lower()):key})
+            chatbot = ChatbotModel.objects.get(**{"{}_key".format(channel.name.lower()):key})
         else:
             chatbot = ChatbotModel.objects.get(name = key)
         self.name = chatbot.name
@@ -91,15 +96,35 @@ class ChatBot:
                 res = str(statement)
                 res = re.sub(reg_media, r'\n\g<2>\n', res)#wrap media files
             res = res.split("\n")
-            res = [i if (lang == 'en' or re.match(reg_media,i)) else str(TextBlob(i).translate(to=lang)) for i in res if i]
+            
+            # def buttoninze(btnstr):
+            #     m = re.match(reg_media, btnstr);
+            #     if m: return {"type": "button", "label":m.groups(0) if lang == 'en' else TextBlob(m.groups(0)).translate(to=lang), "callback": m.groups(1) if lang == 'en' else TextBlob(m.groups(1)).translate(to=lang)}
+            #     else: return m
+                
+            # res = list(map(buttoninze,res))
+            def translateButton(btn):
+                return btn if lang == 'en' else {"type": "button", "label":TextBlob(btn["label"]).translate(to=lang), "callback":TextBlob(btn["callback"]).translate(to=lang)}
+                # return {"type": "button", "label":btn["label"] if lang == 'en' else TextBlob(btn["label"]).translate(to=lang), "callback": btn["callback"] if lang == 'en' else TextBlob(btn["callback"]).translate(to=lang)}
+                
+            def resmapper(i):
+                m=re.match(reg_buttons,i)
+                if m :
+                    return {"type":"buttons","buttons":list(map(translateButton,json.loads(m.groups()[0])))}
+                return i if ( isinstance(i,dict) or lang == 'en' or re.match(reg_media,i)) else str(TextBlob(i).translate(to=lang))
+                
+            res = list(map(resmapper,res))
+            
+            res = [i if ( isinstance(i,dict) or lang == 'en' or re.match(reg_media,i)) else str(TextBlob(i).translate(to=lang)) for i in res if i]
         except exceptions.UnAuthenticated:
             res = ["You are not Authenticated.","Please Login to the website."]
         except Exception as e:
             print(e)
             res = ["Sorry, Something really bad happend!"]
-        end = time.time_ns()//1e6
-        from chatbot.core.models import Analytics
-        Analytics.objects.create(chatbot_id=self.chatbot_id,duration=int(end-start),channel=self.channel.value,confidence=confidence)
+        if confidence:
+            end = time.time_ns()//1e6
+            from chatbot.core.models import Analytics
+            Analytics.objects.create(chatbot_id=self.chatbot_id,duration=int(end-start),channel=self.channel.name,confidence=confidence)
         return res
 
     @classmethod
@@ -107,7 +132,7 @@ class ChatBot:
         from chatbot.core.models import Chatbot as ChatbotModel
         
         if channel in Channel and channel != Channel.Web:
-            chatbot = ChatbotModel.objects.get(**{"{}_key".format(channel.value.lower()):key})
+            chatbot = ChatbotModel.objects.get(**{"{}_key".format(channel.name.lower()):key})
         else:
             chatbot = ChatbotModel.objects.get(name = key)
         try:

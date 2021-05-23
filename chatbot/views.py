@@ -47,7 +47,8 @@ def analytics(request):
             analysis = {} 
             analysis["chatbot_name"] = chatbot.name
             analysis["chatbot_id"] = chatbot.id
-            analysis["proficiency"] = chatbot.analytics.aggregate(Avg('confidence'))['confidence__avg']*100
+            proficiency=chatbot.analytics.aggregate(Avg('confidence'))['confidence__avg']
+            analysis["proficiency"] = (0 if proficiency is None else proficiency)*100
             analysis["response_time"] = chatbot.analytics.aggregate(avg=Avg('duration'),max=Max('duration'))
             messagesPerDay=[]
             for channel in Channel:
@@ -56,10 +57,10 @@ def analytics(request):
                 messagesPerDay.append({'name':channel.value,'data':list(data)})
             
             analysis['messagesPerDay'] = json.dumps(messagesPerDay,default=datetimetoms)
-            
+            print(analysis)
             analytics.append(analysis)
     context = {"analytics":analytics}
-    print(analytics)
+    # print(analytics)
     return render(request,'user/analytics.html',context)
 
 # analytics[{bot:"",proficiency:100,messagesPerDay: [{name:'Web',data:[{x:Date(),y:}]}] }]

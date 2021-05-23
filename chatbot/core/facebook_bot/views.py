@@ -27,16 +27,49 @@ def get_facebook_user(access_token,fbid,fields='first_name,last_name'):
 
 def upload_attachment(access_token,media_type,url) -> str:
     attachment_url = "https://graph.facebook.com/v10.0/me/message_attachments?access_token={}".format(access_token)
-    attachment_data = json.dumps({"message":{"attachment":{"type":media_type, "payload":{"url":url,}}}})
+    attachment_data = json.dumps({"message":{"attachment":{"type":media_type, "payload":{"url":url,"is_reusable":False}}}})
     attachment = requests.post(attachment_url, headers={"Content-Type": "application/json","Accept": "application/json"}, data=attachment_data,).json()
     print(attachment)
     
     return attachment['attachment_id']
 
-def post_facebook_media(access_token,fbid,media_type,attachment_id):
+def post_facebook_media(access_token,fbid,media_type,url):
     post_message_url = 'https://graph.facebook.com/v10.0/me/messages?access_token={}'.format(access_token)
-    response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"attachment":{"type":media_type, "payload":{"attachment_id": attachment_id}}}})
+    response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"attachment":{"type":media_type, "payload":{"url": url}}}})
+    # response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"attachment":{"type":media_type, "payload":{"attachment_id": attachment_id}}}})
     status = requests.post(post_message_url, headers={"Content-Type": "application/json"},data=response_msg)
+    
+def post_postback_button(access_token,fbid,text,buttons):
+    button_url = "https://graph.facebook.com/v2.6/me/messages?access_token={}".format(access_token)
+    response_msg = {
+        "recipient":{
+            "id":fbid
+        },
+        "message":{
+            "attachment":{
+                "type":"template",
+                "payload":{
+                    "template_type":"button",
+                    "text":text,
+                    "buttons":buttons
+                    # [
+                    #     {
+                    #         "type":"postback",
+                    #         "title":label,
+                    #         "payload": callback
+                    #     }
+                    # ]
+                }
+            }
+        }
+    }
+    status = requests.post(button_url, headers={"Content-Type": "application/json"},json=response_msg)
+    
+def post_sender_action(access_token,fbid,action):
+    """ To display a sender action in the conversation such as mark_seen,typing_on,typing_off """
+    sender_action_url = "https://graph.facebook.com/v2.6/me/messages?access_token={}".format(access_token)
+    response_msg = {"recipient":{"id":fbid}, "sender_action":action}
+    status = requests.post(sender_action_url, headers={"Content-Type": "application/json"},json=response_msg)
 
 def get_facebook_page(access_token):
     try:
@@ -51,9 +84,31 @@ def get_facebook_page(access_token):
 
 def set_start_button(access_token):
     start_button_url = "https://graph.facebook.com/v2.6/me/messenger_profile?access_token={}".format(access_token)
-    start_button_load = json.dumps({ "get_started":{"payload":"GET_STARTED"}})
+    start_button_load = json.dumps({ "get_started":{"payload":"|@#GET_STARTED#@|"}})
     status = requests.post(start_button_url, headers={"Content-Type": "application/json"},data=start_button_load)
 
+
+def message_controller(bot_token,fbid,response):
+    """ Identify and send specific request for each message type """
+    skipiter: bool = False
+    for i,message in enumerate(response):
+        if skipiter:
+            skipiter=False
+            continue
+        if message:
+            if isinstance(message,dict):
+                if message["type"] == 'buttons':
+                    buttons = [{"type":"postback","title":(button['label'][:18] + '..') if len(button['label']) > 20 else button['label'],"payload":button['callback']} for button in message["buttons"]]
+                    post_postback_button(bot_token,fbid,":)",buttons)
+            elif isinstance(message,str) and not message.isspace():
+                   
+                match = re.search(reg_media,message)
+                if match:
+                    media_type=match.groups()[1]
+                    post_facebook_media(bot_token,fbid,media_type,url=match.groups()[2] )#upload_attachment(bot_token,media_type,url=match.groups()[2]))
+                else:
+                    post_facebook_message(bot_token,fbid, str(message))
+    
 class FacebookWebhook(generic.View):
     def get(self,request, bot_token):
         try: 
@@ -79,9 +134,10 @@ class FacebookWebhook(generic.View):
         if status:
             # Converts the text payload into a python dictionary
             incoming_message = json.loads(self.request.body.decode('utf-8'))
-            print(incoming_message)
+            # print(incoming_message)
             # Facebook recommends going through every entry since they might send
             # multiple messages in a single call during high load
+            
             for entry in incoming_message['entry']:
                 for message in entry['messaging']:
                     # Check to make sure the received call is a message call
@@ -89,23 +145,21 @@ class FacebookWebhook(generic.View):
                     try:
                         if 'message' in message:
                         # Print the message to the terminal
+                            post_sender_action(bot_token,message['sender']['id'],"mark_seen")
+                            post_sender_action(bot_token,message['sender']['id'],"typing_on")
                             msg = message['message']['text']
                             user = get_facebook_user(bot_token,message['sender']['id'])
                             uname = user['first_name'] if user['first_name'] else ''
                             auth = {"facebook":message['sender']['id']}
                         
                             response = ChatBot(bot_token,channel=Channel.Facebook,uname=uname,auth=auth).reply(msg)
-                            for msg in response:
-                                if msg:
-                                    match = re.search(reg_media,msg)
-                                    if match:
-                                        media_type=match.groups()[1]
-                                        post_facebook_media(bot_token,message['sender']['id'],media_type,upload_attachment(bot_token,media_type,url=match.groups()[2]))
-                                    else:
-                                        post_facebook_message(bot_token,message['sender']['id'], str(msg))
+                            message_controller(bot_token,message['sender']['id'],response)
                             
                         elif 'postback' in message:
-                            if message['postback']['title'] == "Get Started":
+                            print(message['postback'])
+                            if message['postback']['title'] == "Get Started" and message['postback']['payload']== '|@#GET_STARTED#@|':
+                                post_sender_action(bot_token,message['sender']['id'],"typing_on")
+                                
                                 uid = ''
                                 if 'referral' in message['postback']:
                                     uid = message['postback']['referral']['ref']
@@ -113,18 +167,26 @@ class FacebookWebhook(generic.View):
                                 uname = user['first_name'] if user['first_name'] else ''
                                 auth = {"facebook":message['sender']['id']}
                                 response = ChatBot.intro(bot_token,channel=Channel.Facebook,uid=uid,uname=uname,auth=auth)
-                                for msg in response:
-                                    if msg:
-                                        match = re.search(reg_media,msg)
-                                        if match:
-                                            media_type=match.groups()[1]
-                                            post_facebook_media(bot_token,message['sender']['id'],media_type,upload_attachment(bot_token,media_type,url=match.groups()[2]))
-                                        else:
-                                            post_facebook_message(bot_token,message['sender']['id'], str(msg))
+                                message_controller(bot_token,message['sender']['id'],response)
+                            elif message['postback']['payload']:# For postback buttons
+                                post_sender_action(bot_token,message['sender']['id'],"typing_on")
+                                
+                                msg = message['postback']['payload']
+                                user = get_facebook_user(bot_token,message['sender']['id'])
+                                uname = user['first_name'] if user['first_name'] else ''
+                                auth = {"facebook":message['sender']['id']}
+                            
+                                response = ChatBot(bot_token,channel=Channel.Facebook,uname=uname,auth=auth).reply(msg)
+                                message_controller(bot_token,message['sender']['id'],response)
+                                
+                                
                                 
                     except Exception as e:
                         print(e)
                         post_facebook_message(bot_token,message['sender']['id'], "Sorry for the Inconvenience.")
-                        post_facebook_message(bot_token,message['sender']['id'], "We can't process the response") 
+                        post_facebook_message(bot_token,message['sender']['id'], "We can't process the response")
+                    finally:
+                        post_sender_action(bot_token,message['sender']['id'],"typing_off")
+                        
             
         return HttpResponse()

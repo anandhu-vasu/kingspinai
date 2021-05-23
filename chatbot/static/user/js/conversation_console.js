@@ -30,6 +30,7 @@ function conversationConsole() {
                 entities: "",
                 statements: ["Statement"],
                 responses: ["Response"],
+                buttons:[]
             };
             if (k != null) {
                 this.stories[i].conversations.splice(k, 0, conversation); //insert to k'th position
@@ -115,6 +116,7 @@ function conversationConsole() {
                         entities: [],
                         statements: ["Statement"],
                         responses: ["Response"],
+                        buttons:[]
                     },
                 ],
             });
@@ -151,6 +153,14 @@ function conversationConsole() {
         },
         removeResponse(e, i, k, m) {
             this.stories[i].conversations[k].responses.splice(m, 1);
+            this.notifyUI(e);
+        },
+        addButton(e, i, k) {
+            this.stories[i].conversations[k].buttons.push({label:"Button Label",callback:"Callback Statement"});
+            this.notifyUI(e);
+        },
+        removeButton(e,i,k,n) {
+            this.stories[i].conversations[k].buttons.splice(n, 1);
             this.notifyUI(e);
         },
         setCorpus() {
@@ -200,6 +210,8 @@ function conversationConsole() {
             }
             this.stories[i].conversations[k].entities = [...entities];
         },
+        
+        
     };
 }
 

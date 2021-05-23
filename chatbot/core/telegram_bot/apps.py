@@ -7,7 +7,7 @@ import os
 import telegram
 from telegram.ext import Dispatcher
 from telegram.error import InvalidToken, TelegramError
-from telegram.ext import CommandHandler, MessageHandler, Filters
+from telegram.ext import CallbackQueryHandler, CommandHandler, Filters, MessageHandler
 from .handlers import *
 
 logger = logging.getLogger(__name__)
@@ -122,10 +122,11 @@ class TelegramBot:
     def addHandler(cls,token):
         dispatcher = cls.getDispatcher(token)     #get by bot token
         if dispatcher:
-            dispatcher.add_handler(CommandHandler("start", start))
+            dispatcher.add_handler(CommandHandler("start", start_handler))
             # dispatcher.add_handler(CommandHandler("help", help))
-            dispatcher.add_handler(MessageHandler(Filters.text, reply))
+            dispatcher.add_handler(MessageHandler(Filters.text, text_handler))
             dispatcher.add_handler(MessageHandler(Filters.voice, voice_handler))
+            dispatcher.add_handler(CallbackQueryHandler(button_handler))
 
     @classmethod
     def setWebhook(cls,token):

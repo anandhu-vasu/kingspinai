@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'chatbot',
     'chatbot.core',
     'chatbot.core.telegram_bot',
+    'chatbot.core.facebook_bot',
+    'chatbot.core.whatsapp_bot',
     'django_unicorn',
     'unicorn',
     'widget_tweaks',
@@ -79,7 +81,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'kingspinai.wsgi.application'
 
-DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
