@@ -154,7 +154,7 @@ class Ingenious(LogicAdapter):
                                             raise exceptions.NonExtractedEntityOnReply()
                                         
                                 response = Statement(text=res)
-                                response.confidence = 1
+                                response.confidence = confidence
                                 return response
     
         response = Statement(text="Sorry, I don't understand.")

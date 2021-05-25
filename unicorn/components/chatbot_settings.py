@@ -1,4 +1,3 @@
-from chatbot.core.facebook_bot.views import get_facebook_page
 from chatbot.core.utils import Encrypt
 from chatbot.core.telegram_bot import TelegramBot
 from django_unicorn.components import UnicornView,UnicornField
@@ -9,7 +8,8 @@ import telegram,re
 from chatbot.core.models import Chatbot
 from django.conf import settings
 from chatbot.core.facebook_bot.apps import generate_facebook_verify_token
-
+from chatbot.core.facebook_bot.views import get_facebook_page
+from chatbot.core.whatsapp_bot.views import get_whatsapp_id, set_whatsapp_webhook
 import logging
 
 logger = logging.getLogger(__name__)
@@ -34,15 +34,22 @@ def validate_chatbot_facebook_key(token):
         raise ValidationError(message="Invalid facebook page access token.",code="invalid")
     else:
         return token
+    
+def validate_chatbot_whatsapp_key(token):
+    if get_whatsapp_id(token) == None:
+        raise ValidationError(message="Invalid facebook page access token.",code="invalid")
+    else:
+        return token
 
 class ChatbotSettingsForm(forms.ModelForm):
     name = forms.SlugField(required=True,max_length=100,min_length=3)
     telegram_key = forms.CharField(max_length=255,required=False,validators=[validate_chatbot_telegram_key])
     facebook_key = forms.CharField(max_length=255,required=False,validators=[validate_chatbot_facebook_key])
+    whatsapp_key = forms.CharField(max_length=255,required=False,validators=[validate_chatbot_whatsapp_key])
 
     class Meta:
         model = Chatbot
-        fields = ('name', 'telegram_key', 'telegram_status','facebook_key', 'facebook_status','data_url','data_key')
+        fields = ('name', 'telegram_key', 'telegram_status','facebook_key', 'facebook_status','whatsapp_key', 'whatsapp_status','data_url','data_key')
         error_messages = {
             
         }
@@ -63,7 +70,7 @@ class ChatbotSettingsForm(forms.ModelForm):
         """
         exclude = self._get_validation_exclusions()
         try:
-            self.instance.validate_unique(exclude=[*exclude,'name','telegram_key','facebook_key'])
+            self.instance.validate_unique(exclude=[*exclude,'name','telegram_key','facebook_key','whatsapp_key'])
         except ValidationError as e:
             self._update_errors(e)
 
@@ -74,6 +81,14 @@ class ChatbotSettingsForm(forms.ModelForm):
             
         try:
             self.validate_unique_chatbot("telegram_key")
+        except ValidationError as e:
+            self._update_errors(e)
+        try:
+            self.validate_unique_chatbot("facebook_key")
+        except ValidationError as e:
+            self._update_errors(e)
+        try:
+            self.validate_unique_chatbot("whatsapp_key")
         except ValidationError as e:
             self._update_errors(e)
 
@@ -97,6 +112,7 @@ class ChatbotSettingsView(UnicornView):
     messages = None
     cached_name=None
     telegram_bot = None
+    whatsapp_bot = None
     facebook_bot = None
     facebook_verify_token = ""
     facebook_url = ""
@@ -183,6 +199,28 @@ class ChatbotSettingsView(UnicornView):
             self.facebook_url = "{}/facebook_bot/{}/".format(settings.WEBHOOK_SITE[:-1] if settings.WEBHOOK_SITE.endswith("/") else settings.WEBHOOK_SITE,Encrypt(self.chatbot.facebook_key).base64urlstrip.substitution())
         else:
             self.facebook_url = ""
+            
+    def updated_chatbot_whatsapp_key(self, value):
+        if self.is_valid(['whatsapp_key']):
+            self.chatbot.save(update_fields=["whatsapp_key"])
+            if self.chatbot.whatsapp_key:
+                self.whatsapp_bot = get_whatsapp_id(self.chatbot.whatsapp_key,format=True)
+            else:
+                self.chatbot.whatsapp_status = False
+                self.chatbot.save(update_fields=["whatsapp_status"])
+                self.whatsapp_bot = False
+        else:
+            self.chatbot.whatsapp_status = False
+            self.chatbot.save(update_fields=["whatsapp_status"])
+            self.whatsapp_bot = False
+            
+    def updated_chatbot_whatsapp_status(self,value):
+        if self.is_valid(['whatsapp_status']):
+            self.chatbot.save(update_fields=['whatsapp_status'])
+            if self.chatbot.whatsapp_status:
+                set_whatsapp_webhook(self.chatbot.whatsapp_key)
+            else:
+                set_whatsapp_webhook(self.chatbot.whatsapp_key,delete=True)
 
     def set_chatbot(self,pk):
         self.errors.clear()
@@ -195,10 +233,11 @@ class ChatbotSettingsView(UnicornView):
             self.set_facebook_url()
             self.tab = "general"
             try:
-                self.telegram_bot = telegram.Bot(token=self.chatbot.telegram_key).username
+                self.telegram_bot = telegram.Bot(token=self.chatbot.telegram_key).username if self.chatbot.telegram_key else None
             except:
                 self.telegram_bot = None
-            self.facebook_bot = get_facebook_page(self.chatbot.facebook_key)
+            self.facebook_bot = get_facebook_page(self.chatbot.facebook_key) if self.chatbot.facebook_key else None
+            self.whatsapp_bot = get_whatsapp_id(self.chatbot.whatsapp_key,format=True) if self.chatbot.whatsapp_key else None
             self.call("openChatbotSettings")
         else:
             self.call("resetChatbotSettings")

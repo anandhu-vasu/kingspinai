@@ -211,7 +211,7 @@ function messagesPerDay(selector, data) {
                 }
             },
         },        
-        colors: ['#563D7C', '#34ABDF', '#FF567C'],
+        colors: ['#563D7C','#25D366', '#34ABDF', '#FF567C'],
         dataLabels: {
             enabled: false
         },

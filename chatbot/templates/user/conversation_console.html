@@ -93,7 +93,7 @@ Dashboard
                                                 <div class="shadow statement position-relative">
                                                     <template x-for="(statement, l) in conversation.statements" :key="'#'+i+'*'+k+'!'+l">
                                                         <div class="position-relative">
-                                                            <textarea class="edit-area" onkeyup="textareaResize(this)" @input.debounce.750="extractEntities(i,k)" x-model.debounce.750="stories[i].conversations[k].statements[l]"></textarea>
+                                                            <textarea class="edit-area" onkeyup="textareaResize(this)" onfocus="textareaResize(this)" @input.debounce.750="extractEntities(i,k)" x-model.debounce.750="stories[i].conversations[k].statements[l]"></textarea>
                                                             <div class="p-1 stdelete">
                                                                 <button x-on:click="removeStatement($event,i,k,l)" class="py-0 shadow-none btn btn-icon btn-danger btn-sm rounded-circle" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Remove Statement"><i class="fas fa-trash"></i></button>
                                                             </div>
@@ -111,7 +111,7 @@ Dashboard
                                                 <div class="shadow response position-relative">
                                                     <template x-for="(response, m) in conversation.responses" :key="'#'+i+'*'+k+'@'+m">
                                                         <div class="position-relative">
-                                                            <textarea class="edit-area" onkeyup="textareaResize(this)" x-model.debounce.750="stories[i].conversations[k].responses[m]"></textarea>
+                                                            <textarea class="edit-area" onkeyup="textareaResize(this)" onfocus="textareaResize(this)" x-model.debounce.750="stories[i].conversations[k].responses[m]"></textarea>
                                                             <div class="p-1 redelete">
                                                                 <button x-on:click="removeResponse($event,i,k,m)" class="py-0 shadow-none btn btn-icon btn-danger btn-sm rounded-circle" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Remove Response"><i class="fas fa-trash"></i></button>
                                                             </div>

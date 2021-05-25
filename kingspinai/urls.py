@@ -24,6 +24,7 @@ urlpatterns = [
     path("unicorn/", include("django_unicorn.urls",namespace='django_unicorn')),
     re_path(r'^', include('chatbot.core.telegram_bot.urls')),
     re_path(r'^', include('chatbot.core.facebook_bot.urls')),
+    re_path(r'^', include('chatbot.core.whatsapp_bot.urls')),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]

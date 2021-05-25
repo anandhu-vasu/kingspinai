@@ -44,10 +44,10 @@ def analytics(request):
     analytics = []
     for chatbot in request.user.chatbots.all():
         if chatbot.analytics.exists():
-            analysis = {} 
+            analysis = {}
             analysis["chatbot_name"] = chatbot.name
             analysis["chatbot_id"] = chatbot.id
-            proficiency=chatbot.analytics.aggregate(Avg('confidence'))['confidence__avg']
+            proficiency=round(chatbot.analytics.aggregate(Avg('confidence'))['confidence__avg'],4)
             analysis["proficiency"] = (0 if proficiency is None else proficiency)*100
             analysis["response_time"] = chatbot.analytics.aggregate(avg=Avg('duration'),max=Max('duration'))
             messagesPerDay=[]

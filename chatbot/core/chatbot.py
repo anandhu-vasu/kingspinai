@@ -21,6 +21,7 @@ reg_buttons = r"<buttons\|([^|\n]+)\|>"
 
 class Channel(str,Enum):
     Web = "Web"
+    Whatsapp = "Whatsapp"
     Telegram = "Telegram"
     Facebook = "Messenger"
     
@@ -80,11 +81,11 @@ class ChatBot:
         confidence = None
         try:
             blob = TextBlob(message)
-            if len(message)>=3:
+            try:
                 lang = blob.detect_language()
                 if lang != 'en':
                     blob=blob.translate(to='en')
-            else:
+            except:
                 lang = 'en'
             
             statement = self.chatbot.get_response(str(blob))
@@ -103,19 +104,25 @@ class ChatBot:
             #     else: return m
                 
             # res = list(map(buttoninze,res))
+            def translate(text):
+                try:
+                    return str(TextBlob(text).translate(to=lang))
+                except:
+                    return text
+                    
             def translateButton(btn):
-                return btn if lang == 'en' else {"type": "button", "label":TextBlob(btn["label"]).translate(to=lang), "callback":TextBlob(btn["callback"]).translate(to=lang)}
+                return btn if lang == 'en' else {"type": "button", "label":translate(btn["label"]), "callback":translate(btn["callback"])}
                 # return {"type": "button", "label":btn["label"] if lang == 'en' else TextBlob(btn["label"]).translate(to=lang), "callback": btn["callback"] if lang == 'en' else TextBlob(btn["callback"]).translate(to=lang)}
                 
             def resmapper(i):
                 m=re.match(reg_buttons,i)
                 if m :
                     return {"type":"buttons","buttons":list(map(translateButton,json.loads(m.groups()[0])))}
-                return i if ( isinstance(i,dict) or lang == 'en' or re.match(reg_media,i)) else str(TextBlob(i).translate(to=lang))
+                return i if ( isinstance(i,dict) or lang == 'en' or re.match(reg_media,i)) else translate(i)
                 
             res = list(map(resmapper,res))
             
-            res = [i if ( isinstance(i,dict) or lang == 'en' or re.match(reg_media,i)) else str(TextBlob(i).translate(to=lang)) for i in res if i]
+            # res = [i if ( isinstance(i,dict) or lang == 'en' or re.match(reg_media,i)) else str(TextBlob(i).translate(to=lang)) for i in res if i]
         except exceptions.UnAuthenticated:
             res = ["You are not Authenticated.","Please Login to the website."]
         except Exception as e:

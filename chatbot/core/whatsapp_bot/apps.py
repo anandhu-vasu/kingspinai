@@ -6,3 +6,4 @@ class WhatsappBotConfig(AppConfig):
     label = 'whatsapp_bot'
     verbose_name = 'Whatsapp Bot'
     ready_run = False  
+    

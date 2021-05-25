@@ -187,6 +187,55 @@
                             {% endif %}
                             
                         </div>
+                        <br>
+                        <div class="section-title mt-0">Whatsapp</div>
+                        {% if unicorn.errors.whatsapp_key %}
+                            <div class="unicorn-errors ">
+                                <div class="mb-2">
+                                    {% for e in unicorn.errors.whatsapp_key %}
+                                        <div class="error shadow-sm p-1 text-danger font-weight-bold">{{e.message}}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="form-group">
+                            <label>Api Key</label>
+                            <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text" style="background: radial-gradient( #1c92d2, #9ee8f7 );color:#fff;">
+                                    <i class="fas fa-key"></i>
+                                </div>
+                            </div>
+                                <input unicorn:model.lazy="chatbot.whatsapp_key" unicorn:dirty.class="dirtied" type="text" class="form-control dirtable">
+                            </div>
+                        </div>                
+                        <div class="form-group text-center mb-0">
+                            
+                            {% if whatsapp_bot %}
+                                
+                                <div class="p-3 d-flex align-items-center justify-content-between shadow rounded bg-light animated slideInDown">
+                                    <h4 class="my-auto"><i class="fab fa-whatsapp px-2" style="font-size: inherit;color:#25D366;"></i></h4>
+                                    <div class="">
+                                        <h4 class="my-auto px-2">{{whatsapp_bot}}</h4>
+                                    </div>
+                                    <label class="custom-switch px-2">
+                                        <input unicorn:model="chatbot.whatsapp_status" unicorn:dirty.class="dirtied" type="checkbox" name="custom-switch-checkbox" class="custom-switch-input dirtable">
+                                        <span class="custom-switch-indicator"></span>
+                                        <span class="custom-switch-description">
+                                        {% if chatbot.whatsapp_status == 1 %}
+                                            &nbsp;Enabled
+                                        {% else %}
+                                            Disabled
+                                        {% endif %}
+                                        </span>
+                                        
+                                    </label>
+                                </div>    
+
+                            {% endif %}
+
+                        </div>
+                        
 
                     </div>
                     <div id="messages-panel" class="tab-pane animated fadeIn position-relative  {% if tab == 'messages' %} active show {% endif %}"><!--  role="tabpanel" aria-labelledby="messages-tab" -->

@@ -1,4 +1,3 @@
-from telegram import bot
 from chatbot.core.facebook_bot.apps import generate_facebook_verify_token
 from chatbot.core.models import Chatbot
 from chatbot.core.chatbot import Channel, ChatBot
@@ -9,11 +8,12 @@ from django.views import generic
 from django.http.response import HttpResponse
 import json,requests
 import re
+from heap import Heap
 
 reg_media = r"(<(image|video)\|(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*))>)"
 
 
-def post_facebook_message(access_token,fbid,message):
+def post_facebook_text_message(access_token,fbid,message):
     post_message_url = 'https://graph.facebook.com/v2.6/me/messages?access_token={}'.format(access_token)
     response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text":message}})
     status = requests.post(post_message_url, headers={"Content-Type": "application/json"},data=response_msg)
@@ -107,7 +107,7 @@ def message_controller(bot_token,fbid,response):
                     media_type=match.groups()[1]
                     post_facebook_media(bot_token,fbid,media_type,url=match.groups()[2] )#upload_attachment(bot_token,media_type,url=match.groups()[2]))
                 else:
-                    post_facebook_message(bot_token,fbid, str(message))
+                    post_facebook_text_message(bot_token,fbid, str(message))
     
 class FacebookWebhook(generic.View):
     def get(self,request, bot_token):
@@ -128,7 +128,8 @@ class FacebookWebhook(generic.View):
 
     def post(self,request, bot_token):
         try:
-            status = Chatbot.objects.only('facebook_status','facebook_key').get(facebook_key = bot_token ).facebook_status
+            chatbot = Chatbot.objects.only('name', 'facebook_status', 'facebook_key').get(facebook_key=bot_token)
+            status  = chatbot.facebook_status
         except:
             status = False
         if status:
@@ -136,57 +137,72 @@ class FacebookWebhook(generic.View):
             incoming_message = json.loads(self.request.body.decode('utf-8'))
             # print(incoming_message)
             # Facebook recommends going through every entry since they might send
-            # multiple messages in a single call during high load
+            # multiple messages in a single call during high load 1621889927385
             
             for entry in incoming_message['entry']:
                 for message in entry['messaging']:
                     # Check to make sure the received call is a message call
                     # This might be delivery, optin, postback for other events 
                     try:
+                        fbid = message['sender']['id']
                         if 'message' in message:
                         # Print the message to the terminal
-                            post_sender_action(bot_token,message['sender']['id'],"mark_seen")
-                            post_sender_action(bot_token,message['sender']['id'],"typing_on")
+                            message_id = message['message']['mid']
+                            
+                            if Heap.get("chatbots",chatbot.name,Channel.Facebook,fbid,"last_message_id") == message_id:
+                                return HttpResponse()
+                            else:
+                                Heap.set("chatbots",chatbot.name,Channel.Facebook,fbid,"last_message_id",val=message_id)
+                            
+                            post_sender_action(bot_token,fbid,"mark_seen")
+                            post_sender_action(bot_token,fbid,"typing_on")
                             msg = message['message']['text']
-                            user = get_facebook_user(bot_token,message['sender']['id'])
+                            user = get_facebook_user(bot_token,fbid)
                             uname = user['first_name'] if user['first_name'] else ''
-                            auth = {"facebook":message['sender']['id']}
+                            auth = {"facebook":fbid}
                         
                             response = ChatBot(bot_token,channel=Channel.Facebook,uname=uname,auth=auth).reply(msg)
-                            message_controller(bot_token,message['sender']['id'],response)
+                            message_controller(bot_token,fbid,response)
                             
                         elif 'postback' in message:
-                            print(message['postback'])
+                            timestamp = message['timestamp']
+                            if Heap.get("chatbots",chatbot.name,Channel.Facebook,fbid,"last_timestamp") == timestamp:
+                                return HttpResponse()
+                            else:
+                                Heap.set("chatbots",chatbot.name,Channel.Facebook,fbid,"last_timestamp",val=timestamp)
+                            
                             if message['postback']['title'] == "Get Started" and message['postback']['payload']== '|@#GET_STARTED#@|':
-                                post_sender_action(bot_token,message['sender']['id'],"typing_on")
+                                post_sender_action(bot_token,fbid,"mark_seen")
+                                post_sender_action(bot_token,fbid,"typing_on")
                                 
                                 uid = ''
                                 if 'referral' in message['postback']:
                                     uid = message['postback']['referral']['ref']
-                                user = get_facebook_user(bot_token,message['sender']['id'])
+                                user = get_facebook_user(bot_token,fbid)
                                 uname = user['first_name'] if user['first_name'] else ''
-                                auth = {"facebook":message['sender']['id']}
+                                auth = {"facebook":fbid}
                                 response = ChatBot.intro(bot_token,channel=Channel.Facebook,uid=uid,uname=uname,auth=auth)
-                                message_controller(bot_token,message['sender']['id'],response)
+                                message_controller(bot_token,fbid,response)
                             elif message['postback']['payload']:# For postback buttons
-                                post_sender_action(bot_token,message['sender']['id'],"typing_on")
+                                post_sender_action(bot_token,fbid,"mark_seen")
+                                post_sender_action(bot_token,fbid,"typing_on")
                                 
                                 msg = message['postback']['payload']
-                                user = get_facebook_user(bot_token,message['sender']['id'])
+                                user = get_facebook_user(bot_token,fbid)
                                 uname = user['first_name'] if user['first_name'] else ''
-                                auth = {"facebook":message['sender']['id']}
+                                auth = {"facebook":fbid}
                             
                                 response = ChatBot(bot_token,channel=Channel.Facebook,uname=uname,auth=auth).reply(msg)
-                                message_controller(bot_token,message['sender']['id'],response)
+                                message_controller(bot_token,fbid,response)
                                 
                                 
                                 
                     except Exception as e:
                         print(e)
-                        post_facebook_message(bot_token,message['sender']['id'], "Sorry for the Inconvenience.")
-                        post_facebook_message(bot_token,message['sender']['id'], "We can't process the response")
+                        post_facebook_text_message(bot_token,fbid, "Sorry for the Inconvenience.")
+                        post_facebook_text_message(bot_token,fbid, "We can't process the response")
                     finally:
-                        post_sender_action(bot_token,message['sender']['id'],"typing_off")
+                        post_sender_action(bot_token,fbid,"typing_off")
                         
             
         return HttpResponse()
