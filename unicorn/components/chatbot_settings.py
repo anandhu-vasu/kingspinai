@@ -9,7 +9,8 @@ from chatbot.core.models import Chatbot
 from django.conf import settings
 from chatbot.core.facebook_bot.apps import generate_facebook_verify_token
 from chatbot.core.facebook_bot.views import get_facebook_page
-from chatbot.core.whatsapp_bot.views import get_whatsapp_id, set_whatsapp_webhook
+from chatbot.core.whatsapp_bot.views import get_whatsapp_id
+from chatbot.core.whatsapp_bot.apps import set_whatsapp_webhook
 import logging
 
 logger = logging.getLogger(__name__)
