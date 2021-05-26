@@ -57,7 +57,6 @@ def analytics(request):
                 messagesPerDay.append({'name':channel.value,'data':list(data)})
             
             analysis['messagesPerDay'] = json.dumps(messagesPerDay,default=datetimetoms)
-            print(analysis)
             analytics.append(analysis)
     context = {"analytics":analytics}
     # print(analytics)

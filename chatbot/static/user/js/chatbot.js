@@ -45,7 +45,7 @@ function resetChatbotSettings(){
 }
 function showErrors(){
     $('.unicorn-errors:not(.error-shown)').addClass("error-shown").find(".error").slideDown();
-
+    bindDirtyObserver()
     /* $('.has-error').removeClass("has-error").addClass("no-error")
     for ( field in Unicorn.getComponent("chatbot-settings").errors){
         $("#"+field).addClass("has-error").removeClass("no-error");
@@ -54,11 +54,15 @@ function showErrors(){
 
 function bindDirtyObserver(){
     $(".dirtable:not([type='checkbox'])").on('blur',function(){
-        $(".red-bar").removeClass("red-bar").addClass("green-bar")
+        $(".red-bar").removeClass("red-bar").addClass("green-bar loading")
     })
     $(".dirtable[type='checkbox']").on('change',function(){
-        $(".red-bar").removeClass("red-bar").addClass("green-bar")
+        $(".red-bar").removeClass("red-bar").addClass("green-bar loading")
     })
+    // $(".dirtable[type='input']").on('blur',function(){
+    //     $(".red-bar").removeClass("red-bar").addClass("green-bar loading")
+    // })
+    // onblur="$('.line-loader').removeClass('red-bar').addClass('green-bar loading')"
     var observer = new MutationObserver(function (event) {
         if( $(".line-loader").hasClass("loading") ){
             if( $(".dirtable.dirtied").length == 0 ){

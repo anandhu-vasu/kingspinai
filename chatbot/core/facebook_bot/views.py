@@ -8,7 +8,7 @@ from django.views import generic
 from django.http.response import HttpResponse
 import json,requests
 import re
-from heap import Heap
+from hoard import Hoard
 
 reg_media = r"(<(image|video)\|(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*))>)"
 
@@ -149,10 +149,10 @@ class FacebookWebhook(generic.View):
                         # Print the message to the terminal
                             message_id = message['message']['mid']
                             
-                            if Heap.get("chatbots",chatbot.name,Channel.Facebook,fbid,"last_message_id") == message_id:
+                            if Hoard.get("chatbots",chatbot.name,Channel.Facebook,fbid,"last_message_id") == message_id:
                                 return HttpResponse()
                             else:
-                                Heap.set("chatbots",chatbot.name,Channel.Facebook,fbid,"last_message_id",val=message_id)
+                                Hoard.set("chatbots",chatbot.name,Channel.Facebook,fbid,"last_message_id",val=message_id)
                             
                             post_sender_action(bot_token,fbid,"mark_seen")
                             post_sender_action(bot_token,fbid,"typing_on")
@@ -166,10 +166,10 @@ class FacebookWebhook(generic.View):
                             
                         elif 'postback' in message:
                             timestamp = message['timestamp']
-                            if Heap.get("chatbots",chatbot.name,Channel.Facebook,fbid,"last_timestamp") == timestamp:
+                            if Hoard.get("chatbots",chatbot.name,Channel.Facebook,fbid,"last_timestamp") == timestamp:
                                 return HttpResponse()
                             else:
-                                Heap.set("chatbots",chatbot.name,Channel.Facebook,fbid,"last_timestamp",val=timestamp)
+                                Hoard.set("chatbots",chatbot.name,Channel.Facebook,fbid,"last_timestamp",val=timestamp)
                             
                             if message['postback']['title'] == "Get Started" and message['postback']['payload']== '|@#GET_STARTED#@|':
                                 post_sender_action(bot_token,fbid,"mark_seen")

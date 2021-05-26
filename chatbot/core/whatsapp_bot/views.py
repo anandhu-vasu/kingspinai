@@ -8,7 +8,7 @@ from django.http.response import HttpResponse
 import json,requests
 import re
 from chatbot.core.crypt import Encrypt
-from heap import Heap
+from hoard import Hoard
 
 reg_media = r"(<(image|video)\|(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*))>)"
 api_url = "https://waba.360dialog.io/v1"
@@ -127,11 +127,11 @@ class WhatsappWebhook(generic.View):
             status = False
         if status:
             # Converts the text payload into a python dictionary
-            incoming_message = json.loads(self.request.body.decode('utf-8'))
+                incoming_message = json.loads(self.request.body.decode('utf-8'))
             # print(incoming_message)
             # whatsapp recommends going through every entry since they might send
             # multiple messages in a single call during high load
-            try:
+            # try:
                 if 'contacts' in incoming_message and 'messages' in incoming_message:
                     uname = incoming_message['contacts'][0]['profile']['name']
                     wa_id = incoming_message['contacts'][0]['wa_id']
@@ -139,10 +139,10 @@ class WhatsappWebhook(generic.View):
                     message_id = incoming_message["messages"][0]["id"]
                     auth = {"whatsapp":wa_id}
                     
-                    if Heap.get("chatbots",chatbot.name,Channel.Whatsapp,wa_id,"last_message_id") == message_id:
+                    if Hoard.get("chatbots",chatbot.name,Channel.Whatsapp,wa_id,"last_message_id") == message_id:
                         return HttpResponse()
                     else:
-                        Heap.set("chatbots",chatbot.name,Channel.Whatsapp,wa_id,"last_message_id",val=message_id)
+                        Hoard.set("chatbots",chatbot.name,Channel.Whatsapp,wa_id,"last_message_id",val=message_id)
                     
                     if message_type == 'text':
                         put_message_status_read(bot_token,message_id)
@@ -151,16 +151,15 @@ class WhatsappWebhook(generic.View):
                         message_controller(bot_token,wa_id,response)
                     elif message_type == 'voice':
                         put_message_status_read(bot_token,message_id)
-                        print("Voice1",incoming_message)
                         voice_id =  incoming_message["messages"][0]["voice"]["id"]
                         voice = get_whatsapp_voice(bot_token,voice_id)
                         response = ChatBot(bot_token,channel=Channel.Whatsapp,uname=uname,auth=auth).replyFromVoice(voice)
                         message_controller(bot_token,wa_id,response)
                         
-            except Exception as e:
-                print(e)
-                post_whatsapp_text_message(bot_token,wa_id, "Sorry for the Inconvenience.")
-                post_whatsapp_text_message(bot_token,wa_id, "We can't process the response")
+            # except Exception as e:
+            #     print(e)
+            #     post_whatsapp_text_message(bot_token,wa_id, "Sorry for the Inconvenience.")
+            #     post_whatsapp_text_message(bot_token,wa_id, "We can't process the response")
             # finally:
             #     post_sender_action(bot_token,message['sender']['id'],"typing_off")
             

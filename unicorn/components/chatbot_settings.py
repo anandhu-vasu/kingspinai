@@ -1,6 +1,7 @@
 from chatbot.core.utils import Encrypt
 from chatbot.core.telegram_bot import TelegramBot
 from django_unicorn.components import UnicornView,UnicornField
+from django_unicorn.decorators import timed
 from django import forms
 from django.forms.models import model_to_dict
 from django.core.exceptions import ValidationError
@@ -22,31 +23,33 @@ class ChatbotMessages(UnicornField):
         self.UNKNOWN = kwargs.get("UNKNOWN","")
     
 
-def validate_chatbot_telegram_key(token):
-    try:
-        telegram.Bot(token=token).username
-    except:
-        raise ValidationError(message="Invalid telegram bot api token.",code="invalid")
-    else:
-        return token
+# def validate_chatbot_telegram_key(token):
+#     try:
+#         telegram.Bot(token=token).username
+#     except:
+#         raise ValidationError(message="Invalid telegram bot api token.",code="invalid")
+#     else:
+#         return token
 
-def validate_chatbot_facebook_key(token):
-    if get_facebook_page(token) == None:
-        raise ValidationError(message="Invalid facebook page access token.",code="invalid")
-    else:
-        return token
+# def validate_chatbot_facebook_key(token):
+#     if get_facebook_page(token) == None:
+#         raise ValidationError(message="Invalid facebook page access token.",code="invalid")
+#     else:
+#         return token
     
-def validate_chatbot_whatsapp_key(token):
-    if get_whatsapp_id(token) == None:
-        raise ValidationError(message="Invalid facebook page access token.",code="invalid")
-    else:
-        return token
+# def validate_chatbot_whatsapp_key(token):
+#     if get_whatsapp_id(token) == None:
+#         raise ValidationError(message="Invalid facebook page access token.",code="invalid")
+#     else:
+#         return token
+
+
 
 class ChatbotSettingsForm(forms.ModelForm):
     name = forms.SlugField(required=True,max_length=100,min_length=3)
-    telegram_key = forms.CharField(max_length=255,required=False,validators=[validate_chatbot_telegram_key])
-    facebook_key = forms.CharField(max_length=255,required=False,validators=[validate_chatbot_facebook_key])
-    whatsapp_key = forms.CharField(max_length=255,required=False,validators=[validate_chatbot_whatsapp_key])
+    telegram_key = forms.CharField(max_length=255,required=False)
+    facebook_key = forms.CharField(max_length=255,required=False)
+    whatsapp_key = forms.CharField(max_length=255,required=False)
 
     class Meta:
         model = Chatbot
@@ -145,7 +148,7 @@ class ChatbotSettingsView(UnicornView):
             self.chatbot.save(update_fields=['data_key'])
 
     def updated_chatbot_telegram_key(self, value):
-        if self.is_valid(['telegram_key']):
+        if self.is_valid(['telegram_key']) and self.validate_chatbot_telegram_key(value):
             self.chatbot.save(update_fields=["telegram_key"])
             if self.chatbot.telegram_key:
                 try:
@@ -171,7 +174,7 @@ class ChatbotSettingsView(UnicornView):
             
     def updated_chatbot_facebook_key(self, value):
 
-        if self.is_valid(['facebook_key']):
+        if self.is_valid(['facebook_key']) and self.validate_chatbot_facebook_key(value):
             self.chatbot.save(update_fields=["facebook_key"])
             if self.chatbot.facebook_key:
                 self.facebook_bot = get_facebook_page(self.chatbot.facebook_key)
@@ -202,7 +205,7 @@ class ChatbotSettingsView(UnicornView):
             self.facebook_url = ""
             
     def updated_chatbot_whatsapp_key(self, value):
-        if self.is_valid(['whatsapp_key']):
+        if self.is_valid(['whatsapp_key']) and self.validate_chatbot_whatsapp_key(value):
             self.chatbot.save(update_fields=["whatsapp_key"])
             if self.chatbot.whatsapp_key:
                 self.whatsapp_bot = get_whatsapp_id(self.chatbot.whatsapp_key,format=True)
@@ -246,3 +249,26 @@ class ChatbotSettingsView(UnicornView):
     def set_tab(self,tab):
         self.tab = tab
         self.call("tabLoaded")
+    
+    def validate_chatbot_telegram_key(self,token)->bool:
+        try:
+            telegram.Bot(token=token).username
+        except:
+            self.errors["telegram_key"] = [{"message":"Invalid telegram bot api token.","code":"invalid"}]
+            return False
+        else:
+            return True
+
+    def validate_chatbot_facebook_key(self,token)->bool:
+        if get_facebook_page(token) == None:
+            self.errors["facebook_key"] = [{"message":"Invalid facebook page access token.","code":"invalid"}]
+            return False
+        else:
+            return True
+        
+    def validate_chatbot_whatsapp_key(self,token)->bool:
+        if get_whatsapp_id(token) == None:
+            self.errors["whatsapp_key"] = [{"message":"Invalid whatsapp api key.","code":"invalid"}]
+            return False
+        else:
+            return True

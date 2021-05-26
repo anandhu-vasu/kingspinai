@@ -95,13 +95,16 @@ class TelegramBotConfig(AppConfig):
             return cls.updaters[index]
 
     def ready(self) -> None:
-        if TelegramBotConfig.ready_run:
-            return
+        if TelegramBotConfig.ready_run:return
         TelegramBotConfig.ready_run = True
 
-        bot_tokens = _BOT_TOKENS()
-        for bot_token in bot_tokens:
-            TelegramBot.setWebhook(bot_token)
+        try:
+            from chatbot.core.models import Chatbot
+            bot_tokens = Chatbot.objects.filter(telegram_status=True).values_list('telegram_key',flat=True)
+            for bot_token in bot_tokens:
+                TelegramBot.setWebhook(bot_token)
+        except Exception as e:
+            logger.error("Telegram Error on Ready: {}".format(e))
 
 
 class TelegramBot:

@@ -218,6 +218,9 @@ function conversationConsole() {
 function textareaResize(el) {
     $(el).height(5);
     $(el).height($(el).prop("scrollHeight"));
+    setTimeout(() => {
+        $(el).parents(".story").getNiceScroll().resize();
+    }, 1000);
 }
 
 $(function () {

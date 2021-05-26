@@ -14,7 +14,7 @@
                 <h3> Chatbot Preferences  <small  style="opacity:0.8;"><i class="fas fa-chevron-right" style="font-size: inherit !important;"></i> <b>{{cached_name}}</b> </small></h3>
             </div>
             <div class="">
-                <div class="line-loader bg-primary red-bar" style="opacity: 1;">
+                <div class="line-loader bg-primary red-bar no-bar" style="opacity: 1;">
                     <div class="bar shadow-lg rounded-pill" ></div>
                 </div>
             </div>
@@ -22,6 +22,9 @@
                 <ul class="nav nav-pills">
                     <li class="nav-item">
                         <a unicorn:click="set_tab('general')" onclick="tabLoading()" id="general-tab" class="nav-link rounded-0 font-weight-bold {% if tab == 'general' %} active show {% endif %}" href="#">General</a><!-- data-toggle="tab" href="#general-panel" role="tab" aria-controls="general" aria-selected="true" -->
+                    </li>
+                    <li class="nav-item">
+                        <a unicorn:click="set_tab('channels')" onclick="tabLoading()" id="channels-tab" class="nav-link rounded-0 font-weight-bold {% if tab == 'channels' %} active show {% endif %}" href="#">Channels</a><!-- data-toggle="tab" href="#general-panel" role="tab" aria-controls="general" aria-selected="true" -->
                     </li>
                     <li class="nav-item">
                         <a unicorn:click="set_tab('messages')" onclick="tabLoading()" id="messages-tab" class="nav-link rounded-0 font-weight-bold {% if tab == 'messages' %} active show {% endif %}" href="#">Messages</a><!--  data-toggle="tab" href="#messages-panel"  role="tab" aria-controls="messages" aria-selected="false" -->
@@ -87,8 +90,11 @@
                             </div>
                                 <input unicorn:model.lazy="chatbot.data_key"  unicorn:key="datakeyKey" unicorn:dirty.class="dirtied" type="text" class="form-control dirtable">
                             </div>
-                        </div>  
-                        <br>
+                        </div>                         
+
+                    </div>
+                    <div id="channels-panel" class="tab-pane animated fadeIn {% if tab == 'channels' %} active show {% endif %}" ><!-- role="tabpanel" aria-labelledby="general-tab" -->
+                        
                         <div class="section-title mt-0">Telegram</div>
                         {% if unicorn.errors.telegram_key %}
                             <div class="unicorn-errors ">
@@ -114,7 +120,7 @@
                             
                             {% if telegram_bot %}
                                 
-                                <div class="p-3 d-flex align-items-center justify-content-between shadow rounded bg-light animated slideInDown">
+                                <div class="p-3 d-flex flex-wrap align-items-center justify-content-between shadow rounded bg-light animated slideInDown">
                                     <h4 class="my-auto"><i class="fab fa-telegram px-2" style="font-size: inherit;color:#0088cc;"></i></h4>
                                     <div class="">
                                         <h4 class="my-auto px-2">@{{telegram_bot}}</h4>
@@ -134,9 +140,7 @@
                                 </div>    
 
                             {% endif %}
-
                         </div>
-                        
                         <br>
                         <div class="section-title">Facebook</div>
                         {% if unicorn.errors.facebook_key %}
@@ -163,7 +167,7 @@
                             
                             {% if facebook_bot %}
                                     
-                                <div class="p-3 d-flex align-items-center justify-content-between shadow rounded bg-light animated slideInDown">
+                                <div class="p-3 d-flex flex-wrap align-items-center justify-content-between shadow rounded bg-light animated slideInDown">
                                     <h4 class="my-auto"><i class="fab fa-facebook-messenger px-2" style="font-size: inherit;color:#0084ff"></i></h4>
                                     <div class="">
                                         <h4 class="my-auto px-2">{{facebook_bot.name}}</h4>
@@ -185,10 +189,9 @@
                                     </label>
                                 </div>
                             {% endif %}
-                            
                         </div>
                         <br>
-                        <div class="section-title mt-0">Whatsapp</div>
+                        <div class="section-title">Whatsapp</div>
                         {% if unicorn.errors.whatsapp_key %}
                             <div class="unicorn-errors ">
                                 <div class="mb-2">
@@ -213,7 +216,7 @@
                             
                             {% if whatsapp_bot %}
                                 
-                                <div class="p-3 d-flex align-items-center justify-content-between shadow rounded bg-light animated slideInDown">
+                                <div class="p-3 d-flex flex-wrap align-items-center justify-content-between shadow rounded bg-light animated slideInDown">
                                     <h4 class="my-auto"><i class="fab fa-whatsapp px-2" style="font-size: inherit;color:#25D366;"></i></h4>
                                     <div class="">
                                         <h4 class="my-auto px-2">{{whatsapp_bot}}</h4>

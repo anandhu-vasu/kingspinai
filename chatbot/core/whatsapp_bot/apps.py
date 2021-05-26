@@ -30,14 +30,17 @@ class WhatsappBotConfig(AppConfig):
     ready_run = False
     
     def ready(self) -> None:
-        if WhatsappBotConfig.ready_run:
-            return
         
+        if WhatsappBotConfig.ready_run:return
         WhatsappBotConfig.ready_run = True
 
-        api_keys = _WHATSAPP_API_KEYS()
-        for api_key in api_keys:
-            set_whatsapp_webhook(api_key)
+        try:
+            from chatbot.core.models import Chatbot
+            api_keys = Chatbot.objects.filter(whatsapp_status=True).values_list('whatsapp_key',flat=True)
+            for api_key in api_keys:
+                set_whatsapp_webhook(api_key)
+        except Exception as e:
+            logger.error("Whatsapp Error on Ready: {}".format(e))
     
     
 def set_whatsapp_webhook(api_key,delete=False):

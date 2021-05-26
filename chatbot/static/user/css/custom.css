@@ -712,7 +712,7 @@ input.has-error{
 .line-loader.loading{
     opacity: 1;
 }
-.line-loader.loading .bar {
+.line-loader.loading:not(.red-bar) .bar {
   width: 100%;
   position: absolute;
   height: 5px;
@@ -724,6 +724,10 @@ input.has-error{
 }
 .line-loader.loading.red-bar .bar{
     background: rgb(243, 106, 106);
+}
+.line-loader.loading.red-bar.no-bar{
+    opacity: 1;
+    background: rgb(243, 106, 106) !important;
 }
 .line-loader.loading.light-bar .bar{
     background: white;

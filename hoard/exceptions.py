@@ -1,8 +1,8 @@
-class HeapError(Exception):
-    """ Base class for Heap errors """
+class HoardError(Exception):
+    """ Base class for Hoard errors """
     pass
 
-class EmptyKeysError(HeapError):
+class EmptyKeysError(HoardError):
     """ Raise when keys are empty """
     def __init__(self, message="Keys not given"):
         self.message = message
