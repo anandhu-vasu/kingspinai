@@ -1,33 +1,16 @@
-from django.apps import AppConfig
 import logging
-from django.conf import settings
-import sqlalchemy as db
-
 import os
+
 import telegram
-from telegram.ext import Dispatcher
+from django.apps import AppConfig
+from django.conf import settings
 from telegram.error import InvalidToken, TelegramError
-from telegram.ext import CallbackQueryHandler, CommandHandler, Filters, MessageHandler
+from telegram.ext import (CallbackQueryHandler, CommandHandler, Dispatcher,
+                          Filters, MessageHandler)
+
 from .handlers import *
 
 logger = logging.getLogger(__name__)
-
-def _BOT_TOKENS()->list:
-    try:
-        engine = db.create_engine(settings.DATABASE_URL)
-        connection = engine.connect()
-        metadata = db.MetaData()
-        chatbot = db.Table('core_chatbot', metadata, autoload=True, autoload_with=engine)   
-        query = db.select([chatbot.columns.telegram_key]).where(chatbot.columns.telegram_status==1)
-        result = connection.execute(query)
-        rows = result.fetchall()
-        if rows:
-            return [ x[0] for x in rows]
-        else:
-            return []
-    except:
-        return []
-
 
 class TelegramBotConfig(AppConfig):
     name = 'chatbot.core.telegram_bot'
