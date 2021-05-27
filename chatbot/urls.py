@@ -14,6 +14,9 @@ dashboard_urlpatterns = [
 urlpatterns = [
 
     path('',views.index,name='index'),
+    path('linguist',views.linguist,name="linguist"),
+    path('multi-channel',views.multi_channel,name="multi-channel"),
+    path('voice-enabled',views.voice_enabled,name="voice-enabled"),
     
           path('.well-known/pki-validation/30269148F03B43DFA891A56CB33FA529.txt', views.ssl_verify),
 

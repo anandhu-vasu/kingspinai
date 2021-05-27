@@ -15,8 +15,17 @@ body.layout-4 .main-sidebar .sidebar-menu li.dlink.active > a {
     font-size: 22px !important;
     color: #fff;
 }
+.gap{
+    margin-right: 30px;
+}
+
+.margin{
+    margin-top: 100px;
+}
 .main-logo {
     width: 150px;
     -webkit-filter: drop-shadow(0px 0px 10px 15px #fff);
     filter: drop-shadow(0px 0px 10px 15px #fff);
 }
+
+

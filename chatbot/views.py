@@ -20,6 +20,15 @@ import pytz
 
 def index(request):
     return render(request,"index.html",{})
+
+def linguist(request):
+    return render(request,"linguist.html",{})
+
+def multi_channel(request):
+    return render(request,"multi-channel.html",{})
+
+def voice_enabled(request):
+    return render(request,"voice-enabled.html",{})
     
 @login_required
 def user(request):
@@ -57,6 +66,7 @@ def analytics(request):
                 messagesPerDay.append({'name':channel.value,'data':list(data)})
             
             analysis['messagesPerDay'] = json.dumps(messagesPerDay,default=datetimetoms)
+            print(analysis)
             analytics.append(analysis)
     context = {"analytics":analytics}
     # print(analytics)
