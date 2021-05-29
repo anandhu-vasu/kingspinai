@@ -9,7 +9,7 @@ def get_environ_vars():
         ['/opt/elasticbeanstalk/bin/get-config', 'environment'],
         stdout=subprocess.PIPE,
         text=True,
-        check=True
+        # check=Truet
     )
 
     return ast.literal_eval(completed_process.stdout)
