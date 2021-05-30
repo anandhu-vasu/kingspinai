@@ -201,7 +201,7 @@ function conversationConsole() {
         extractEntities(i, k) {
             let entities = new Set();
 
-            let regexp = /\w+\|~([_A-Z]+)~/g;
+            let regexp = /\|[\w ,.']+\|~([_A-Z]+)~/g;
             for (statement of this.stories[i].conversations[k].statements) {
                 let matches = statement.matchAll(regexp);
                 for (let match of matches) {

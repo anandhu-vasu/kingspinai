@@ -31,17 +31,17 @@
                     We can set words in a statements as a <strong>ENTITY</strong> using the syntax:
                 </p>
                 <p>
-                    <mark><code>word</code>|~<code>ENTITY</code>~</mark>
+                    <mark>|<code>word</code>|~<code>ENTITY</code>~</mark>
                 </p>
                 <p>
-                    <mark><code>word</code></mark> should only contain <code>_</code>, <code>a-z</code>, <code>A-Z</code>, <code>0-9</code> characters
+                    <mark><code>word</code></mark> should only contain <code>_</code>, <code>a-z</code>, <code>A-Z</code>, <code>0-9</code>, <code><i><small>space</small></i></code>, <code>,</code>, <code>.</code>, <code>'</code> characters
                     <br>
                     <mark><code>ENTITY</code></mark> should only contain <code>_</code>, <code>A-Z</code> characters
                 </p>
                 <p>
                     Example:
                     <div class="ml-5 p-1">
-                        How are you <mark><code>Aravid</code>|~<code>NAME</code>~</mark>?
+                        How are you <mark>|<code>Aravind</code>|~<code>NAME</code>~</mark>?
                     </div>
                 </p>
             </div>
@@ -75,6 +75,7 @@
             <div class="content">
                 <p>
                     We can include <strong>images</strong> and <strong>videos</strong> (supports all formats that respective platforms supports) in responses to the user as following:
+                    <br><em class="text-warning">Note: URLs should start with https.</em>
                 </p>
                 <p>
                     Example:

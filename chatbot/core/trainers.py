@@ -10,7 +10,7 @@ from spacy.util import minibatch, compounding
 import re
 
 def trainNER(training_data):
-    n_iter=100
+    n_iter=50
     model = None
     nlp = spacy.blank("en")
     print("Created blank 'en' model")
@@ -31,6 +31,7 @@ def trainNER(training_data):
     with nlp.disable_pipes(*other_pipes):
         if model is None:
             nlp.begin_training()
+        # optimizer = nlp.begin_training()
         for itn in range(n_iter):
             random.shuffle(training_data)
             losses = {}
@@ -43,6 +44,7 @@ def trainNER(training_data):
                     annotations,
                     drop=0.5,
                     losses=losses,
+                    # sgd=optimizer
                 )
             print("Losses", losses)
     
@@ -95,7 +97,7 @@ class SophisticatedTrainer(Trainer):
 
         intent_dataset = []
         ner_dataset = []
-        repatt = r"(\w+)\|~([_A-Z]+)~"
+        repatt = r"\|([\w ,.']+)\|~([_A-Z]+)~"
         # intents = []
 
         # for story in corpus_data:

@@ -51,7 +51,7 @@ class Ingenious(LogicAdapter):
                 for conversation in story["conversations"]:
                     if intent == conversation['intent']:
                         for smt in conversation["statements"]:
-                            statement_entities.update(set(re.findall(r"\w+\|~([_A-Z]+)~",smt)))
+                            statement_entities.update(set(re.findall(r"\|[\w ,.']+\|~([_A-Z]+)~",smt)))
 
             #Entity Extraction
             extracted_entities = {}
@@ -94,12 +94,16 @@ class Ingenious(LogicAdapter):
                                         _headers = {'Content-Type': 'application/json','Accept':'application/json'}
                                         try:
                                             data_res = requests.post(data_url,data=json.dumps(_data),headers=_headers)
+                                            print(data_res.json())
                                             if data_res.status_code == 200:
                                                 data = data_res.json()
+                                            elif data_res.status_code == 400:
+                                                response = Statement(text="Sorry, I don't understand.")
+                                                response.confidence = 0
+                                                return response
                                         except:
                                             pass
                                 if data:
-                                    print(data)
                                     res_strp = res
                                     res = ""
                                     ei=0
@@ -116,9 +120,9 @@ class Ingenious(LogicAdapter):
                                                     #     res_str = re.sub(ent_pat,", ".join(extracted_entities[match.group(1)]),res_str,1)
                                                     # el
                                                     if len(extracted_entities[match.group(1)])==1:
-                                                        res_str = re.sub(ent_pat,extracted_entities[match.group(1)][0],res_str,1)
+                                                        res_str = re.sub(ent_pat,str(extracted_entities[match.group(1)][0]),res_str,1)
                                                     else:
-                                                        res_str = re.sub(ent_pat,extracted_entities[match.group(1)][ei],res_str,1)
+                                                        res_str = re.sub(ent_pat,str(extracted_entities[match.group(1)][ei]),res_str,1)
                                                         increment_ei=True
                                                 except:
                                                     raise exceptions.NonExtractedEntityOnReply()
@@ -130,8 +134,9 @@ class Ingenious(LogicAdapter):
                                                 if not match:
                                                     break
                                                 try:
-                                                    res_str = re.sub(val_pat,dval[match.group(1)],res_str,1)
-                                                except:
+                                                    res_str = re.sub(val_pat,str(dval[match.group(1)]),res_str,1)
+                                                except Exception as e:
+                                                    print(e)
                                                     raise exceptions.NonExtractedValueOnReply()
                                             if di!=0:
                                                 res_str = "\n" +res_str
