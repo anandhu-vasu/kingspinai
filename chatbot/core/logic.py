@@ -27,15 +27,15 @@ class Ingenious(LogicAdapter):
         val_pat = r"~([_a-z]+)~"
         
         intent = None
-        # cat = self.chatbot.storage.intent_model
-        intent_classifier = self.chatbot.storage.intent_model
+        cat = self.chatbot.storage.intent_model
+        # intent_classifier = self.chatbot.storage.intent_model
         print()
         print("TEXT: ",doc)
         try:
-            prob = intent_classifier.prob_classify(doc.lower())
-            intent = prob.max()
-            confidence = prob.prob(intent)
-            # confidence,intent = max((p, v) for (v, p) in cat(doc.lower()).cats.items())
+            # prob = intent_classifier.prob_classify(doc.lower())
+            # intent = prob.max()
+            # confidence = prob.prob(intent)
+            confidence,intent = max((p, v) for (v, p) in cat(doc.lower()).cats.items())
             print("INTENT: ",intent,confidence,(confidence >= 0.8))
             if confidence < 0.8:
                 response = Statement(text="Sorry, I don't understand.")
