@@ -18,24 +18,20 @@ class ConsoleActionbarView(UnicornView):
         except Exception as e:
             print(e)
             self.call("Toast", "Error!","Something Went Wrong.","error")
-            
-
-    def mount(self):
-        print("dataset loading")
-        print("dataset loaded")
+    
 
     def train(self):
-        # try:    
+        try:
             self._chatbot.train()
-        # except EmptyTrainingDataError:
-        #     self.call("Toast", "Training Failed!","Dataset is Empty.","error")
-        # except Exception as e:
-        #     print(e)
-        #     self.call("Toast", "Training Failed!","Something Went Wrong.","error")
-        # else:
-        #     self.call("swal","Training Completed!","Your Bot is ready to go.","success")
-        # finally:
-        #     self.call("refreshConsole",self.corpus)
+        except EmptyTrainingDataError:
+            self.call("Toast", "Training Failed!","Dataset is Empty.","error")
+        except Exception as e:
+            print(e)
+            self.call("Toast", "Training Failed!","Something Went Wrong.","error")
+        else:
+            self.call("swal","Training Completed!","Your Bot is ready to go.","success")
+        finally:
+            self.call("refreshConsole",self.corpus)
 
     def save(self,corpus):
         try:

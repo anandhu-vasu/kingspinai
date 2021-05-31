@@ -9,6 +9,8 @@ import random
 from spacy.util import minibatch, compounding
 import re
 
+from concurrent.futures import ThreadPoolExecutor
+
 def trainNER(training_data):
     n_iter=100
     model = None
@@ -51,7 +53,7 @@ def trainNER(training_data):
     return nlp
 
 def trainIntent(training_data):
-    n_iter=30
+    n_iter=100
     nlp = spacy.blank("en")
     print("Created blank 'en' model")
 
@@ -138,8 +140,15 @@ class SophisticatedTrainer(Trainer):
                         # intent_dataset.append([text.lower(),conversation["intent"]])
 
         # self.chatbot.storage.intent_model = NaiveBayesClassifier(intent_dataset)
-        self.chatbot.storage.intent_model = trainIntent(intent_dataset)
-        self.chatbot.storage.ner_model = trainNER(ner_dataset)
+        
+        # self.chatbot.storage.intent_model = trainIntent(intent_dataset)
+        # self.chatbot.storage.ner_model = trainNER(ner_dataset)
+        
+        with ThreadPoolExecutor(max_workers=2) as executor:
+            intent_future = executor.submit(trainIntent,intent_dataset)
+            entity_future = executor.submit(trainNER,ner_dataset)
+            self.chatbot.storage.intent_model = intent_future.result()
+            self.chatbot.storage.ner_model = entity_future.result()
 
 
 # x={
