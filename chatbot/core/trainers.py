@@ -10,7 +10,7 @@ from spacy.util import minibatch, compounding
 import re
 
 def trainNER(training_data):
-    n_iter=50
+    n_iter=100
     model = None
     nlp = spacy.blank("en")
     print("Created blank 'en' model")
