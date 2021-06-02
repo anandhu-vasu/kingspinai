@@ -1,1 +1,1 @@
-web: gunicorn kingspinai.wsgi --workers=3 --timeout=300
+web: gunicorn kingspinai.wsgi --workers=1 --timeout=3000
