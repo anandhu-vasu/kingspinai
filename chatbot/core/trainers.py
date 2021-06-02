@@ -8,6 +8,7 @@ import spacy
 import random
 from spacy.util import minibatch, compounding
 import re
+from django.db import close_old_connections
 
 # from concurrent.futures import ThreadPoolExecutor
 
@@ -146,7 +147,9 @@ class SophisticatedTrainer(Trainer):
 
         # self.chatbot.storage.intent_model = NaiveBayesClassifier(intent_dataset)
         
+        close_old_connections()
         self.chatbot.storage.intent_model = trainIntent(intent_dataset)
+        close_old_connections()
         self.chatbot.storage.ner_model = trainNER(ner_dataset)
         
         # with ThreadPoolExecutor(max_workers=2) as executor:
