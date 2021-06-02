@@ -25,9 +25,9 @@ class ConsoleActionbarView(UnicornView):
             self._chatbot.train()
         except EmptyTrainingDataError:
             self.call("Toast", "Training Failed!","Dataset is Empty.","error")
-        except Exception as e:
-            print(e)
-            self.call("Toast", "Training Failed!","Something Went Wrong.","error")
+        # except Exception as e:
+        #     print(e)
+        #     self.call("Toast", "Training Failed!","Something Went Wrong.","error")
         else:
             self.call("swal","Training Completed!","Your Bot is ready to go.","success")
         finally:
