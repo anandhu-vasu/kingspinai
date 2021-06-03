@@ -107,12 +107,12 @@ class SophisticatedTrainer(Trainer):
         repatt = r"\|([\w ,.']+)\|~([_A-Z]+)~"
         
         # 
-        intents = []
-        for story in corpus_data:
-            for conversation in story["conversations"]:
-                intent = conversation.get("intent")
-                if intent:
-                    intents.append(intent)
+        # intents = []
+        # for story in corpus_data:
+        #     for conversation in story["conversations"]:
+        #         intent = conversation.get("intent")
+        #         if intent:
+        #             intents.append(intent)
         # 
 
         for corpus,categories,name in Corpus.load_from_dic(*corpus_data):
@@ -140,15 +140,15 @@ class SophisticatedTrainer(Trainer):
                             
                         ner_dataset.append([text,{"entities":ents}])
                         
-                        cats = {intent:(1 if conversation["intent"]==intent else 0) for intent in intents}
-                        intent_dataset.append([text.lower(),{"cats":cats}])
+                        # cats = {intent:(1 if conversation["intent"]==intent else 0) for intent in intents}
+                        # intent_dataset.append([text.lower(),{"cats":cats}])
                         
-                        # intent_dataset.append([text.lower(),conversation["intent"]])
+                        intent_dataset.append([text.lower(),conversation["intent"]])
 
-        # self.chatbot.storage.intent_model = NaiveBayesClassifier(intent_dataset)
+        self.chatbot.storage.intent_model = NaiveBayesClassifier(intent_dataset)
         
-        close_old_connections()
-        self.chatbot.storage.intent_model = trainIntent(intent_dataset)
+        # close_old_connections()
+        # self.chatbot.storage.intent_model = trainIntent(intent_dataset)
         close_old_connections()
         self.chatbot.storage.ner_model = trainNER(ner_dataset)
         
