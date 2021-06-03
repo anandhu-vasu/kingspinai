@@ -1,16 +1,16 @@
 from chatterbot import utils
 from chatterbot.trainers import Trainer
-from chatbot.core.conversation import Statement
+# from chatbot.core.conversation import Statement
 from chatbot.core.corpus import Corpus
 from chatbot.core.exceptions import EmptyTrainingDataError
-from textblob.classifiers import NaiveBayesClassifier
+# from textblob.classifiers import NaiveBayesClassifier
 import spacy
 import random
 from spacy.util import minibatch, compounding
 import re
-from django.db import close_old_connections
+# from django.db import close_old_connections
 
-# from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor
 
 def trainNER(training_data):
     n_iter=100
@@ -54,7 +54,7 @@ def trainNER(training_data):
     return nlp
 
 def trainIntent(training_data):
-    n_iter=30
+    n_iter=100
     nlp = spacy.blank("en")
     model = None
     print("Created blank 'en' model")
@@ -107,12 +107,12 @@ class SophisticatedTrainer(Trainer):
         repatt = r"\|([\w ,.']+)\|~([_A-Z]+)~"
         
         # 
-        # intents = []
-        # for story in corpus_data:
-        #     for conversation in story["conversations"]:
-        #         intent = conversation.get("intent")
-        #         if intent:
-        #             intents.append(intent)
+        intents = []
+        for story in corpus_data:
+            for conversation in story["conversations"]:
+                intent = conversation.get("intent")
+                if intent:
+                    intents.append(intent)
         # 
 
         for corpus,categories,name in Corpus.load_from_dic(*corpus_data):
@@ -140,23 +140,23 @@ class SophisticatedTrainer(Trainer):
                             
                         ner_dataset.append([text,{"entities":ents}])
                         
-                        # cats = {intent:(1 if conversation["intent"]==intent else 0) for intent in intents}
-                        # intent_dataset.append([text.lower(),{"cats":cats}])
+                        cats = {intent:(1 if conversation["intent"]==intent else 0) for intent in intents}
+                        intent_dataset.append([text.lower(),{"cats":cats}])
                         
-                        intent_dataset.append([text.lower(),conversation["intent"]])
+                        # intent_dataset.append([text.lower(),conversation["intent"]])
 
-        self.chatbot.storage.intent_model = NaiveBayesClassifier(intent_dataset)
+        # self.chatbot.storage.intent_model = NaiveBayesClassifier(intent_dataset)
         
         # close_old_connections()
         # self.chatbot.storage.intent_model = trainIntent(intent_dataset)
-        close_old_connections()
-        self.chatbot.storage.ner_model = trainNER(ner_dataset)
+        # # close_old_connections()
+        # self.chatbot.storage.ner_model = trainNER(ner_dataset)
         
-        # with ThreadPoolExecutor(max_workers=2) as executor:
-        #     intent_future = executor.submit(trainIntent,intent_dataset)
-        #     entity_future = executor.submit(trainNER,ner_dataset)
-        #     self.chatbot.storage.intent_model = intent_future.result()
-        #     self.chatbot.storage.ner_model = entity_future.result()
+        with ThreadPoolExecutor(max_workers=2) as executor:
+            intent_future = executor.submit(trainIntent,intent_dataset)
+            entity_future = executor.submit(trainNER,ner_dataset)
+            self.chatbot.storage.intent_model = intent_future.result()
+            self.chatbot.storage.ner_model = entity_future.result()
 
 
 # x={

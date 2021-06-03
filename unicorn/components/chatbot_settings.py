@@ -148,7 +148,7 @@ class ChatbotSettingsView(UnicornView):
             self.chatbot.save(update_fields=['data_key'])
 
     def updated_chatbot_telegram_key(self, value):
-        if self.is_valid(['telegram_key']) and self.validate_chatbot_telegram_key(value):
+        if self.is_valid(['telegram_key']) and (value=="" or self.validate_chatbot_telegram_key(value)):
             self.chatbot.save(update_fields=["telegram_key"])
             if self.chatbot.telegram_key:
                 try:
@@ -174,7 +174,7 @@ class ChatbotSettingsView(UnicornView):
             
     def updated_chatbot_facebook_key(self, value):
 
-        if self.is_valid(['facebook_key']) and self.validate_chatbot_facebook_key(value):
+        if self.is_valid(['facebook_key']) and (value=="" or self.validate_chatbot_facebook_key(value)):
             self.chatbot.save(update_fields=["facebook_key"])
             if self.chatbot.facebook_key:
                 self.facebook_bot = get_facebook_page(self.chatbot.facebook_key)
@@ -205,7 +205,7 @@ class ChatbotSettingsView(UnicornView):
             self.facebook_url = ""
             
     def updated_chatbot_whatsapp_key(self, value):
-        if self.is_valid(['whatsapp_key']) and self.validate_chatbot_whatsapp_key(value):
+        if self.is_valid(['whatsapp_key']) and (value=="" or self.validate_chatbot_whatsapp_key(value)):
             self.chatbot.save(update_fields=["whatsapp_key"])
             if self.chatbot.whatsapp_key:
                 self.whatsapp_bot = get_whatsapp_id(self.chatbot.whatsapp_key,format=True)
