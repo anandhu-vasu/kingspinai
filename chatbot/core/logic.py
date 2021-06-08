@@ -36,8 +36,8 @@ class Ingenious(LogicAdapter):
             # intent = prob.max()
             # confidence = prob.prob(intent)
             confidence,intent = max((p, v) for (v, p) in cat(doc.lower()).cats.items())
-            print("INTENT: ",intent,confidence,(confidence >= 0.8))
-            if confidence < 0.8:
+            print("INTENT: ",intent,confidence,(confidence >= 0.7))
+            if confidence < 0.7:
                 response = Statement(text="Sorry, I don't understand.")
                 response.confidence = 0
                 return response
