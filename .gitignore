@@ -1,0 +1,13 @@
+.condaenv
+**/__pycache__
+local_settings.py
+db.sqlite3
+db.sqlite3-shm
+db.sqlite3-wal
+.vscode/
+staticfiles/
+*.http
+.history/
+.requirements.txt
+Pipfile
+Pipfile.lock
