@@ -123,3 +123,15 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+APP_URL = "http://localhost:8000"
+
+try:
+    from .local_settings import APP_URL
+except:
+    pass
+
+RE_WEBHOOk_URL = r'webhook/{webhook_name}/(?P<bot_token>.+?)/$'
+WEBHOOk_URL = (APP_URL[:-1] if APP_URL.endswith("/")
+               else APP_URL) + '/webhook/{webhook_name}/{bot_token}/'

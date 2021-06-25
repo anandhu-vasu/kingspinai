@@ -1,0 +1,91 @@
+<div x-show.transition="help" x-on:click.away="help=false" class="console-help w-100 h-100">
+    <div class="card border-0">
+        <div class="card-header p-3 border-0" >
+            <h5>Help</h5>
+        </div>
+        <div class="card-body">
+            <div class="section-title mt-0">Stories and Category</div>
+            <div class="content">
+                <p>
+                    Stories and categories are used to organize your business idea.
+                </p>
+            </div>
+            <div class="section-title">Conversations</div>
+            <div class="content">
+                <p>
+                    A Conversation consist of multiple statements and responses.
+                    We can add intent to each conversation.
+                </p>
+            </div>
+            <div class="section-title">Intents</div>
+            <div class="content">
+                <p>
+                    Intents are used for extracting different entities from the statement.
+                    Entity extraction works only if a intent is assigned to the that conversation.
+                    Intents name should only contain <code>_</code>, <code>a-z</code>, <code>A-Z</code>, <code>0-9</code> characters and any other will automatically erased.
+                </p>
+            </div>
+            <div class="section-title">Entity in Statements</div>
+            <div class="content">
+                <p>
+                    We can set words in a statements as a <strong>ENTITY</strong> using the syntax:
+                </p>
+                <p>
+                    <mark>|<code>word</code>|~<code>ENTITY</code>~</mark>
+                </p>
+                <p>
+                    <mark><code>word</code></mark> should only contain <code>_</code>, <code>a-z</code>, <code>A-Z</code>, <code>0-9</code>, <code><i><small>space</small></i></code>, <code>,</code>, <code>.</code>, <code>'</code> characters
+                    <br>
+                    <mark><code>ENTITY</code></mark> should only contain <code>_</code>, <code>A-Z</code> characters
+                </p>
+                <p>
+                    Example:
+                    <div class="ml-5 p-1">
+                        How are you <mark>|<code>Aravind</code>|~<code>NAME</code>~</mark>?
+                    </div>
+                </p>
+            </div>
+            <div class="section-title">Entity & Values in Response</div>
+            <div class="content">
+                <p>
+                    <strong>ENTITY</strong> obtained form the statement and <strong>value</strong> is obtained from api if given.
+                    We can include <strong>ENTITY</strong> and <strong>value</strong> in the response using the syntax:
+                </p>
+                <p>
+                    <mark>~<code>ENTITY</code>~</mark>
+                    <br>
+                    <mark>~<code>value</code>~</mark>
+                </p>
+                <p>
+                    <mark><code>ENTITY</code></mark> should only contain <code>_</code>, <code>A-Z</code> characters
+                    <br>
+                    <mark><code>value</code></mark> should only contain <code>_</code>, <code>a-z</code> characters
+                    
+                </p>
+                <p>
+                    Example:
+                    <div class="ml-5 p-1">
+                        Hi <mark>~<code>NAME</code>~</mark>.
+                        <br>
+                        Your email is <mark>~<code>email</code>~</mark>.
+                    </div>
+                </p>
+            </div>
+            <div class="section-title">Images & Videos in Response</div>
+            <div class="content">
+                <p>
+                    We can include <strong>images</strong> and <strong>videos</strong> (supports all formats that respective platforms supports) in responses to the user as following:
+                    <br><em class="text-warning">Note: URLs should start with https.</em>
+                </p>
+                <p>
+                    Example:
+                    <div class="ml-5 p-1">
+                        <mark>&lt;<code>image</code>|<code>https://example.com/example.png</code>&gt;</mark>
+                        <br>
+                        <mark>&lt;<code>video</code>|<code>https://example.com/example.mp4</code>&gt;</mark>
+                    </div>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

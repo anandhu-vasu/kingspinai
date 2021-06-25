@@ -1,0 +1,182 @@
+{% extends 'user/base.html' %}
+
+{% load static %}
+{% load unicorn %}
+{% csrf_token %}
+{% block title %}
+Dashboard
+{% endblock title %}
+
+{% block head %}
+    <script src="{% static 'chatbox.js' %}" defer></script>
+{% endblock head %}
+    
+{% block content %}
+
+<div class="main-content position-relative">
+    <section class="section">
+        <div x-data="conversationConsole()" x-init="init()" class="card card-hero border-0 shadow hecon bg{{ chatbot.id|stringformat:'d'|last}}">
+            <div class="border-0 card-header row">
+                <div class="card-icon">
+                    <i class="fas fa-terminal"></i>
+                </div>
+                <h6 style="margin-top: -30px;margin-left: -20px;">Conversation Console</h6>
+                <div class="row">
+                    <div class="p-0 col">
+                        {% unicorn 'console-actionbar' name=chatbot.name key=chatbot.name %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body position-relative" style="height: calc(100vh - 230px)">
+                <div class="pb-1 d-flex flex-nowrap stories h-100 align-items-stretch w-100" x-on:keydown.escape.window="cancelTransmit()">
+                    <template x-for="(story,i) in stories" :key="'#'+i">
+                        <div class="col-sm-12 col-md-12 col-lg-6 position-relative">
+                            <div class="p-2 shadow story h-100">
+                                <div class="scroll-wrapper">
+                                    <div class="position-relative">
+                                        <h4 class="story-title border-bottom">
+                                            <input class="edit-field" x-model.debounce.750="stories[i].name">
+                                        </h4>       
+                                        <div class="story-delete">
+                                            <button x-on:click="removeStory(i)" class="py-0 btn btn-icon btn-sm btn-danger rounded-circle" data-toggle="tooltip" data-trigger="hover" data-placement="left" data-original-title="Remove Story"><i class="fas fa-trash"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="text-center story-categories">
+                                        <div><i>Categories</i></div>
+                                        <template x-for="(category, j) in story.categories" :key="'#'+i+'^'+j">
+                                            <div class="mb-1 d-inline-block">
+                                                <div class="input-group story-category w-100">
+                                                    <input class="px-1 py-0 edit-field-tag col" x-model.debounce.750="stories[i].categories[j]">
+                                                    <div class="input-group-append">
+                                                        <button x-on:click="removeCategory(i,j)" class="category-delete" type="button" data-toggle="tooltip" data-trigger="hover" data-placement="left" data-original-title="Remove Category"><i class="fas fa-trash"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <div class="p-1 catadd">
+                                            <button x-on:click="addCategory(i)" class="py-0 btn btn-icon btn-sm btn-light rounded-circle" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Add Category"><i class="fas fa-plus"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4 conversations">
+                                    <div class="mb-2 text-center"><b>Conversations</b></div>
+                                        <template x-for="(conversation,k) in story.conversations" :key="'#'+i+'*'+k">
+                                            <div class="p-2 conversation" x-bind:style="(transmit.from && transmit.from[0]==i && transmit.from[1]==k)?`background-color: lightgreen;`:''">
+                                                <div class="text-center shadow intent">
+                                                    <small class="p-1 px-2 mt-2 mb-0 text-center">Intent</small>
+                                                    <div class="p-0 m-0 form-group">
+                                                        <label class="p-0 m-0 custom-switch">
+                                                            <input x-model="stories[i].conversations[k].auth" type="checkbox" name="custom-switch-checkbox" class="custom-switch-input slim-switch-checkbox">
+                                                            <span class="custom-switch-indicator slim-switch"></span>
+                                                            <span class="custom-switch-description">Authentication</span>
+                                                        </label>
+                                                        <label class="p-0 m-0 custom-switch">
+                                                            <input x-model="stories[i].conversations[k].data_fetch" type="checkbox" name="custom-switch-checkbox" class="custom-switch-input slim-switch-checkbox">
+                                                            <span class="custom-switch-indicator slim-switch"></span>
+                                                            <span class="custom-switch-description">Data Fetch</span>
+                                                        </label>
+                                                    </div>
+                                                    <div>
+                                                        <input x-model.debounce.750="stories[i].conversations[k].intent" @input.debounce.750="validateUniqueIntent(i,k)" class="py-0 border-0 shadow form-control">
+                                                    </div>
+                                                </div>
+                                                <template x-if="conversation.entities.length != 0">
+                                                    <div class="p-2 text-center shadow entities"> 
+                                                        <div class="entities-title"><small class="p-1 px-2 mt-2 mb-0 text-center">Entities</small></div>
+                                                        <div class="">
+                                                            <template x-for="entity in conversation.entities">
+                                                                <span class="entity" x-text="entity"></span>
+                                                            </template>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                                <div class="shadow statement position-relative">
+                                                    <template x-for="(statement, l) in conversation.statements" :key="'#'+i+'*'+k+'!'+l">
+                                                        <div class="position-relative">
+                                                            <textarea class="edit-area" onkeyup="textareaResize(this)" onfocus="textareaResize(this)" @input.debounce.750="extractEntities(i,k)" x-model.debounce.750="stories[i].conversations[k].statements[l]"></textarea>
+                                                            <div class="p-1 stdelete">
+                                                                <button x-on:click="removeStatement($event,i,k,l)" class="py-0 shadow-none btn btn-icon btn-danger btn-sm rounded-circle" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Remove Statement"><i class="fas fa-trash"></i></button>
+                                                            </div>
+                                                        </div>
+                                                    </template>
+                                                    <div class="p-1 stadd">
+                                                        <button x-on:click="addStatement($event,i,k)" class="py-0 btn btn-icon btn-sm btn-primary rounded-circle" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Add Statement"><i class="fas fa-plus"></i></button>
+                                                    </div>
+                                                </div>
+                                                <div class="p-1 cdelete">
+                                                    <button x-on:click="moveConversation(i,k)" class="py-0 shadow-none btn btn-icon btn-sm btn-info rounded-circle" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Move Conversation"><i class="fas fa-arrows-alt"></i></button>
+                                                    <button x-on:click="cloneConversation($event,i,k)" class="py-0 shadow-none btn btn-icon btn-sm btn-success rounded-circle" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Clone Conversation"><i class="fas fa-clone"></i></button>
+                                                    <button x-on:click="removeConversation($event,i,k)" class="py-0 shadow-none btn btn-icon btn-sm btn-danger rounded-circle" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Remove Conversation"><i class="fas fa-trash"></i></button>
+                                                </div>
+                                                <div class="shadow response position-relative">
+                                                    <template x-for="(response, m) in conversation.responses" :key="'#'+i+'*'+k+'@'+m">
+                                                        <div class="position-relative">
+                                                            <textarea class="edit-area" onkeyup="textareaResize(this)" onfocus="textareaResize(this)" x-model.debounce.750="stories[i].conversations[k].responses[m]"></textarea>
+                                                            <div class="p-1 redelete">
+                                                                <button x-on:click="removeResponse($event,i,k,m)" class="py-0 shadow-none btn btn-icon btn-danger btn-sm rounded-circle" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Remove Response"><i class="fas fa-trash"></i></button>
+                                                            </div>
+                                                        </div>
+                                                    </template>
+                                                    <div class="p-1 readd">
+                                                        <button x-on:click="addResponse($event,i,k)" class="py-0 btn btn-icon btn-sm btn-primary rounded-circle" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Add Response"><i class="fas fa-plus"></i></button>
+                                                    </div>
+                                                </div>
+                                                <div class="p-1 cadd" x-bind:class="{'show-cadd':(transmit.lift == true)}">
+                                                    <button x-show.transition.in.scale.duration.400ms="transmit.lift == true" x-on:click="placeConversation(i,k)" class="py-0 shadow-none btn btn-icon btn-sm btn-warning rounded-circle" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Place Conversation"><i class="fas fa-compress"></i></button>
+                                                    <button x-show.transition.in.scale.duration.400ms="transmit.lift == false" x-on:click="addConversation($event,i,k)" class="py-0 btn btn-icon btn-sm btn-secondary rounded-circle" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Add Conversation"><i class="fas fa-plus"></i></button>
+                                                </div>
+                                                <div class="p-1 cb-add">
+                                                    <button x-on:click="addButton($event,i,k)" class="px-1 py-0 rounded shadow-none btn btn-sm btn-warning" style="line-height:18px;border-bottom:3px solid #ff8300;" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Add Button"><i class="fas fa-plus" style="color:#ff8300"></i></button>
+                                                </div>
+                                                <template x-if="conversation.buttons.length >0">
+                                                    <div class="chat-buttons">
+                                                        
+                                                        <template x-for="(button,n) in conversation.buttons" :key="'#'+i+'*'+k+'^'+n">
+                                                            <div class="position-relative">
+                                                                <div class="shadow chat-button position-relative">
+                                                                    <input x-model.debounce.750="stories[i].conversations[k].buttons[n].label" type="text" class="">
+                                                                </div>
+                                                                <div class="chat-callback">
+                                                                    <input x-model.debounce.750="stories[i].conversations[k].buttons[n].callback" type="text" class="">
+                                                                </div>
+                                                                <div class="p-1 cb-btns">
+                                                                    <button x-on:click="removeButton($event,i,k,n)" class="py-0 shadow-none btn btn-icon btn-danger btn-sm rounded-circle" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Remove Button"><i class="fas fa-trash"></i></button>
+                                                                    {% comment %} <button x-on:click="" class="py-0 shadow-none btn btn-icon btn-warning btn-sm rounded-circle" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Edit Button"><i class="fas fa-pen-alt"></i></button> {% endcomment %}
+                                                                </div>
+                                                            </div>
+                                                        </template>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </template>
+                                        <div class="p-1 cadd" x-bind:class="{'show-cadd':(transmit.lift == true)}">
+                                            <button x-show.transition.in.scale.duration.400ms="transmit.lift == true" x-on:click="placeConversation(i)" class="py-0 shadow-none btn btn-icon btn-sm btn-warning rounded-circle" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Place Conversation"><i class="fas fa-compress"></i></button>
+                                            <button x-show.transition.in.scale.duration.400ms="transmit.lift == false" x-on:click="addConversation($event,i)" class="py-0 btn btn-icon btn-sm btn-secondary rounded-circle" data-toggle="tooltip" data-trigger="hover" data-placement="bottom" data-original-title="Add Conversation"><i class="fas fa-plus"></i></button>
+                                        </div>
+                                        <br/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                <div class="row story-actionbar">
+                    <button x-on:click="addStory()" class="btn btn-icon btn-secondary rounded-circle" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Add Story"><i class="fas fa-plus"></i></button>
+                    <button x-on:click="$undo();notifyUI(null,true);" x-bind:disabled="$history.length==0" class="ml-1 btn btn-icon btn-dark rounded-circle position-relative" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-original-title="Undo"><i class="fas fa-undo"></i> <span class="badge badge-transparent position-absolute" style="right: 1px;" x-text="$history.length"></span></button>
+                </div>
+            </div>
+            {% include "user/help.html" %}
+        </div>
+    </section>
+</div>
+
+{% endblock content %}
+
+{% block script %}
+    <script src="{% static 'user/js/conversation_console.js' %}"></script>
+    <script>
+        window.onload=()=>{if(KingSpinAI.$status == "NOT INITIALIZED"){
+            KingSpinAI.Initialize(`{{token}}`.replace(/&quot;/g,'"'),{url:"{{api_url}}/api/",title:`{{chatbot.name}}`,subtitle:"Testing"})
+        }}
+    </script>
+{% endblock script %}

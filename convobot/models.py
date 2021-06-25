@@ -1,10 +1,14 @@
+from convobot.schemas import Authorization
 from django.db import models
 from django.conf import settings
 
 import string
 import random
+import uuid
+import requests
 
 from django.utils import timezone
+from crypt.crypt import Encrypt
 
 
 def id_generator(size=10, chars=string.ascii_letters + string.digits):
@@ -73,3 +77,55 @@ class Analytics(models.Model):
     channel = models.CharField(max_length=100)
     confidence = models.DecimalField(null=True, max_digits=4, decimal_places=3)
     created_at = models.DateTimeField(auto_now_add=True)
+
+class LTS(models.Model):
+    chatbot = models.OneToOneField(
+        Chatbot, on_delete=models.CASCADE, related_name="LTS",primary_key=True)
+    botsign = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
+    token = models.CharField(max_length=255,null=True)#passsword
+    url = models.URLField(null=True)
+    training_status = models.PositiveSmallIntegerField(null=True)
+    dataset = models.JSONField(default=list)
+    validation_token = models.CharField(null=True)
+    
+    __original_token = None
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.__original_token = self.token
+    
+    def save(self, *args, **kwargs):
+        if self.url :
+            if self.url.endswith('/'):
+                self.url =str(self.url)[:-1]
+            if self.token and self.botsign:
+                if self.__original_token == None:
+                    valid_token = ''.join(random.choices(string.ascii_letters + string.digits, k=20))
+                    LTS.objects.filter(pk=self.pk).update(validation_token=valid_token)
+                    callback_url = settings.WEBHOOK_URL.format(
+                        webhook_name='register_lts_verification',
+                        bot_token=Encrypt(
+                            self.botsign).base64urlstrip.substitution.prependrandom()
+                    )
+                    payload={
+                        "token": self.token,
+                        "botsign": self.botsign,
+                        "validation_token": valid_token,
+                        "callback_url": callback_url
+                    }
+                    res = requests.post(f"{self.url}/register", json=payload, headers={"Content-Type": "application/json", "Accept": "application/json", })
+                    if not res.status_code == 200:
+                        self.token = self.__original_token
+                        
+                elif self.__original_token != self.token:
+                    try:
+                        data = Authorization(token=self.token).json()
+                        res = requests.post(f"{self.LTS.url}/token",
+                                            data=data, headers=self._headers)
+                        if not res.status_code == 200:
+                            self.token = self.__original_token
+                    except:
+                        self.token = self.__original_token
+
+        
+        super().save(*args, **kwargs)

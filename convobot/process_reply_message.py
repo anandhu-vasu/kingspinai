@@ -2,7 +2,7 @@ from convobot import constants, exceptions
 from textblob import TextBlob
 import re
 
-class ProcessResponse:
+class ProcessReplyMessage:
     
     def __init__(self,response,text:str) -> None:
         self._text = text
