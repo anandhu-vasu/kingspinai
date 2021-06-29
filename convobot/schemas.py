@@ -1,6 +1,7 @@
 from pydantic import BaseModel, root_validator
 from typing import Dict, List, Optional, Union
 from . import constants
+import re
 
 class Messages(BaseModel):
     UNKNOWN: Union[str, List]
@@ -10,7 +11,8 @@ class Messages(BaseModel):
     def convert(cls, values):
         for key in values:
             if isinstance(values[key], str):
-                values[key] = values[key].split(constants.MESSAGE_SEPARATOR)
+                values[key] = [s for s in re.split(
+                    constants.MESSAGE_SEPARATOR, values[key]) if s]
         return values
     
 

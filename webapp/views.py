@@ -1,6 +1,6 @@
-from chatbot.core.facebook_bot.views import get_facebook_page
-from chatbot.core.models import Auth
-from chatbot.core.utils import Encrypt
+from convochannels.messenger_bot.views import get_facebook_page
+from convobot.models import Auth
+from crypt.crypt import Encrypt
 from django.shortcuts import get_object_or_404, render, redirect
 from .forms import UserRegistrationForm, UserLoginForm
 from django.contrib.auth import authenticate, login, logout
@@ -12,7 +12,7 @@ from .models import *
 from django.http import HttpResponse
 from django.conf import settings
 from django.db.models import Avg, Count, Max, Q
-from convobot import ConvoChannels
+from convochannels import ConvoChannels
 from django.db.models.functions import TruncDay
 from django.core.serializers.json import DjangoJSONEncoder
 from datetime import datetime
@@ -119,16 +119,16 @@ def console(request, name):
                 token=context['chatbot'].telegram_key).username
         except:
             pass
-    if context['chatbot'].facebook_status and context['chatbot'].facebook_key:
+    if context['chatbot'].messenger_status and context['chatbot'].messenger_key:
         try:
-            context['token']['facebook'] = get_facebook_page(
-                context['chatbot'].facebook_key)['id']
+            context['token']['messenger'] = get_facebook_page(
+                context['chatbot'].messenger_key)['id']
         except:
             pass
 
     context['token'] = json.dumps(context['token'])
-    context['api_url'] = settings.WEBHOOK_SITE[:-
-                                               1] if settings.WEBHOOK_SITE.endswith("/") else settings.WEBHOOK_SITE
+    context['api_url'] = settings.APP_URL[:-
+                                               1] if settings.APP_URL.endswith("/") else settings.APP_URL
     return render(request, 'user/conversation_console.html', context)
 
 

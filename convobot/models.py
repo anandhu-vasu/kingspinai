@@ -1,4 +1,5 @@
 from convobot.schemas import Authorization
+from convobot.exceptions import LTSTokenError
 from django.db import models
 from django.conf import settings
 
@@ -84,9 +85,11 @@ class LTS(models.Model):
     botsign = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
     token = models.CharField(max_length=255,null=True)#passsword
     url = models.URLField(null=True)
-    training_status = models.PositiveSmallIntegerField(null=True)
-    dataset = models.JSONField(default=list)
-    validation_token = models.CharField(null=True)
+    training_status = models.PositiveSmallIntegerField(null=True,blank=True)
+    dataset = models.JSONField(default=list,blank=True)
+    dataset_ok = models.BooleanField(default=False,blank=True,editable=False)
+    validation_token = models.CharField(
+        null=True, max_length=255, blank=True, editable=False)
     
     __original_token = None
 
@@ -100,6 +103,7 @@ class LTS(models.Model):
                 self.url =str(self.url)[:-1]
             if self.token and self.botsign:
                 if self.__original_token == None:
+
                     valid_token = ''.join(random.choices(string.ascii_letters + string.digits, k=20))
                     LTS.objects.filter(pk=self.pk).update(validation_token=valid_token)
                     callback_url = settings.WEBHOOK_URL.format(
@@ -109,23 +113,22 @@ class LTS(models.Model):
                     )
                     payload={
                         "token": self.token,
-                        "botsign": self.botsign,
+                        "botsign": str(self.botsign),
                         "validation_token": valid_token,
                         "callback_url": callback_url
                     }
+                    
                     res = requests.post(f"{self.url}/register", json=payload, headers={"Content-Type": "application/json", "Accept": "application/json", })
                     if not res.status_code == 200:
-                        self.token = self.__original_token
+                        print(res.content)
+                        raise LTSTokenError()
                         
                 elif self.__original_token != self.token:
-                    try:
-                        data = Authorization(token=self.token).json()
-                        res = requests.post(f"{self.LTS.url}/token",
-                                            data=data, headers=self._headers)
-                        if not res.status_code == 200:
-                            self.token = self.__original_token
-                    except:
-                        self.token = self.__original_token
+                    data = Authorization(token=self.token).json()
+                    res = requests.post(f"{self.LTS.url}/token",
+                                        data=data, headers=self._headers)
+                    if not res.status_code == 200:
+                        raise LTSTokenError()
 
         
         super().save(*args, **kwargs)

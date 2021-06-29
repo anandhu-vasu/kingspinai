@@ -9,5 +9,8 @@ staticfiles/
 *.http
 .history/
 .requirements.txt
+cache/*/*
+temp/*
 Pipfile
 Pipfile.lock
+!**/.gitkeep

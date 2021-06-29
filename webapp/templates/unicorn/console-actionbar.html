@@ -1,0 +1,38 @@
+<div unicorn:poll-1000="update_training_status">
+    <button
+        x-on:load.window.once="cached=`{{corpus}}`.replaceAll('\n', '\\n');stories=JSON.parse(cached);$track('stories');setInterval(()=>{$('.stories').niceScroll();$('.story').niceScroll('.scroll-wrapper');},500);"
+        unicorn:click="save($event.target.value.trim())" id="cache" x-bind:value="setCorpus()" unicorn:key="saveKey"
+        unicorn:target="saveKey" unicorn:loading.class="disabled console-actionbar-loading" data-toggle="tooltip"
+        data-placement="bottom" data-trigger="hover" data-original-title="Save Data"
+        {% if is_dataset_ready %}
+        x-bind:class="{'dirty':isDirty(),'disabled':!isDirty()}" 
+        x-bind:disabled="!isDirty()"
+        {% endif %}
+        class="btn btn-icon btn-primary bicon p-0 m-1 
+        {% if not is_dataset_ready %}
+            dirty
+        {% endif %}
+        "
+        
+            
+        >
+        
+            
+        <i class="fas fa-save"></i>
+    </button>
+    <button unicorn:click="train()" unicorn:key="trainKey" unicorn:target="trainKey" unicorn:loading.attr="disabled"
+        data-toggle="tooltip" data-placement="bottom"
+        data-trigger="hover" data-original-title="Train Chat Bot"
+        onclick="$(this).find('i').addClass('training-anim')"
+        class="btn btn-icon btn-primary bicon p-0 m-1
+        {% if is_training == True %} disabled console-actionbar-loading {% endif %}
+        {% if is_dataset_ready != True or corpus == '[]' %} disabled {% endif %}" 
+        {% if is_dataset_ready != True or corpus == '[]' or is_training == True %} disabled {% endif %}
+        >
+        <i class="fab fa-battle-net {% if is_training == True %} training-anim {% endif %} "></i>
+    </button>
+    <button x-on:click.prevent="help=true" data-toggle="tooltip" data-placement="bottom" data-trigger="hover"
+        data-original-title="Help" class="btn btn-icon btn-primary bicon p-0 m-1">
+        <i class="fas fa-question"></i>
+    </button>
+</div>

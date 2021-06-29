@@ -14,8 +14,23 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from convobot.api import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    
+    path('', include('webapp.urls')),
+    path('', include('convobot.urls')),
+    
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/', include('convochannels.webchat_bot.urls')),
+    
+    path('', include('convochannels.whatsapp_bot.urls')),
+    path('', include('convochannels.telegram_bot.urls')),
+    path('', include('convochannels.messenger_bot.urls')),
+    
+    path("unicorn/", include("django_unicorn.urls", namespace='django_unicorn')),
+    
 ]

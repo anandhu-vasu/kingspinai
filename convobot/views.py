@@ -17,14 +17,13 @@ class TrainingStatusWebhook(generic.View):
     def post(self, request, bot_token):
         try:
             req = json.loads(request.body)
-            if req['statuscode'] in [200,404,500]:
-                lts:LTS = LTS.objects.filter(botsig=bot_token).first()
-                lts.training_status = req['statuscode']
-                lts.save()
+            if req['status_code'] in [200,404,500]:
+                LTS.objects.filter(
+                    botsign=bot_token).update(training_status=req['status_code'])
         except:
-            lts: LTS = LTS.objects.filter(botsig=bot_token).first()
-            lts.training_status = 500
-            lts.save()
+            LTS.objects.filter(
+                botsign=bot_token).update(training_status=500)
+        return HttpResponse()
 class LTSRegistrationWebhook(generic.View):
     
     @csrf_exempt

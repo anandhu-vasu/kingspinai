@@ -37,16 +37,28 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
+    'rest_framework',
+    'widget_tweaks',
+    'django_unicorn',
+    'webapp',
+    'convobot',
+    'convochannels.webchat_bot',
+    'convochannels.whatsapp_bot',
+    'convochannels.messenger_bot',
+    'convochannels.telegram_bot',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'kingspinai.urls'
@@ -124,14 +136,54 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': BASE_DIR / 'cache/default_cache',
+        'OPTIONS': {
+            'MAX_ENTRIES': 1000
+        }
+    },
+    'last_message_id': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': BASE_DIR / 'cache/last_message_id_cache',
+        'TIMEOUT': 3600,
+        'OPTIONS': {
+            'MAX_ENTRIES': 1000
+        }
+    },
+    
+}
 
-APP_URL = "http://localhost:8000"
+ALLOWED_HOSTS = ['*']
+CORS_ORIGIN_ALLOW_ALL = True
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+AUTH_USER_MODEL = 'webapp.User'
+LOGIN_URL = 'login'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smpt.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+
+
+# APP_URL = "http://localhost:8000"
 
 try:
-    from .local_settings import APP_URL
+    from .local_settings import APP_URL, DATABASES
 except:
     pass
 
-RE_WEBHOOk_URL = r'webhook/{webhook_name}/(?P<bot_token>.+?)/$'
-WEBHOOk_URL = (APP_URL[:-1] if APP_URL.endswith("/")
+WEBHOOK_URL = (APP_URL[:-1] if APP_URL.endswith("/")
                else APP_URL) + '/webhook/{webhook_name}/{bot_token}/'

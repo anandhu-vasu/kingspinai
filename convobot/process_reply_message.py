@@ -1,5 +1,5 @@
 from convobot import constants, exceptions
-from textblob import TextBlob
+# from textblob import TextBlob
 import re
 
 class ProcessReplyMessage:
@@ -69,8 +69,9 @@ class ProcessReplyMessage:
                     else:
                         self._text = re.sub(constants.RE_VALUE, str(
                             values[match.group(1)][0]), self._text, 1)
-                    self._text = re.sub(constants.RE_VALUE, str(
-                        values[match.group(1)]), self._text, 1)
+                        print(values[match.group(1)][0],
+                              match.group(1), self._text)
+                    
                 except Exception as e:
                     print(e)
                     raise exceptions.UnknownValueOnReply()
@@ -80,7 +81,8 @@ class ProcessReplyMessage:
     def translate(self):
         if self._response.translate_to and self._response.translate_to != 'en':
             try:
-                self._text = str(TextBlob(self._text).translate(to=self._response.translate_to))
+                # self._text = str(TextBlob(self._text).translate(to=self._response.translate_to))
+                pass
             except:
                 pass
         return self

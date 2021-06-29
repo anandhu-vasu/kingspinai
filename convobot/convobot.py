@@ -1,18 +1,13 @@
 
 from crypt import Encrypt
-from convobot.reply_message import ReplyMessage, generate_reply_messages
+from platform import uname
+from convobot.reply_message import ReplyMessage, ReplyText, generate_reply_messages
 from typing import List
-from convobot.response import Response
-from convobot.convo_channels import ConvoChannels
-from chatbot.core.utils import Decrypt
+from convochannels import ConvoChannels
+from crypt.crypt import Decrypt
 from . import exceptions
-import chatbot
-from chatterbot import ChatBot as Bot
-from chatbot.core.config import CHATBOT_OPTIONS
-from chatbot.core.trainers import SophisticatedTrainer
 
-import re
-from textblob import TextBlob
+# from textblob import TextBlob
 import speech_recognition as sr
 from pyffmpeg import FFmpeg
 import os
@@ -21,19 +16,18 @@ import datetime
 import json
 import requests
 
-from .models import Chatbot as ChatbotModel, Analytics
+# from .models import Chatbot as ChatbotModel, Analytics,LTS
 from .schemas import Messages, Reply, Statement, Authorization, Corpus
 from convobot import constants
 
-from convobot import models
 from django.conf import settings
 
 
 class Convobot:
     
-    def __init__(self, key, channel: ConvoChannels = ConvoChannels.WEB, uid: str = '', uname='', auth=None) -> None:
+    def __init__(self, key, channel: ConvoChannels = ConvoChannels.WEB, uid: str = '', uname='', auth=None,check_lts=True) -> None:
 
-        # from chatbot.core.models import Chatbot as ChatbotModel
+        from convobot.models import Chatbot as ChatbotModel
 
         self.is_auth:bool = False
         self.uid:str = uid
@@ -51,8 +45,8 @@ class Convobot:
         self.data_key = chatbot.data_key
         self.messages = chatbot.messages
         
-        self.LTS:models.LTS = chatbot.LTS
-        self.isLTS200 = self.hello_lts()
+        self.LTS = chatbot.LTS
+        self.isLTS200 = self.hello_lts() if check_lts else False
         
         if uid:
             try:
@@ -80,7 +74,7 @@ class Convobot:
     def _headers(self) -> dict: return {
         "Content-Type": "application/json",
         "Accept": "application/json",
-        "X-Token": self.token
+        "X-Token": self.LTS.token
     }
 
     def dataset(self):
@@ -88,35 +82,57 @@ class Convobot:
         if not dataset:
             return "[]"
         return json.dumps(dataset, separators=(',', ':'))
+    
+    @property
+    def is_dataset_ready(self):
+        return self.LTS.dataset_ok
+    
+    @property
+    def training_status(self):
+        from convobot.models import LTS
+        status = LTS.objects.values_list(
+            'training_status', flat=True).get(pk=self.LTS.chatbot)
+        
+        if status != 202:
+            self.LTS.training_status = None
+            self.LTS.save(update_fields=['training_status'])
+        
+        return status
+
 
     def save(self, dataset):#throws exception
         try:
-            corpus = Corpus(dataset=json.loads())
+            corpus = Corpus(dataset=json.loads(dataset))
         except:
             raise exceptions.InvalidTrainingDataError()
         self.LTS.dataset = corpus.dict()['dataset']
+        self.LTS.dataset_ok = True
+        self.LTS.save(update_fields=['dataset', 'dataset_ok'])
         if self.isLTS200:
             res = requests.post(f"{self.LTS.url}/dataset/{self.LTS.botsign}",data=corpus.json(),headers=self._headers)
             if res.status_code == 200:
                 return
+        self.LTS.dataset_ok = False
+        self.LTS.save(update_fields=['dataset_ok'])
         raise exceptions.LTSUnavailableError()
         
 
     def train(self):
         if self.isLTS200:
-            callback_url = settings.WEBHOOK_URL.format(
-                webhook_name='training_status',
-                bot_token=Encrypt(self.LTS.botsign).base64urlstrip.substitution.prependrandom()
-            )
-            res = requests.post(
-                f"{self.LTS.url}/train/{self.LTS.botsign}?callback_url={callback_url}", headers=self._headers)
-            
-            if res.status_code == 202:
-                self.LTS.training_status = 202
-                self.LTS.save()
-                return True
+            if self.LTS.dataset_ok and self.LTS.dataset:
+                callback_url = settings.WEBHOOK_URL.format(
+                    webhook_name='training_status',
+                    bot_token=Encrypt(self.LTS.botsign).base64urlstrip.substitution.prependrandom()
+                )
+                res = requests.post(
+                    f"{self.LTS.url}/train/{self.LTS.botsign}?callback_url={callback_url}", headers=self._headers)
+                
+                if res.status_code == 202:
+                    self.LTS.training_status = 202
+                    self.LTS.save()
+            return exceptions.EmptyTrainingDataError()
         
-        return False 
+        return exceptions.LTSUnavailableError() 
     
     def reply_messages(self,text) -> List[ReplyMessage]:
         if self.isLTS200:
@@ -124,13 +140,14 @@ class Convobot:
             confidence:int = 0
             try:
                 
-                blob = TextBlob(text)
-                try:
-                    lang = blob.detect_language()
-                    if lang != 'en':
-                        blob = blob.translate(to='en')
-                except:
-                    lang = 'en'
+                # blob = TextBlob(text)
+                # try:
+                #     lang = blob.detect_language()
+                #     if lang != 'en':
+                #         blob = blob.translate(to='en')
+                # except:
+                #     lang = 'en'
+                lang = 'en'
                     
                 data = Statement(text=text, uid=self.uid, is_auth=self.is_auth,
                                  data_url=self.data_url, data_key=self.data_key).json()
@@ -142,8 +159,10 @@ class Convobot:
                     confidence = reply.confidence
                     reply_messages = generate_reply_messages(
                         reply=reply, uname=self.uname, translate_to=lang, messages=Messages(**self.messages))
+                    
                     if confidence:
                         end = time.time_ns()//1e6
+                        from convobot.models import Analytics
                         Analytics.objects.create(chatbot_id=self.chatbot_id, duration=int(
                             end-start), channel=self.channel.name, confidence=confidence)
                     return reply_messages
@@ -171,19 +190,19 @@ class Convobot:
         
     def hello_lts(self):
         if self.LTS.url and self.LTS.token:
-            res = requests.get(f"{self.LTS.url}/hello",headers=self._headers)
+            res = requests.get(f"{self.LTS.url}/hello/{self.LTS.botsign}",headers=self._headers)
             if res.status_code == 200:
                 return True
         return False
         
     @classmethod
     def intro_messages(cls, key, uid='', uname='', channel: ConvoChannels = ConvoChannels.WEB, auth=None) -> List[ReplyMessage]:
-        
+        from convobot.models import Chatbot
         if channel in ConvoChannels and channel != ConvoChannels.WEB:
-            chatbot = ChatbotModel.objects.get(
+            chatbot = Chatbot.objects.get(
                 **{"{}_key".format(channel.name.lower()): key})
         else:
-            chatbot: ChatbotModel = ChatbotModel.objects.get(name=key)
+            chatbot: Chatbot = Chatbot.objects.get(name=key)
         
         try:
             if uid:
@@ -213,18 +232,19 @@ class Convobot:
         try:
             result = r.recognize_google(audio)
             print(result)
-            res = self.reply(str(result))
+            res = self.reply_messages(str(result))
         except sr.RequestError:
 
             # API was unreachable or unresponsive
-            res = ["Sorry, We are unable to process your voice"]
+            res = [
+                ReplyText(text="Sorry, We are unable to process your voice")]
         except sr.UnknownValueError:
             # speech was unintelligible
-            res = self.chatbot.storage.messages["UNKNOWN"].split("\n")
+            if 'UNKNOWN' in self.messages and self.messages['UNKNOWN']:
+                res = [ReplyText(text=text,uname=self.uname) for text in self.messages['UNKNOWN']]
 
         if os.path.exists(voice):
             os.remove(voice)
         if os.path.exists(voice_wav):
             os.remove(voice_wav)
         return res
-    
