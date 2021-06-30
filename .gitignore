@@ -13,4 +13,5 @@ cache/*/*
 temp/*
 Pipfile
 Pipfile.lock
+*_settings.py
 !**/.gitkeep
