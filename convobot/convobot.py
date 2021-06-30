@@ -190,9 +190,12 @@ class Convobot:
         
     def hello_lts(self):
         if self.LTS.url and self.LTS.token:
-            res = requests.get(f"{self.LTS.url}/hello/{self.LTS.botsign}",headers=self._headers)
-            if res.status_code == 200:
-                return True
+            try:
+                res = requests.get(f"{self.LTS.url}/hello/{self.LTS.botsign}",headers=self._headers)
+                if res.status_code == 200:
+                    return True
+            except:
+                pass
         return False
         
     @classmethod

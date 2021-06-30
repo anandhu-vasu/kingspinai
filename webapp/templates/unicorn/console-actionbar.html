@@ -13,21 +13,32 @@
             dirty
         {% endif %}
         "
-        
-            
         >
-        
-            
         <i class="fas fa-save"></i>
     </button>
+        
     <button unicorn:click="train()" unicorn:key="trainKey" unicorn:target="trainKey" unicorn:loading.attr="disabled"
         data-toggle="tooltip" data-placement="bottom"
-        data-trigger="hover" data-original-title="Train Chat Bot"
+        data-trigger="hover" data-original-title="
+        {% if is_lts_ok == True %}
+            Train Chat Bot
+        {% else %}
+            LTS Unavailable!
+        {% endif %}"
         onclick="$(this).find('i').addClass('training-anim')"
         class="btn btn-icon btn-primary bicon p-0 m-1
         {% if is_training == True %} disabled console-actionbar-loading {% endif %}
-        {% if is_dataset_ready != True or corpus == '[]' %} disabled {% endif %}" 
+        {% if is_dataset_ready != True or corpus == '[]' %} disabled {% endif %}
+        
+        {% if is_lts_ok != True %}
+            disabled
+        {% endif %}
+        " 
         {% if is_dataset_ready != True or corpus == '[]' or is_training == True %} disabled {% endif %}
+
+        {% if is_lts_ok != True %}
+            disabled
+        {% endif %}
         >
         <i class="fab fa-battle-net {% if is_training == True %} training-anim {% endif %} "></i>
     </button>

@@ -1,22 +1,19 @@
-from convochannels import messenger_bot
-from convochannels.telegram_bot.views import webhook
-import re
-import telegram
-from django_unicorn.components import UnicornView, UnicornField
 import logging
-from convochannels.whatsapp_bot.apps import set_whatsapp_webhook
-from convochannels.whatsapp_bot.views import get_whatsapp_id
-from convochannels.messenger_bot.views import get_facebook_page
-from convochannels.messenger_bot.apps import generate_facebook_verify_token
-from django.conf import settings
-from convobot.models import Chatbot
-from django.core.exceptions import ValidationError
-from django.forms.models import model_to_dict
-from django import forms
-from django_unicorn.decorators import timed
-from convochannels.telegram_bot.apps import TelegramBot
+import re
 from crypt.crypt import Encrypt
 
+import telegram
+from convobot.models import Chatbot
+from convochannels.messenger_bot.apps import generate_facebook_verify_token
+from convochannels.messenger_bot.views import get_facebook_page
+from convochannels.telegram_bot.apps import TelegramBot
+from convochannels.whatsapp_bot.apps import set_whatsapp_webhook
+from convochannels.whatsapp_bot.views import get_whatsapp_id
+from django import forms
+from django.conf import settings
+from django.core.exceptions import ValidationError
+from django.forms.models import model_to_dict
+from django_unicorn.components import UnicornField, UnicornView
 
 logger = logging.getLogger(__name__)
 
@@ -26,28 +23,6 @@ class ChatbotMessages(UnicornField):
     def __init__(self, *args, **kwargs):
         self.INTRO = kwargs.get("INTRO", "")
         self.UNKNOWN = kwargs.get("UNKNOWN", "")
-
-
-# def validate_chatbot_telegram_key(token):
-#     try:
-#         telegram.Bot(token=token).username
-#     except:
-#         raise ValidationError(message="Invalid telegram bot api token.",code="invalid")
-#     else:
-#         return token
-
-# def validate_chatbot_messenger_key(token):
-#     if get_facebook_page(token) == None:
-#         raise ValidationError(message="Invalid facebook page access token.",code="invalid")
-#     else:
-#         return token
-
-# def validate_chatbot_whatsapp_key(token):
-#     if get_whatsapp_id(token) == None:
-#         raise ValidationError(message="Invalid facebook page access token.",code="invalid")
-#     else:
-#         return token
-
 
 class ChatbotSettingsForm(forms.ModelForm):
     name = forms.SlugField(required=True, max_length=100, min_length=3)

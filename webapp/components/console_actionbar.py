@@ -11,6 +11,7 @@ class ConsoleActionbarView(UnicornView):
     is_training = False
     is_saving = False
     is_dataset_ready = False
+    is_lts_ok = False
 
     def __init__(self, *args, **kwargs):
         super().__init__(**kwargs)
@@ -20,6 +21,8 @@ class ConsoleActionbarView(UnicornView):
                 self._chatbot = Convobot(key=self.name)
                 self.corpus = self._chatbot.dataset()
                 self.is_dataset_ready = self._chatbot.is_dataset_ready
+                self.is_lts_ok = self._chatbot.isLTS200
+                
                 
             print("chatbot", "initialized")
         except Exception as e:
@@ -29,10 +32,15 @@ class ConsoleActionbarView(UnicornView):
             
     def mount(self):
         self.update_training_status()
+        if not self.is_lts_ok:
+            self.call("swal", "LTS Unavailable",
+                      "LTS not connected to your Bot. You can save changes for now. BUT YOU SHOULD SAVE BEFORE TRAINING", "warning")
 
     def train(self):
         try:
-            if self._chatbot.training_status == 202:
+            if not self.is_lts_ok:
+                self.call("Toast", "LTS Unavailable", "", "info")
+            elif self._chatbot.training_status == 202:
                 self.is_training = True
                 self.call("Toast", "Training Already Started", "", "warning")
             else:
