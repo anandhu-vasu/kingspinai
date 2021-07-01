@@ -4,12 +4,12 @@
         unicorn:click="save($event.target.value.trim())" id="cache" x-bind:value="setCorpus()" unicorn:key="saveKey"
         unicorn:target="saveKey" unicorn:loading.class="disabled console-actionbar-loading" data-toggle="tooltip"
         data-placement="bottom" data-trigger="hover" data-original-title="Save Data"
-        {% if is_dataset_ready %}
+        {% if is_dataset_ready or corpus == '[]' %}
         x-bind:class="{'dirty':isDirty(),'disabled':!isDirty()}" 
         x-bind:disabled="!isDirty()"
         {% endif %}
         class="btn btn-icon btn-primary bicon p-0 m-1 
-        {% if not is_dataset_ready %}
+        {% if not is_dataset_ready and corpus != '[]' %}
             dirty
         {% endif %}
         "
