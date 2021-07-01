@@ -83,7 +83,7 @@ class LTS(models.Model):
     chatbot = models.OneToOneField(
         Chatbot, on_delete=models.CASCADE, related_name="LTS",primary_key=True)
     botsign = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
-    token = models.CharField(max_length=255,null=True)#passsword
+    token = models.CharField(max_length=255,null=True,blank=True)#passsword
     url = models.URLField(null=True)
     training_status = models.PositiveSmallIntegerField(null=True,blank=True)
     dataset = models.JSONField(default=list,blank=True)
@@ -92,19 +92,25 @@ class LTS(models.Model):
         null=True, max_length=255, blank=True, editable=False)
     
     __original_token = None
+    __original_url = None
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.__original_token = self.token
+        self.__original_url = self.url
     
     def save(self, *args, **kwargs):
         if self.url :
             if self.url.endswith('/'):
                 self.url =str(self.url)[:-1]
+            if not self.token:
+                self.token = ''.join(random.choices(
+                    string.ascii_letters + string.digits + string.punctuation, k=16))
             if self.token and self.botsign:
                 if self.__original_token == None:
 
-                    valid_token = ''.join(random.choices(string.ascii_letters + string.digits, k=20))
+                    valid_token = ''.join(random.choices(
+                        string.ascii_uppercase + string.digits, k=24))
                     LTS.objects.filter(pk=self.pk).update(validation_token=valid_token)
                     callback_url = settings.WEBHOOK_URL.format(
                         webhook_name='register_lts_verification',
@@ -121,14 +127,14 @@ class LTS(models.Model):
                     res = requests.post(f"{self.url}/register", json=payload, headers={"Content-Type": "application/json", "Accept": "application/json", })
                     if not res.status_code == 200:
                         print(res.content)
-                        raise LTSTokenError()
+                        raise LTSTokenError("LTS Registration Failed!")
                         
-                elif self.__original_token != self.token:
+                elif self.__original_token != self.token or self.__original_url != self.url:
                     data = Authorization(token=self.token).json()
                     res = requests.post(f"{self.LTS.url}/token",
                                         data=data, headers=self._headers)
                     if not res.status_code == 200:
-                        raise LTSTokenError()
+                        raise LTSTokenError("Failed to change LTS details!")
 
         
         super().save(*args, **kwargs)

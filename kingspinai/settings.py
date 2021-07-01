@@ -157,7 +157,7 @@ CACHES = {
 
 ALLOWED_HOSTS = ['*']
 CORS_ORIGIN_ALLOW_ALL = True
-CORS_URLS_REGEX = r'^/static/.*$'
+CORS_URLS_REGEX = r'^/static/.*$|^/api'
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
@@ -187,5 +187,6 @@ except:
     from .do_settings import APP_URL, ALLOWED_HOSTS, DATABASES
     pass
 
-WEBHOOK_URL = (APP_URL[:-1] if APP_URL.endswith("/")
-               else APP_URL) + '/webhook/{webhook_name}/{bot_token}/'
+APP_URL = APP_URL[:-1] if APP_URL.endswith("/") else APP_URL
+
+WEBHOOK_URL =  APP_URL + '/webhook/{webhook_name}/{bot_token}/'
