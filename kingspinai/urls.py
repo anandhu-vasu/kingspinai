@@ -17,6 +17,9 @@ from django.contrib import admin
 from django.urls import path, include
 from convobot.api import TokenObtainPairView, TokenRefreshView
 
+handler404 = 'webapp.views.error_404'
+handler500 = 'webapp.views.error_500'
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     
