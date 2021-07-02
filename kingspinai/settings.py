@@ -184,7 +184,7 @@ EMAIL_HOST_PASSWORD = ''
 try:
     from .local_settings import APP_URL, DATABASES
 except:
-    from .do_settings import APP_URL, ALLOWED_HOSTS, DATABASES
+    from .do_settings import APP_URL, ALLOWED_HOSTS, DATABASES, DEBUG
     pass
 
 APP_URL = APP_URL[:-1] if APP_URL.endswith("/") else APP_URL

@@ -135,6 +135,7 @@ class Convobot:
         return exceptions.LTSUnavailableError() 
     
     def reply_messages(self,text) -> List[ReplyMessage]:
+        lang = None
         if self.isLTS200:
             start = time.time_ns()//1e6
             confidence:int = 0
@@ -166,7 +167,8 @@ class Convobot:
                         Analytics.objects.create(chatbot_id=self.chatbot_id, duration=int(
                             end-start), channel=self.channel.name, confidence=confidence)
                     return reply_messages
-            except:
+            except Exception as e:
+                print(e)
                 pass
         reply_messages = generate_reply_messages(
             reply=Reply(texts=["Sorry, Something really bad happend!"]), uname=self.uname, translate_to=lang, messages=Messages(**self.messages))
