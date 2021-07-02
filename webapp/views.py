@@ -74,10 +74,10 @@ def analytics(request):
             messagesPerDay = []
             for channel in ConvoChannels:
                 data = chatbot.analytics.annotate(x=TruncDay('created_at', tzinfo=pytz.timezone('Asia/Calcutta'))).values(
-                    'x').annotate(y=Count('channel', filter=Q(channel=channel.name))).values('x', 'y').order_by('created_at__date')
+                    'x').annotate(y=Count('channel', filter=Q(channel=channel.value))).values('x', 'y').order_by('created_at__date')
                 #chatbot.analytics.annotate(x=TruncDay('created_at')).values('x').order_by('created_at__date').annotate(y=Count('created_at__date',filter=Q()))
                 messagesPerDay.append(
-                    {'name': channel.name, 'data': list(data)})
+                    {'name': channel.value, 'data': list(data)})
 
             analysis['messagesPerDay'] = json.dumps(
                 messagesPerDay, default=datetimetoms)

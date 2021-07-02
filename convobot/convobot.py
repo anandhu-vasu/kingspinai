@@ -165,7 +165,7 @@ class Convobot:
                         end = time.time_ns()//1e6
                         from convobot.models import Analytics
                         Analytics.objects.create(chatbot_id=self.chatbot_id, duration=int(
-                            end-start), channel=self.channel.name, confidence=confidence)
+                            end-start), channel=self.channel.value, confidence=confidence)
                     return reply_messages
             except Exception as e:
                 print(e)
