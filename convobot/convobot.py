@@ -120,7 +120,7 @@ class Convobot:
     def train(self):
         if self.isLTS200:
             if self.LTS.dataset_ok and self.LTS.dataset:
-                callback_url = settings.WEBHOOK_URL.format(
+                callback_url = settings.CALLBACK_URL.format(
                     webhook_name='training_status',
                     bot_token=Encrypt(self.LTS.botsign).base64urlstrip.substitution.prependrandom()
                 )

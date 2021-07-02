@@ -112,7 +112,7 @@ class LTS(models.Model):
                     valid_token = ''.join(random.choices(
                         string.ascii_uppercase + string.digits, k=24))
                     LTS.objects.filter(pk=self.pk).update(validation_token=valid_token)
-                    callback_url = settings.WEBHOOK_URL.format(
+                    callback_url = settings.CALLBACK_URL.format(
                         webhook_name='register_lts_verification',
                         bot_token=Encrypt(
                             self.botsign).base64urlstrip.substitution.prependrandom()

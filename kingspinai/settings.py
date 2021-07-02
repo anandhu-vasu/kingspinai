@@ -182,11 +182,14 @@ EMAIL_HOST_PASSWORD = ''
 # APP_URL = "http://localhost:8000"
 
 try:
-    from .local_settings import APP_URL, DATABASES
+    from .local_settings import APP_URL, VPC_URL, DATABASES, VPC_URL
 except:
-    from .do_settings import APP_URL, ALLOWED_HOSTS, DATABASES, DEBUG
+    from .do_settings import APP_URL, VPC_URL, ALLOWED_HOSTS, DATABASES, DEBUG
     pass
 
-APP_URL = APP_URL[:-1] if APP_URL.endswith("/") else APP_URL
 
+APP_URL = APP_URL[:-1] if APP_URL.endswith("/") else APP_URL
 WEBHOOK_URL =  APP_URL + '/webhook/{webhook_name}/{bot_token}/'
+
+VPC_URL = VPC_URL[:-1] if VPC_URL.endswith("/") else VPC_URL
+CALLBACK_URL =  VPC_URL + '/webhook/{webhook_name}/{bot_token}/'
