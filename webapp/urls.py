@@ -3,6 +3,9 @@ from . import views
 
 appname = 'webapp'
 
+handler404 = 'webapp.views.error_404'
+handler500 = 'webapp.views.error_500'
+
 dashboard_urlpatterns = [
     path('',views.dashboard,name='dashboard'),
     path('chatbots/',views.chatbot,name='chatbot'),

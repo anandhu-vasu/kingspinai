@@ -179,3 +179,13 @@ def ssl_verify(request):
     file_content = f.read()
     f.close()
     return HttpResponse(file_content, content_type="text/plain")
+
+
+def error_404(request, exception):
+    data = {}
+    return render(request, 'errors/404.html', data)
+
+
+def error_500(request,  exception):
+    data = {}
+    return render(request, 'errors/500.html', data)
