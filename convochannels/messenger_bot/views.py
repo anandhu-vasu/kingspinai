@@ -100,7 +100,7 @@ def message_controller(bot_token,fbid,response):
             continue
         if message:
             if isinstance(message,ReplyButtonList):
-                buttons = [{"type":"postback","title":(button.label[:18] + '..') if len(button.label) > 20 else button.label,"payload":button.callback} for button in message if button.label.isspace()]
+                buttons = [{"type":"postback","title":(button.label[:18] + '..') if len(button.label) > 20 else button.label,"payload":button.callback} for button in message if not button.label.isspace()]
                 post_postback_button(bot_token,fbid,":)",buttons)
                 
             elif isinstance(message,ReplyText) and not message.text.isspace():
